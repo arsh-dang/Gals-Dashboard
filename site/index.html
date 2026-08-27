@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STEM Impact Tracker — Provider view</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <div class="banner-mock" role="note">
+      <strong>Mock data.</strong> Every number on this page is synthetic test data generated to build this dashboard.
+      Real survey collection is pending Deakin ethics approval — nothing here describes an actual programme or participant.
+    </div>
+    <h1>STEM Impact Tracker</h1>
+    <p class="page-header__subtitle">
+      Provider view — participation and outcomes across STEM activities for school-age girls, reshaped from the
+      GALS programme survey. Built for funder and programme-level reporting.
+      <a href="teacher.html">Switch to teacher view →</a>
+    </p>
+  </header>
+
+  <form class="filter-bar" id="filter-bar">
+    <div class="filter-field">
+      <label for="filter-region">Region</label>
+      <select id="filter-region">
+        <option value="">All regions</option>
+      </select>
+    </div>
+    <div class="filter-field">
+      <label for="filter-school-level">School year</label>
+      <select id="filter-school-level">
+        <option value="">All years (incl. post-school)</option>
+      </select>
+    </div>
+    <button type="button" class="filter-reset" id="filter-reset">Reset filters</button>
+    <span class="filter-status" id="filter-status" role="status"></span>
+  </form>
+
+  <main class="view-grid">
+
+    <!-- View 1: Participation overview -->
+    <section class="view-section" id="section-participation" aria-labelledby="heading-participation">
+      <div class="view-section__heading">
+        <h2 id="heading-participation"><span class="view-number">1</span>Participation overview</h2>
+      </div>
+      <div class="cards-row">
+        <div class="card">
+          <h3 class="card__title">How many girls took part in each activity?</h3>
+          <p class="card__subtitle">Respondent counts by activity type.</p>
+          <div class="chart-scroll"><div class="chart" id="chart-participation-bars"></div></div>
+          <p class="card__note">
+            Every respondent in this sample took part in GALS — it will always be the largest bar and is shown in a
+            neutral colour for that reason. The other bars show additional programmes attended alongside it; they
+            are not a comparison against GALS. A general, non-activity-specific outcomes question in the source data
+            has been excluded from all four views (see note below).
+          </p>
+          <div id="table-participation-bars"></div>
+        </div>
+        <div class="card">
+          <h3 class="card__title">Where do school-student respondents come from?</h3>
+          <p class="card__subtitle">Respondent count by region and school year — school students only.</p>
+          <div class="chart-scroll" id="chart-suppression-grid"></div>
+          <p class="card__note">
+            Cells with fewer than <span id="threshold-label-1"></span> respondents are suppressed and marked, not
+            silently dropped or shown as zero. Geelong is the only region with usable numbers across most year
+            levels — treat any other region's row as indicative at best.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- View 2: Outcomes by activity -->
+    <section class="view-section" id="section-outcomes" aria-labelledby="heading-outcomes">
+      <div class="view-section__heading">
+        <h2 id="heading-outcomes"><span class="view-number">2</span>Outcomes by activity</h2>
+        <div class="view-toggle" role="group" aria-label="Outcomes chart type">
+          <button type="button" data-outcomes-mode="average" aria-pressed="true">Average</button>
+          <button type="button" data-outcomes-mode="distribution" aria-pressed="false">Distribution</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card__title">Which outcomes do participants report most positively, by activity?</h3>
+        <p class="card__subtitle" id="outcomes-subtitle">
+          Average score per activity, on the survey's 1–4 scale. 1 = Yes a lot is the best answer; "I do not know" is
+          excluded from every average.
+        </p>
+        <div class="chart-scroll" id="chart-outcomes"></div>
+        <div class="legend" id="outcomes-activity-legend"></div>
+        <p class="card__note">
+          "≈ wording variant" marks three outcome statements that appear twice with near-identical wording (a
+          survey artifact — one activity's question block used slightly different phrasing than the rest). They are
+          shown as separate rows for now, adjacent to their pair, so the pattern is visible rather than looking like
+          missing data. "×" marks an activity/outcome combination with fewer than
+          <span id="threshold-label-2"></span> respondents in the current filter — suppressed, not plotted.
+        </p>
+        <div id="table-outcomes"></div>
+      </div>
+    </section>
+
+    <!-- View 3: Skills and identity -->
+    <section class="view-section" id="section-skills" aria-labelledby="heading-skills">
+      <div class="view-section__heading">
+        <h2 id="heading-skills"><span class="view-number">3</span>Skills and identity</h2>
+        <div class="view-toggle" role="group" aria-label="Skills or identity battery">
+          <button type="button" data-battery="skills" aria-pressed="true">Skills</button>
+          <button type="button" data-battery="identity" aria-pressed="false">Identity</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card__title" id="skills-title">What skills do participants say they built, by activity?</h3>
+        <p class="card__subtitle">
+          Multi-select — respondents could tick more than one, so these are frequencies, not averages. Percentage of
+          that activity's participants who selected each item.
+        </p>
+        <div id="chart-skills"></div>
+        <p class="card__note">
+          Only activities with a skills/identity battery in the survey are shown here — three activities
+          (Excursions, Online STEM activities, and the excluded general-outcomes rows) never asked these questions,
+          which is a survey branch, not missing data.
+        </p>
+      </div>
+    </section>
+
+    <!-- View 4: Regional comparison -->
+    <section class="view-section" id="section-regional" aria-labelledby="heading-regional">
+      <div class="view-section__heading">
+        <h2 id="heading-regional"><span class="view-number">4</span>Regional comparison</h2>
+      </div>
+      <div class="card">
+        <h3 class="card__title">How do outcomes compare across the six regions?</h3>
+        <p class="card__subtitle">
+          Average score per region, same 1–4 scale as above (1 = Yes a lot is best; "I do not know" excluded).
+        </p>
+        <div class="chart-scroll" id="chart-regional"></div>
+        <div class="legend" id="regional-legend"></div>
+        <p class="card__note">
+          "×" marks a region/outcome combination with fewer than <span id="threshold-label-3"></span> respondents —
+          suppressed, not plotted. Most regions outside Geelong will show several suppressed cells; that is the
+          honest state of this sample, not a rendering gap.
+        </p>
+        <div id="table-regional"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="page-footer">
+    <div class="data-notes card">
+      <h3 class="card__title">Data notes</h3>
+      <ul>
+        <li>Source: <code>respondents.csv</code>, <code>activity_ratings.csv</code>, <code>battery_selections.csv</code> from the reshaped Qualtrics export. <code>open_text.csv</code> was not present in this data drop and is not used.</li>
+        <li>A generic, non-activity-specific outcomes question (134 responses, reshaped as activity_type "Other") is excluded from every view — it is not a real 8th programme.</li>
+        <li>The scale runs 1 = Yes a lot → 4 = No, with "I do not know" at position 5. Lower is better; every average shown here is inverted for display and labelled.</li>
+        <li>Cells under 5 respondents are suppressed and visibly marked throughout, never silently dropped or averaged.</li>
+        <li>Colours are drawn from a placeholder palette (<code>site/css/tokens.css</code>) pending Deakin's official brand palette — replace before this is shown outside the project.</li>
+      </ul>
+    </div>
+  </footer>
+
+</div>
+
+<script src="vendor/d3.min.js"></script>
+<script src="data/respondents.js"></script>
+<script src="data/ratings.js"></script>
+<script src="data/selections.js"></script>
+<script src="data/meta.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/charts/participation.js"></script>
+<script src="js/charts/outcomes.js"></script>
+<script src="js/charts/skills.js"></script>
+<script src="js/charts/regional.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

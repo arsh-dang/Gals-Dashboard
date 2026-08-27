@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STEM Impact Tracker — Teacher view</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <div class="banner-mock" role="note">
+      <strong>Mock data.</strong> Every number on this page is synthetic test data generated to build this dashboard.
+      Real survey collection is pending Deakin ethics approval — nothing here describes an actual student or school.
+    </div>
+    <h1>STEM Impact Tracker</h1>
+    <p class="page-header__subtitle">
+      Teacher view — your own school's cohort, in more detail than the programme-level report.
+      <a href="index.html">Switch to provider view →</a>
+    </p>
+  </header>
+
+  <form class="filter-bar" id="filter-bar">
+    <div class="filter-field">
+      <label for="filter-school">Your school</label>
+      <select id="filter-school">
+        <option value="">Choose your school…</option>
+      </select>
+    </div>
+    <span class="filter-status" id="filter-status" role="status"></span>
+  </form>
+
+  <div id="no-school-message" class="card" style="text-align:center; color: var(--text-secondary);">
+    Choose your school above to see your cohort's results.
+  </div>
+
+  <div id="suppressed-message" class="card" style="display:none;">
+    <span class="badge-suppressed" id="suppressed-badge"></span>
+    <p style="margin-top: var(--space-3);">
+      Fewer than <span id="threshold-label-suppressed"></span> respondents are recorded at this school in the current
+      data. To avoid identifying individual students, no breakdown is shown below that threshold — this matches the
+      suppression rule used throughout the provider dashboard.
+    </p>
+  </div>
+
+  <main class="view-grid" id="teacher-content" style="display:none;">
+
+    <section class="view-section" aria-labelledby="heading-snapshot">
+      <div class="view-section__heading">
+        <h2 id="heading-snapshot"><span class="view-number">1</span>Your cohort</h2>
+      </div>
+      <div class="card">
+        <h3 class="card__title" id="snapshot-title">How many of your students took part in each activity?</h3>
+        <p class="card__subtitle">Respondent counts by activity type, this school only.</p>
+        <div class="chart-scroll"><div class="chart" id="chart-teacher-participation"></div></div>
+        <p class="card__note">
+          Counts under <span id="threshold-label-1"></span> are suppressed and marked the same way as the provider
+          dashboard — a small school cohort in a single activity is still identifiable.
+        </p>
+      </div>
+    </section>
+
+    <section class="view-section" aria-labelledby="heading-benchmark">
+      <div class="view-section__heading">
+        <h2 id="heading-benchmark"><span class="view-number">2</span>How does your cohort compare?</h2>
+      </div>
+      <div class="card">
+        <h3 class="card__title">Is your cohort's average response typical of the overall sample?</h3>
+        <p class="card__subtitle">
+          Average score per outcome statement, your school (●) against all respondents (◆), on the survey's 1–4
+          scale. 1 = Yes a lot is the best answer; "I do not know" is excluded. This collapses across activity type —
+          use the detail below for an activity-by-activity view.
+        </p>
+        <div class="chart-scroll" id="chart-teacher-benchmark"></div>
+        <p class="card__note">
+          "×" marks an outcome statement with fewer than <span id="threshold-label-2"></span> of your students
+          answering — suppressed, not plotted. The diamond (all respondents) is shown even where your school's dot is
+          suppressed, since it draws on the full sample.
+        </p>
+      </div>
+    </section>
+
+    <section class="view-section" aria-labelledby="heading-detail">
+      <div class="view-section__heading">
+        <h2 id="heading-detail"><span class="view-number">3</span>Response detail</h2>
+      </div>
+      <div class="card">
+        <h3 class="card__title">What did your students actually say, per activity and outcome?</h3>
+        <p class="card__subtitle">
+          Full response distribution, not just the average — one panel per outcome statement, one bar per activity
+          your students took part in.
+        </p>
+        <div id="chart-teacher-outcomes"></div>
+      </div>
+    </section>
+
+    <section class="view-section" aria-labelledby="heading-skills">
+      <div class="view-section__heading">
+        <h2 id="heading-skills"><span class="view-number">4</span>Skills and identity</h2>
+        <div class="view-toggle" role="group" aria-label="Skills or identity battery">
+          <button type="button" data-battery="skills" aria-pressed="true">Skills</button>
+          <button type="button" data-battery="identity" aria-pressed="false">Identity</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card__title" id="skills-title">What skills do your students say they built, by activity?</h3>
+        <p class="card__subtitle">
+          Multi-select — students could tick more than one, so these are frequencies, not averages.
+        </p>
+        <div id="chart-teacher-skills"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="page-footer">
+    <div class="data-notes card">
+      <h3 class="card__title">Data notes</h3>
+      <ul>
+        <li>School cohorts in this mock dataset are small — most are well under the suppression threshold. Real collection may look different; this view is a first pass pending actual teacher feedback on what's useful.</li>
+        <li>One respondent's raw <code>school</code> and <code>school_level</code> values in the source CSV contradicted the data contract (populated on a Post-school row, which should be blank) — both are treated as blank here rather than shown, per the contract's own rule.</li>
+        <li>Colours are drawn from a placeholder palette (<code>site/css/tokens.css</code>) pending Deakin's official brand palette.</li>
+      </ul>
+    </div>
+  </footer>
+
+</div>
+
+<script src="vendor/d3.min.js"></script>
+<script src="data/respondents.js"></script>
+<script src="data/ratings.js"></script>
+<script src="data/selections.js"></script>
+<script src="data/meta.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/charts/participation.js"></script>
+<script src="js/charts/outcomes.js"></script>
+<script src="js/charts/skills.js"></script>
+<script src="js/charts/teacher.js"></script>
+<script src="js/teacher-main.js"></script>
+</body>
+</html>
