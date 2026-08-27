@@ -126,6 +126,22 @@
           .on('mouseleave blur', () => tip.hide());
         return;
       }
+      const ci = U.ciDisplayBounds(cell);
+      const tooltipHtml = `<strong>${cell.activityType}</strong>${truncate(cell.item, 60)}<br>
+            Average (raw scale, 1=Yes a lot … 4=No): ${U.formatScore(cell.mean)}<br>
+            95% CI: ${ci ? `${U.formatScore(5 - ci.high)}–${U.formatScore(5 - ci.low)}` : 'not enough responses to estimate'}<br>
+            n=${cell.n}${cell.unknownN ? `<br><span class="tt-muted">${cell.unknownN} more answered "I do not know" (excluded)</span>` : ''}`;
+
+      if (ci) {
+        dotG.append('line')
+          .attr('class', 'ci-whisker')
+          .attr('x1', x(ci.low)).attr('x2', x(ci.high))
+          .attr('y1', cy).attr('y2', cy)
+          .attr('stroke', colorScale(cell.activityType))
+          .attr('stroke-width', 1.5)
+          .attr('opacity', 0.45);
+      }
+
       dotG.append('circle')
         .attr('cx', x(cell.display))
         .attr('cy', cy)
@@ -133,12 +149,8 @@
         .attr('fill', colorScale(cell.activityType))
         .attr('tabindex', 0)
         .attr('role', 'img')
-        .attr('aria-label', `${cell.activityType}, ${cell.item}: average ${cell.mean.toFixed(2)} of 4, 1 is best, n=${cell.n}`)
-        .on('mouseenter focus', (evt) => {
-          tip.show(`<strong>${cell.activityType}</strong>${truncate(cell.item, 60)}<br>
-            Average (raw scale, 1=Yes a lot … 4=No): ${U.formatScore(cell.mean)}<br>
-            n=${cell.n}${cell.unknownN ? `<br><span class="tt-muted">${cell.unknownN} more answered "I do not know" (excluded)</span>` : ''}`, evt);
-        })
+        .attr('aria-label', `${cell.activityType}, ${cell.item}: average ${cell.mean.toFixed(2)} of 4, 1 is best, n=${cell.n}${ci ? `, 95% CI ${U.formatScore(5 - ci.high)} to ${U.formatScore(5 - ci.low)}` : ''}`)
+        .on('mouseenter focus', (evt) => tip.show(tooltipHtml, evt))
         .on('mousemove', (evt) => tip.move(evt))
         .on('mouseleave blur', () => tip.hide());
     });

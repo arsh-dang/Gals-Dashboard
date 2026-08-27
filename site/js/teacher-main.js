@@ -2,25 +2,92 @@
   'use strict';
 
   const U = window.SIT.utils;
-  const { ratings, selections, meta } = window.SIT_DATA;
+  const { respondents, ratings, selections, meta } = window.SIT_DATA;
+
+  const YEAR_ORDER = ['Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11', 'Year 12'];
 
   const activityColorScale = U.buildActivityColorScale(meta.activityTypes.map((a) => a.key));
 
-  const state = { school: '', battery: 'skills' };
+  const state = { region: '', school: '', schoolLevel: '', battery: 'skills' };
 
+  const regionSelect = document.getElementById('filter-region');
   const schoolSelect = document.getElementById('filter-school');
-  meta.schools.forEach((s) => {
+  const schoolLevelSelect = document.getElementById('filter-school-level');
+
+  meta.regions.forEach((r) => {
     const opt = document.createElement('option');
-    opt.value = s.key;
-    opt.textContent = `${s.key} (${s.respondentCount})`;
-    schoolSelect.appendChild(opt);
+    opt.value = r.key;
+    opt.textContent = r.key;
+    regionSelect.appendChild(opt);
   });
+
+  function populateSchoolOptions() {
+    const current = state.school;
+    schoolSelect.innerHTML = '<option value="">Choose your school…</option>';
+    meta.schools
+      .filter((s) => !state.region || s.region === state.region)
+      .forEach((s) => {
+        const opt = document.createElement('option');
+        opt.value = s.key;
+        opt.textContent = `${s.key} (${s.respondentCount})`;
+        schoolSelect.appendChild(opt);
+      });
+    // Keep the current school selected if it's still in the filtered list;
+    // a region change that excludes it clears the pick instead of silently
+    // showing another school's data under the old label.
+    const stillValid = [...schoolSelect.options].some((o) => o.value === current);
+    schoolSelect.value = stillValid ? current : '';
+    state.school = schoolSelect.value;
+  }
+
+  function populateSchoolLevelOptions() {
+    schoolLevelSelect.innerHTML = '<option value="">All years at this school</option>';
+    if (!state.school) {
+      schoolLevelSelect.disabled = true;
+      return;
+    }
+    const levels = YEAR_ORDER.filter((lvl) => respondents.some((r) => r.school === state.school && r.schoolLevel === lvl));
+    levels.forEach((lvl) => {
+      const opt = document.createElement('option');
+      opt.value = lvl;
+      opt.textContent = lvl;
+      schoolLevelSelect.appendChild(opt);
+    });
+    schoolLevelSelect.disabled = levels.length === 0;
+  }
+
+  populateSchoolOptions();
 
   document.querySelectorAll('#threshold-label-1, #threshold-label-2, #threshold-label-suppressed').forEach((el) => {
     el.textContent = meta.smallCellThreshold;
   });
 
-  schoolSelect.addEventListener('change', () => { state.school = schoolSelect.value; render(); });
+  regionSelect.addEventListener('change', () => {
+    state.region = regionSelect.value;
+    populateSchoolOptions();
+    state.schoolLevel = '';
+    populateSchoolLevelOptions();
+    render();
+  });
+
+  schoolSelect.addEventListener('change', () => {
+    state.school = schoolSelect.value;
+    state.schoolLevel = '';
+    populateSchoolLevelOptions();
+    render();
+  });
+
+  schoolLevelSelect.addEventListener('change', () => { state.schoolLevel = schoolLevelSelect.value; render(); });
+
+  document.getElementById('filter-reset').addEventListener('click', () => {
+    state.region = '';
+    state.school = '';
+    state.schoolLevel = '';
+    regionSelect.value = '';
+    populateSchoolOptions();
+    populateSchoolLevelOptions();
+    render();
+  });
 
   document.querySelectorAll('[data-battery]').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -61,16 +128,18 @@
       return;
     }
 
-    schoolRatings = ratings.filter((r) => r.school === state.school);
-    schoolSelections = selections.filter((s) => s.school === state.school);
+    const cohortFilters = { school: state.school, schoolLevel: state.schoolLevel };
+    schoolRatings = U.applyFilters(ratings, cohortFilters);
+    schoolSelections = U.applyFilters(selections, cohortFilters);
     const n = U.countDistinctIds(schoolRatings);
-    status.textContent = `${n} student${n === 1 ? '' : 's'} at ${state.school}`;
+    const levelSuffix = state.schoolLevel ? `, ${state.schoolLevel}` : '';
+    status.textContent = `${n} student${n === 1 ? '' : 's'} at ${state.school}${levelSuffix}`;
 
     if (U.isSuppressed(n)) {
       noSchoolMsg.style.display = 'none';
       suppressedMsg.style.display = '';
       content.style.display = 'none';
-      document.getElementById('suppressed-badge').textContent = `${state.school}: n=${n}, suppressed`;
+      document.getElementById('suppressed-badge').textContent = `${state.school}${levelSuffix}: n=${n}, suppressed`;
       return;
     }
 
@@ -80,17 +149,17 @@
 
     document.getElementById('snapshot-title').textContent = `How many of your ${n} students took part in each activity?`;
 
+    window.SIT.charts.outcomes.renderDistribution(document.getElementById('chart-teacher-outcomes'), schoolRatings, meta, activityColorScale);
+
     window.SIT.charts.renderActivityBars(document.getElementById('chart-teacher-participation'), schoolRatings, meta, activityColorScale);
+
+    renderSkills();
 
     window.SIT.charts.teacherBenchmark.render(document.getElementById('chart-teacher-benchmark'), {
       schoolRatings,
       allRatings: ratings,
       meta,
     });
-
-    window.SIT.charts.outcomes.renderDistribution(document.getElementById('chart-teacher-outcomes'), schoolRatings, meta, activityColorScale);
-
-    renderSkills();
   }
 
   let resizeTimer = null;

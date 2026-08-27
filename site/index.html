@@ -18,6 +18,7 @@
     <nav class="site-nav" aria-label="Dashboard view">
       <a href="index.html" aria-current="page">Provider view</a>
       <a href="teacher.html">Teacher view</a>
+      <a href="open-text.html">Open-text responses</a>
     </nav>
     <p class="page-header__subtitle">
       Provider view — participation and outcomes across STEM activities for school-age girls, reshaped from the
@@ -93,6 +94,9 @@
         <div class="chart-scroll" id="chart-outcomes"></div>
         <div class="legend" id="outcomes-activity-legend"></div>
         <p class="card__note">
+          The faint line through each dot is a 95% confidence interval — the activity types sit close together, and
+          without it the differences between them look more certain than the sample size supports. Hover a dot for
+          the exact interval and respondent count.
           "≈ wording variant" marks three outcome statements that appear twice with near-identical wording (a
           survey artifact — one activity's question block used slightly different phrasing than the rest). They are
           shown as separate rows for now, adjacent to their pair, so the pattern is visible rather than looking like
@@ -140,9 +144,10 @@
         <div class="chart-scroll" id="chart-regional"></div>
         <div class="legend" id="regional-legend"></div>
         <p class="card__note">
-          "×" marks a region/outcome combination with fewer than <span id="threshold-label-3"></span> respondents —
-          suppressed, not plotted. Most regions outside Geelong will show several suppressed cells; that is the
-          honest state of this sample, not a rendering gap.
+          The faint line through each dot is a 95% confidence interval, same reasoning as the outcomes-by-activity
+          view above. "×" marks a region/outcome combination with fewer than <span id="threshold-label-3"></span>
+          respondents — suppressed, not plotted. Most regions outside Geelong will show several suppressed cells;
+          that is the honest state of this sample, not a rendering gap.
         </p>
         <div id="table-regional"></div>
       </div>

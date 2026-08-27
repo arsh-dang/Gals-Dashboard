@@ -141,6 +141,15 @@
         { label: 'Activity', value: (d) => d.activityType },
         { label: 'n', value: (d) => d.n, align: 'right' },
         { label: 'Average (1=best, 4=worst)', value: (d) => (d.suppressed ? 'suppressed' : U.formatScore(d.mean)), align: 'right' },
+        {
+          label: '95% CI (raw scale)',
+          value: (d) => {
+            if (d.suppressed) return '–';
+            const ci = U.ciDisplayBounds(d);
+            return ci ? `${U.formatScore(5 - ci.high)}–${U.formatScore(5 - ci.low)}` : 'n too small';
+          },
+          align: 'right',
+        },
         { label: '"I do not know"', value: (d) => (d.suppressed ? '–' : d.unknownN), align: 'right' },
       ],
       rows,
@@ -189,6 +198,7 @@
           n: cellRows.length,
           suppressed: U.isSuppressed(cellRows.length),
           mean: summary.mean,
+          ciMargin: summary.ciMargin,
           unknownN: summary.unknownN,
         });
       });
@@ -199,6 +209,15 @@
         { label: 'Region', value: (d) => d.region },
         { label: 'n', value: (d) => d.n, align: 'right' },
         { label: 'Average (1=best, 4=worst)', value: (d) => (d.suppressed ? 'suppressed' : U.formatScore(d.mean)), align: 'right' },
+        {
+          label: '95% CI (raw scale)',
+          value: (d) => {
+            if (d.suppressed) return '–';
+            const ci = U.ciDisplayBounds(d);
+            return ci ? `${U.formatScore(5 - ci.high)}–${U.formatScore(5 - ci.low)}` : 'n too small';
+          },
+          align: 'right',
+        },
       ],
       rows,
     });

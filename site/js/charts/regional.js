@@ -94,17 +94,29 @@
         }
 
         const display = U.toDisplayScore(summary.mean);
+        const ci = U.ciDisplayBounds(summary);
+        const tooltipHtml = `<strong>${region}</strong>${truncate(item.item, 60)}<br>
+              Average (raw scale, 1=Yes a lot … 4=No): ${U.formatScore(summary.mean)}<br>
+              95% CI: ${ci ? `${U.formatScore(5 - ci.high)}–${U.formatScore(5 - ci.low)}` : 'not enough responses to estimate'}<br>
+              n=${summary.n}${summary.unknownN ? `<br><span class="tt-muted">${summary.unknownN} more answered "I do not know" (excluded)</span>` : ''}`;
+
+        if (ci) {
+          svg.append('line')
+            .attr('class', 'ci-whisker')
+            .attr('x1', x(ci.low)).attr('x2', x(ci.high))
+            .attr('y1', cy).attr('y2', cy)
+            .attr('stroke', regionColorScale(region))
+            .attr('stroke-width', 1.5)
+            .attr('opacity', 0.45);
+        }
+
         svg.append('circle')
           .attr('cx', x(display)).attr('cy', cy).attr('r', 5)
           .attr('fill', regionColorScale(region))
           .attr('tabindex', 0)
           .attr('role', 'img')
-          .attr('aria-label', `${region}, ${item.item}: average ${summary.mean.toFixed(2)} of 4, 1 is best, n=${summary.n}`)
-          .on('mouseenter focus', (evt) => {
-            tip.show(`<strong>${region}</strong>${truncate(item.item, 60)}<br>
-              Average (raw scale, 1=Yes a lot … 4=No): ${U.formatScore(summary.mean)}<br>
-              n=${summary.n}${summary.unknownN ? `<br><span class="tt-muted">${summary.unknownN} more answered "I do not know" (excluded)</span>` : ''}`, evt);
-          })
+          .attr('aria-label', `${region}, ${item.item}: average ${summary.mean.toFixed(2)} of 4, 1 is best, n=${summary.n}${ci ? `, 95% CI ${U.formatScore(5 - ci.high)} to ${U.formatScore(5 - ci.low)}` : ''}`)
+          .on('mouseenter focus', (evt) => tip.show(tooltipHtml, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
       });

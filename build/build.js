@@ -178,6 +178,55 @@ function main() {
       };
     });
 
+  // --- open_text.csv: optional. Not present in every data drop (branching
+  // means most respondents never saw a free-text question), and the reshape
+  // script that would produce it isn't in this drop either, so this reads it
+  // if present and degrades to an empty, clearly-flagged dataset if not -
+  // it never fabricates response text.
+  //
+  // Theme coding is a separate, optional join: an `open_text_themes.csv`
+  // with columns ResponseId,question,theme, keyed the same way as
+  // open_text.csv itself. Until that file exists every row's theme is null
+  // and the UI shows "not yet coded" - the column is real, just unpopulated.
+  const OPEN_TEXT_PATH = path.join(DATA_DIR, 'open_text.csv');
+  const OPEN_TEXT_THEMES_PATH = path.join(DATA_DIR, 'open_text_themes.csv');
+
+  const respondentActivities = new Map();
+  ratings.forEach((r) => {
+    if (!respondentActivities.has(r.id)) respondentActivities.set(r.id, new Set());
+    respondentActivities.get(r.id).add(r.activityType);
+  });
+
+  let openTextRaw = [];
+  if (fs.existsSync(OPEN_TEXT_PATH)) {
+    const text = fs.readFileSync(OPEN_TEXT_PATH, 'utf8');
+    openTextRaw = parseCsv(text);
+  }
+
+  const themeByKey = new Map();
+  if (fs.existsSync(OPEN_TEXT_THEMES_PATH)) {
+    const text = fs.readFileSync(OPEN_TEXT_THEMES_PATH, 'utf8');
+    parseCsv(text).forEach((r) => themeByKey.set(`${r.ResponseId}||${r.question}`, r.theme || null));
+  }
+
+  const openText = openTextRaw.map((r) => {
+    const resp = respondentById.get(r.ResponseId);
+    return {
+      id: r.ResponseId,
+      question: r.question,
+      sourceColumn: r.source_column,
+      response: r.response,
+      region: resp ? resp.region : null,
+      schoolLevel: resp ? resp.schoolLevel : null,
+      pathway: resp ? resp.pathway : null,
+      // Every activity this respondent has outcome ratings for - the survey
+      // doesn't record which activity a free-text answer was about, so this
+      // is "context", per the brief, not a claimed 1:1 link.
+      activityTypes: respondentActivities.has(r.ResponseId) ? [...respondentActivities.get(r.ResponseId)] : [],
+      theme: themeByKey.get(`${r.ResponseId}||${r.question}`) || null,
+    };
+  });
+
   // --- meta: counts the browser code would otherwise have to recompute on
   // every load, plus the facts the dashboard captions need to state.
   const activityRespondentIds = new Map();
@@ -200,12 +249,14 @@ function main() {
     .sort((a, b) => b.respondentCount - a.respondentCount);
 
   const schoolCounts = new Map();
+  const schoolRegion = new Map();
   respondents.forEach((r) => {
     if (!r.school) return;
     schoolCounts.set(r.school, (schoolCounts.get(r.school) || 0) + 1);
+    schoolRegion.set(r.school, r.region);
   });
   const schools = [...schoolCounts.entries()]
-    .map(([key, count]) => ({ key, respondentCount: count }))
+    .map(([key, count]) => ({ key, respondentCount: count, region: schoolRegion.get(key) }))
     .sort((a, b) => a.key.localeCompare(b.key));
 
   const itemCounts = new Map();
@@ -241,6 +292,12 @@ function main() {
       goodDirection: 'low',
       dontKnowCode: 5,
     },
+    openText: {
+      available: openText.length > 0,
+      count: openText.length,
+      questions: [...new Set(openText.map((r) => r.question))].sort(),
+      themesAvailable: themeByKey.size > 0,
+    },
   };
 
   fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -253,10 +310,14 @@ function main() {
   write('respondents.js', respondents);
   write('ratings.js', ratings);
   write('selections.js', selections);
+  write('openText.js', openText);
   write('meta.js', meta);
 
-  console.log(`Wrote ${respondents.length} respondents, ${ratings.length} ratings, ${selections.length} selections.`);
+  console.log(`Wrote ${respondents.length} respondents, ${ratings.length} ratings, ${selections.length} selections, ${openText.length} open-text responses.`);
   console.log(`Activity types (Other excluded): ${activityTypes.map((a) => `${a.key} (${a.respondentCount})`).join(', ')}`);
+  if (!openText.length) {
+    console.log('No open_text.csv found in data/ - open-text.html will render its empty state.');
+  }
 }
 
 main();

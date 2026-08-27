@@ -71,12 +71,25 @@
       const benchRows = allRatings.filter((r) => r.item === item.item);
       const benchSummary = U.summarizeScores(benchRows);
       if (benchSummary.mean !== null) {
+        const benchCi = U.ciDisplayBounds(benchSummary);
+        if (benchCi) {
+          svg.append('line')
+            .attr('class', 'ci-whisker')
+            .attr('x1', x(benchCi.low)).attr('x2', x(benchCi.high))
+            .attr('y1', cy).attr('y2', cy)
+            .attr('stroke', benchmarkColor)
+            .attr('stroke-width', 1.5)
+            .attr('opacity', 0.4);
+        }
         svg.append('path')
           .attr('d', d3.symbol().type(d3.symbolDiamond).size(50)())
           .attr('transform', `translate(${x(U.toDisplayScore(benchSummary.mean))},${cy})`)
           .attr('fill', benchmarkColor)
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>All respondents</strong>${truncate(item.item, 60)}<br>Average: ${U.formatScore(benchSummary.mean)} (n=${benchSummary.n})`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`<strong>All respondents</strong>${truncate(item.item, 60)}<br>
+            Average: ${U.formatScore(benchSummary.mean)}<br>
+            95% CI: ${benchCi ? `${U.formatScore(5 - benchCi.high)}–${U.formatScore(5 - benchCi.low)}` : 'not enough responses to estimate'}<br>
+            n=${benchSummary.n}`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
       }
@@ -98,6 +111,16 @@
       }
 
       const summary = U.summarizeScores(schoolRows);
+      const ci = U.ciDisplayBounds(summary);
+      if (ci) {
+        svg.append('line')
+          .attr('class', 'ci-whisker')
+          .attr('x1', x(ci.low)).attr('x2', x(ci.high))
+          .attr('y1', cy).attr('y2', cy)
+          .attr('stroke', schoolColor)
+          .attr('stroke-width', 2)
+          .attr('opacity', 0.5);
+      }
       svg.append('circle')
         .attr('cx', x(U.toDisplayScore(summary.mean)))
         .attr('cy', cy)
@@ -105,10 +128,11 @@
         .attr('fill', schoolColor)
         .attr('tabindex', 0)
         .attr('role', 'img')
-        .attr('aria-label', `This school, ${item.item}: average ${summary.mean.toFixed(2)} of 4, 1 is best, n=${summary.n}`)
+        .attr('aria-label', `This school, ${item.item}: average ${summary.mean.toFixed(2)} of 4, 1 is best, n=${summary.n}${ci ? `, 95% CI ${U.formatScore(5 - ci.high)} to ${U.formatScore(5 - ci.low)}` : ''}`)
         .on('mouseenter focus', (evt) => {
           tip.show(`<strong>This school</strong>${truncate(item.item, 60)}<br>
             Average (raw scale, 1=Yes a lot … 4=No): ${U.formatScore(summary.mean)}<br>
+            95% CI: ${ci ? `${U.formatScore(5 - ci.high)}–${U.formatScore(5 - ci.low)}` : 'not enough responses to estimate'}<br>
             n=${summary.n}${summary.unknownN ? `<br><span class="tt-muted">${summary.unknownN} more answered "I do not know" (excluded)</span>` : ''}`, evt);
         })
         .on('mousemove', (evt) => tip.move(evt))

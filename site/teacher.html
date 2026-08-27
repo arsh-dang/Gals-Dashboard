@@ -18,6 +18,7 @@
     <nav class="site-nav" aria-label="Dashboard view">
       <a href="index.html">Provider view</a>
       <a href="teacher.html" aria-current="page">Teacher view</a>
+      <a href="open-text.html">Open-text responses</a>
     </nav>
     <p class="page-header__subtitle">
       Teacher view — your own school's cohort, in more detail than the programme-level report.
@@ -26,11 +27,24 @@
 
   <form class="filter-bar" id="filter-bar">
     <div class="filter-field">
+      <label for="filter-region">Region</label>
+      <select id="filter-region">
+        <option value="">All regions</option>
+      </select>
+    </div>
+    <div class="filter-field">
       <label for="filter-school">Your school</label>
       <select id="filter-school">
         <option value="">Choose your school…</option>
       </select>
     </div>
+    <div class="filter-field">
+      <label for="filter-school-level">School year</label>
+      <select id="filter-school-level" disabled>
+        <option value="">All years at this school</option>
+      </select>
+    </div>
+    <button type="button" class="filter-reset" id="filter-reset">Reset filters</button>
     <span class="filter-status" id="filter-status" role="status"></span>
   </form>
 
@@ -49,9 +63,24 @@
 
   <main class="view-grid" id="teacher-content" style="display:none;">
 
+    <section class="view-section" aria-labelledby="heading-detail">
+      <div class="view-section__heading">
+        <h2 id="heading-detail"><span class="view-number">1</span>Response detail</h2>
+      </div>
+      <div class="card">
+        <h3 class="card__title">What did your students actually say, per activity and outcome?</h3>
+        <p class="card__subtitle">
+          Full response distribution, not just the average — one panel per outcome statement, one bar per activity
+          your students took part in. This is the primary view here: your own cohort's actual answers, not a
+          programme-level summary.
+        </p>
+        <div id="chart-teacher-outcomes"></div>
+      </div>
+    </section>
+
     <section class="view-section" aria-labelledby="heading-snapshot">
       <div class="view-section__heading">
-        <h2 id="heading-snapshot"><span class="view-number">1</span>Your cohort</h2>
+        <h2 id="heading-snapshot"><span class="view-number">2</span>Your cohort</h2>
       </div>
       <div class="card">
         <h3 class="card__title" id="snapshot-title">How many of your students took part in each activity?</h3>
@@ -64,43 +93,9 @@
       </div>
     </section>
 
-    <section class="view-section" aria-labelledby="heading-benchmark">
-      <div class="view-section__heading">
-        <h2 id="heading-benchmark"><span class="view-number">2</span>How does your cohort compare?</h2>
-      </div>
-      <div class="card">
-        <h3 class="card__title">Is your cohort's average response typical of the overall sample?</h3>
-        <p class="card__subtitle">
-          Average score per outcome statement, your school (●) against all respondents (◆), on the survey's 1–4
-          scale. 1 = Yes a lot is the best answer; "I do not know" is excluded. This collapses across activity type —
-          use the detail below for an activity-by-activity view.
-        </p>
-        <div class="chart-scroll" id="chart-teacher-benchmark"></div>
-        <p class="card__note">
-          "×" marks an outcome statement with fewer than <span id="threshold-label-2"></span> of your students
-          answering — suppressed, not plotted. The diamond (all respondents) is shown even where your school's dot is
-          suppressed, since it draws on the full sample.
-        </p>
-      </div>
-    </section>
-
-    <section class="view-section" aria-labelledby="heading-detail">
-      <div class="view-section__heading">
-        <h2 id="heading-detail"><span class="view-number">3</span>Response detail</h2>
-      </div>
-      <div class="card">
-        <h3 class="card__title">What did your students actually say, per activity and outcome?</h3>
-        <p class="card__subtitle">
-          Full response distribution, not just the average — one panel per outcome statement, one bar per activity
-          your students took part in.
-        </p>
-        <div id="chart-teacher-outcomes"></div>
-      </div>
-    </section>
-
     <section class="view-section" aria-labelledby="heading-skills">
       <div class="view-section__heading">
-        <h2 id="heading-skills"><span class="view-number">4</span>Skills and identity</h2>
+        <h2 id="heading-skills"><span class="view-number">3</span>Skills and identity</h2>
         <div class="view-toggle" role="group" aria-label="Skills or identity battery">
           <button type="button" data-battery="skills" aria-pressed="true">Skills</button>
           <button type="button" data-battery="identity" aria-pressed="false">Identity</button>
@@ -113,6 +108,29 @@
         </p>
         <div id="chart-teacher-skills"></div>
       </div>
+    </section>
+
+    <section class="view-section" aria-labelledby="heading-benchmark">
+      <div class="view-section__heading">
+        <h2 id="heading-benchmark"><span class="view-number">4</span>For context</h2>
+      </div>
+      <details class="card" id="benchmark-details">
+        <summary style="cursor:pointer; font-weight:600;">How does your cohort compare to the overall programme? (optional)</summary>
+        <h3 class="card__title" style="margin-top: var(--space-4);">Is your cohort's average response typical of the overall sample?</h3>
+        <p class="card__subtitle">
+          Average score per outcome statement, your school (●) against all respondents (◆), on the survey's 1–4
+          scale. 1 = Yes a lot is the best answer; "I do not know" is excluded. This collapses across activity type —
+          use the detail above for an activity-by-activity view. Closed by default: your own cohort's detail is the
+          point of this page, not how it stacks up against the programme.
+        </p>
+        <div class="chart-scroll" id="chart-teacher-benchmark"></div>
+        <p class="card__note">
+          "×" marks an outcome statement with fewer than <span id="threshold-label-2"></span> of your students
+          answering — suppressed, not plotted. The diamond (all respondents) is shown even where your school's dot is
+          suppressed, since it draws on the full sample. The faint line through each mark is a 95% confidence
+          interval — with cohort sizes this small, treat any gap from the diamond as indicative, not conclusive.
+        </p>
+      </details>
     </section>
 
   </main>

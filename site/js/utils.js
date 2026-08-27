@@ -45,17 +45,31 @@
   }
 
   // Mean score excluding "I do not know" (code 5) and any null score.
-  // Returns {mean, n, unknownN, unknownRate} - never a bare number, because
-  // every consumer needs n and the unknown rate alongside it.
+  // Returns {mean, n, unknownN, unknownRate, sd, ciMargin} - never a bare
+  // number, because every consumer needs n and the unknown rate alongside
+  // it. ciMargin is the 95% CI half-width on the raw 1-4 scale (normal
+  // approximation, sample SD) - null when n<2, since the activity-type
+  // averages sit close enough together that an unqualified average
+  // overstates how different they are.
   function summarizeScores(rows) {
     const known = rows.filter((r) => r.score !== null && r.score !== undefined);
     const unknownN = rows.length - known.length;
-    const mean = known.length ? known.reduce((s, r) => s + r.score, 0) / known.length : null;
+    const n = known.length;
+    const mean = n ? known.reduce((s, r) => s + r.score, 0) / n : null;
+    let sd = null;
+    let ciMargin = null;
+    if (n >= 2) {
+      const variance = known.reduce((s, r) => s + (r.score - mean) ** 2, 0) / (n - 1);
+      sd = Math.sqrt(variance);
+      ciMargin = 1.96 * (sd / Math.sqrt(n));
+    }
     return {
       mean,
-      n: known.length,
+      n,
       unknownN,
       unknownRate: rows.length ? unknownN / rows.length : 0,
+      sd,
+      ciMargin,
     };
   }
 
@@ -64,6 +78,19 @@
   // "Score (display)" calculated field.
   function toDisplayScore(rawMean) {
     return rawMean === null ? null : 5 - rawMean;
+  }
+
+  // 95% CI bounds on the same inverted display scale as toDisplayScore,
+  // clamped to the 1-4 axis. Null if the summary has no computable margin
+  // (n<2) - callers should skip drawing a whisker in that case, not draw
+  // a zero-width one.
+  function ciDisplayBounds(summary) {
+    if (summary.ciMargin === null || summary.mean === null) return null;
+    const display = toDisplayScore(summary.mean);
+    return {
+      low: Math.max(1, display - summary.ciMargin),
+      high: Math.min(4, display + summary.ciMargin),
+    };
   }
 
   function distributionCounts(rows) {
@@ -75,12 +102,13 @@
     return counts;
   }
 
+  // Generic: filters is {fieldName: value}; any falsy value is "no constraint".
+  // Works for {region, schoolLevel} on the provider page and
+  // {region, school, schoolLevel} on the teacher page against the same
+  // row shape, since both are joined onto respondent fields at build time.
   function applyFilters(rows, filters) {
-    return rows.filter((r) => {
-      if (filters.region && r.region !== filters.region) return false;
-      if (filters.schoolLevel && r.schoolLevel !== filters.schoolLevel) return false;
-      return true;
-    });
+    const keys = Object.keys(filters).filter((k) => filters[k]);
+    return rows.filter((r) => keys.every((k) => r[k] === filters[k]));
   }
 
   function uniqueBy(arr, keyFn) {
@@ -199,6 +227,7 @@
     isSuppressed,
     summarizeScores,
     toDisplayScore,
+    ciDisplayBounds,
     distributionCounts,
     applyFilters,
     uniqueBy,
