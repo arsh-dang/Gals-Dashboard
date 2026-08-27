@@ -115,18 +115,26 @@
   }
 
   function render() {
-    const noSchoolMsg = document.getElementById('no-school-message');
+    const gate = document.getElementById('teacher-gate');
+    const gateTitle = document.getElementById('gate-title');
+    const gateSubtitle = document.getElementById('gate-subtitle');
     const suppressedMsg = document.getElementById('suppressed-message');
     const content = document.getElementById('teacher-content');
     const status = document.getElementById('filter-status');
 
     if (!state.school) {
-      noSchoolMsg.style.display = '';
+      gate.classList.remove('teacher-gate--active');
+      gateTitle.textContent = 'Sign in to your cohort';
+      gateSubtitle.textContent = 'Select your region and school to view your students\' results. This identifies your cohort — it isn\'t a secured login, since there\'s no real account behind this mock dataset.';
       suppressedMsg.style.display = 'none';
       content.style.display = 'none';
       status.textContent = '';
       return;
     }
+
+    gate.classList.add('teacher-gate--active');
+    gateTitle.textContent = `Signed in: ${state.school}`;
+    gateSubtitle.textContent = `${state.region || meta.schools.find((s) => s.key === state.school).region} — narrow by year below, or switch school.`;
 
     const cohortFilters = { school: state.school, schoolLevel: state.schoolLevel };
     schoolRatings = U.applyFilters(ratings, cohortFilters);
@@ -136,14 +144,12 @@
     status.textContent = `${n} student${n === 1 ? '' : 's'} at ${state.school}${levelSuffix}`;
 
     if (U.isSuppressed(n)) {
-      noSchoolMsg.style.display = 'none';
       suppressedMsg.style.display = '';
       content.style.display = 'none';
       document.getElementById('suppressed-badge').textContent = `${state.school}${levelSuffix}: n=${n}, suppressed`;
       return;
     }
 
-    noSchoolMsg.style.display = 'none';
     suppressedMsg.style.display = 'none';
     content.style.display = '';
 

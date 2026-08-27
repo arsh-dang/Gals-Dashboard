@@ -25,32 +25,36 @@
     </p>
   </header>
 
-  <form class="filter-bar" id="filter-bar">
-    <div class="filter-field">
-      <label for="filter-region">Region</label>
-      <select id="filter-region">
-        <option value="">All regions</option>
-      </select>
-    </div>
-    <div class="filter-field">
-      <label for="filter-school">Your school</label>
-      <select id="filter-school">
-        <option value="">Choose your school…</option>
-      </select>
-    </div>
-    <div class="filter-field">
-      <label for="filter-school-level">School year</label>
-      <select id="filter-school-level" disabled>
-        <option value="">All years at this school</option>
-      </select>
-    </div>
-    <button type="button" class="filter-reset" id="filter-reset">Reset filters</button>
-    <span class="filter-status" id="filter-status" role="status"></span>
-  </form>
-
-  <div id="no-school-message" class="card" style="text-align:center; color: var(--text-secondary);">
-    Choose your school above to see your cohort's results.
-  </div>
+  <section class="teacher-gate" id="teacher-gate" aria-labelledby="gate-title">
+    <span class="teacher-gate__badge">Teacher access</span>
+    <h2 class="teacher-gate__title" id="gate-title">Sign in to your cohort</h2>
+    <p class="teacher-gate__subtitle" id="gate-subtitle">
+      Select your region and school to view your students' results. This identifies your cohort — it isn't a
+      secured login, since there's no real account behind this mock dataset.
+    </p>
+    <form class="teacher-gate__form" id="filter-bar">
+      <div class="filter-field">
+        <label for="filter-region">Region</label>
+        <select id="filter-region">
+          <option value="">All regions</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label for="filter-school">Your school</label>
+        <select id="filter-school">
+          <option value="">Choose your school…</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label for="filter-school-level">School year</label>
+        <select id="filter-school-level" disabled>
+          <option value="">All years at this school</option>
+        </select>
+      </div>
+      <button type="button" class="filter-reset" id="filter-reset">Switch school</button>
+      <span class="filter-status" id="filter-status" role="status"></span>
+    </form>
+  </section>
 
   <div id="suppressed-message" class="card" style="display:none;">
     <span class="badge-suppressed" id="suppressed-badge"></span>

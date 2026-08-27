@@ -28,33 +28,67 @@
 
 .banner-mock strong { color: var(--status-warn); }
 
-/* --- Site nav (provider / teacher switch) ---------------------------------- */
+/* --- Site nav (provider / teacher / open-text switch) ----------------------- */
 .site-nav {
   display: flex;
-  gap: var(--space-2);
+  gap: var(--space-1);
   margin-bottom: var(--space-5);
+  padding-bottom: var(--space-2);
   border-bottom: 1px solid var(--border-subtle);
 }
 
 .site-nav a {
-  display: inline-block;
-  padding: var(--space-3) var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
   font-size: var(--text-small);
   font-weight: 600;
   color: var(--text-secondary);
   text-decoration: none;
-  border-bottom: 3px solid transparent;
-  margin-bottom: -1px;
+  border-radius: 999px;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .site-nav a:hover {
   color: var(--brand-primary);
+  background: var(--surface-sunken);
 }
 
 .site-nav a[aria-current='page'] {
-  color: var(--brand-primary);
-  border-bottom-color: var(--brand-primary);
+  color: var(--text-inverse);
+  background: var(--brand-primary);
 }
+
+.site-nav a[aria-current='page']:hover {
+  background: var(--brand-primary-light);
+  color: var(--text-inverse);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav a { transition: none; }
+}
+
+/* --- KPI snapshot row -------------------------------------------------------- */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.kpi-tile {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-4) var(--space-5);
+  border-top: 3px solid var(--brand-accent);
+}
+
+.kpi-tile:nth-child(2) { border-top-color: var(--series-3); }
+.kpi-tile:nth-child(3) { border-top-color: var(--series-4); }
+.kpi-tile:nth-child(4) { border-top-color: var(--series-5); }
 
 /* --- Filter bar ------------------------------------------------------------ */
 .filter-bar {
@@ -93,7 +127,11 @@
   background: var(--surface-page);
   color: var(--text-primary);
   min-width: 12rem;
+  transition: border-color 0.15s ease;
 }
+
+.filter-field select:hover { border-color: var(--brand-primary-light); }
+.filter-field select:focus-visible { border-color: var(--brand-primary); }
 
 .filter-reset {
   font: inherit;
@@ -105,8 +143,13 @@
   border-radius: var(--radius-sm);
   padding: var(--space-2) var(--space-4);
   cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
-.filter-reset:hover { background: var(--surface-sunken); }
+.filter-reset:hover { background: var(--surface-sunken); border-color: var(--brand-primary-light); }
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-field select, .filter-reset { transition: none; }
+}
 
 .filter-status {
   font-size: var(--text-small);
@@ -363,6 +406,100 @@ svg text { font-family: var(--font-body); fill: var(--text-primary); }
 .facet-grid__n {
   color: var(--text-muted);
   font-weight: 400;
+}
+
+/* --- Teacher sign-in gate ---------------------------------------------------
+   Two states of the same form: a landing card when no school is picked yet
+   (.teacher-gate on its own), and a compact "signed in as X" strip once one
+   is (.teacher-gate--active). This is an identification step, not
+   authentication - there's no password and no account behind it, since the
+   dataset has no real credentials to check. Say so in the copy, not just here. */
+.teacher-gate {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised);
+  padding: var(--space-7) var(--space-6);
+  margin-bottom: var(--space-6);
+  max-width: 34rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  transition: max-width 0.2s ease, padding 0.2s ease;
+}
+
+.teacher-gate__title {
+  font-size: var(--text-h1);
+  color: var(--brand-primary);
+  margin-bottom: var(--space-2);
+}
+
+.teacher-gate__subtitle {
+  color: var(--text-secondary);
+  font-size: var(--text-small);
+  max-width: 40ch;
+  margin: 0 auto var(--space-5);
+}
+
+.teacher-gate__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+.teacher-gate__form .filter-field { text-align: left; }
+.teacher-gate__form .filter-field select { min-width: 0; width: 100%; padding: var(--space-3); font-size: var(--text-body); }
+
+.teacher-gate__form .filter-reset,
+.teacher-gate__form .filter-status { display: none; }
+
+/* Compact "signed in" state: shrink to a horizontal strip, reuse the same
+   filter-bar look as the provider page so returning here doesn't feel like
+   a different app. */
+.teacher-gate--active {
+  max-width: none;
+  text-align: left;
+  padding: var(--space-4) var(--space-5);
+  box-shadow: var(--shadow-card);
+}
+
+.teacher-gate--active .teacher-gate__title {
+  font-size: var(--text-h3);
+  margin-bottom: 0;
+}
+
+.teacher-gate--active .teacher-gate__subtitle {
+  margin: var(--space-1) 0 var(--space-4);
+  max-width: none;
+}
+
+.teacher-gate--active .teacher-gate__form {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+.teacher-gate--active .teacher-gate__form .filter-field select { width: auto; padding: var(--space-2) var(--space-3); font-size: var(--text-small); }
+
+.teacher-gate--active .teacher-gate__form .filter-reset,
+.teacher-gate--active .teacher-gate__form .filter-status { display: block; }
+
+.teacher-gate__badge {
+  display: inline-block;
+  font-size: var(--text-caption);
+  color: var(--text-muted);
+  background: var(--surface-sunken);
+  border-radius: var(--radius-sm);
+  padding: 2px var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.teacher-gate--active .teacher-gate__badge { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .teacher-gate { transition: none; }
 }
 
 /* --- Data notes / footer --------------------------------------------------- */

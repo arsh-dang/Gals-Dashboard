@@ -16,6 +16,26 @@
     battery: 'skills',
   };
 
+  // --- KPI snapshot: whole-sample orientation, independent of the filter
+  // bar below (which already shows a filtered count in filter-status) - so
+  // this doesn't need to re-render on every filter change.
+  (function renderKpiRow() {
+    const activityCount = meta.activityTypes.filter((a) => !meta.excludedActivityTypes.includes(a.key)).length;
+    const tiles = [
+      { value: meta.totalRespondents, label: 'Respondents' },
+      { value: meta.regions.length, label: 'Regions' },
+      { value: activityCount, label: 'Activity types' },
+      { value: meta.schools.length, label: 'Schools represented' },
+    ];
+    const row = document.getElementById('kpi-row');
+    tiles.forEach((t) => {
+      const tile = document.createElement('div');
+      tile.className = 'kpi-tile';
+      tile.innerHTML = `<div class="kpi__value">${t.value}</div><div class="kpi__label">${t.label}</div>`;
+      row.appendChild(tile);
+    });
+  })();
+
   // --- Filter bar setup -----------------------------------------------
   const regionSelect = document.getElementById('filter-region');
   meta.regions.forEach((r) => {
