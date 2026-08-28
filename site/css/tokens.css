@@ -2,112 +2,135 @@
    SIT Impact Tracker - design tokens
    ==========================================================================
 
-   IMPORTANT: the colour values below are a WORKING PLACEHOLDER, not Deakin's
-   official palette. Before this goes in front of anyone outside the project,
-   replace them with the real values from:
+   Colours sourced from the real Deakin Dashboard Style Guide (Nov 2025),
+   data/Deakin Dashboard Style Guide (NOV) 2025.pdf - not a placeholder.
+   Every hex below is a value the guide actually lists (a Primary colour,
+   an Indicator colour, a Highlight text colour, or a step in one of the
+   four Gradient ramps) - none invented. The one deliberate deviation: the
+   guide's Likert-adjacent "Indicator" red/green pair (#DD0328 / #379F48)
+   is NOT used for the diverging outcomes chart, since red/green is the
+   one pairing the sit-dashboard skill rules out for colour-blind safety.
+   The diverging chart instead uses the guide's teal (positive) and orange
+   (negative) values, which are equally on-brand and colour-blind safer.
 
-     1. Deakin staff wiki > Colour palette
-        https://wiki.deakin.edu.au/pages/viewpage.action?spaceKey=staff&title=Colour+palette
-     2. The Education Analytics dashboard style guide (Stephen Marshall's team
-        offered to share this - it exists specifically to keep dashboards
-        consistent across Deakin tools)
-
-   Swap the values in :root and everything downstream updates. Do not hardcode
-   colours anywhere else in the project.
-
-   Typography: Deakin brand guidance specifies Open Sans for web.
+   Typography: the guide specifies "Tableau Book" for Tableau workbooks
+   specifically; Deakin's separate web guidance (see
+   .claude/skills/sit-dashboard/SKILL.md) specifies Open Sans for the web,
+   which is what this is. Kept Open Sans, adopted the guide's size/weight
+   hierarchy (title/subtitle/container-title/KPI) instead.
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
 :root {
-  /* --- Brand ------------------------------------------------------------ */
-  --brand-primary:        #002B5C;   /* PLACEHOLDER - deep navy */
-  --brand-primary-light:  #1B4B7F;
-  --brand-primary-dark:   #001B3A;
-  --brand-accent:         #00A9CE;   /* PLACEHOLDER - cyan accent */
+  /* --- Brand -------------------------------------------------------------
+     Deakin Highlight Turquoise, matching the guide's own banner colour. */
+  --brand-primary:        #0B7161;
+  --brand-primary-light:  #1F8475;
+  --brand-primary-dark:   #155B50;
+  --brand-accent:         #007D9B;   /* Primary 3 */
 
-  /* --- Surfaces --------------------------------------------------------- */
-  --surface-page:         #F7F9FB;
+  /* --- Surfaces -----------------------------------------------------------
+     #E7E6EA is the guide's explicit value for "footer, filter pane,
+     container header panes and container borders". */
+  --surface-page:         #FFFFFF;
   --surface-card:         #FFFFFF;
-  --surface-sunken:       #EEF2F6;
-  --border-subtle:        #DCE4EC;
-  --border-strong:        #B8C6D4;
+  --surface-sunken:       #E7E6EA;
+  --border-subtle:        #E7E6EA;
+  --border-strong:        #C4C4C4;   /* Grey gradient, step 4 */
 
-  /* --- Text ------------------------------------------------------------- */
-  --text-primary:         #16222E;
-  --text-secondary:       #56677A;
-  --text-muted:           #8496A8;
+  /* --- Text -----------------------------------------------------------
+     Guide: "Title black #000000", "Subtitle dark grey #4A4A4A". */
+  --text-primary:         #000000;
+  --text-secondary:       #4A4A4A;
+  --text-muted:           #737373;   /* Grey gradient, step 2 */
   --text-inverse:         #FFFFFF;
 
   /* --- Categorical series ----------------------------------------------
-     For distinguishing activity types. Ordered so the first few are the most
-     distinguishable, since most charts use 3-5 series. Checked for
-     colour-blind safety - avoid adding red/green pairs. */
-  --series-1:  #005A8C;
-  --series-2:  #00A9CE;
-  --series-3:  #6B4E9E;
-  --series-4:  #D4763A;
-  --series-5:  #2E8B7A;
-  --series-6:  #B5527F;
-  --series-7:  #7A8C99;
-  --series-8:  #3D5A73;
+     The guide's 7 Primary colours in order, extended to 8 with two
+     Highlight colours (deeper variants of primaries 1 and 4) so there's
+     a distinct 8th series for GALS without inventing a new hue. Primary 7
+     (#E1E1E1) is reserved as a surface/divider tone, not a chart colour -
+     too low-contrast to read as a filled mark against a white card. */
+  --series-1:  #58BCAF;   /* Primary 1 - teal */
+  --series-2:  #C74298;   /* Primary 2 - magenta */
+  --series-3:  #007D9B;   /* Primary 3 - blue */
+  --series-4:  #FF9300;   /* Primary 4 - orange */
+  --series-5:  #FFD923;   /* Primary 5 - yellow */
+  --series-6:  #363635;   /* Primary 6 - near-black, used for GALS */
+  --series-7:  #006D88;   /* Highlight Teal - deep blue-teal */
+  --series-8:  #AD4206;   /* Highlight Orange - deep burnt orange */
 
-  /* --- Sequential ramp (for a single measure, low to high) -------------- */
-  --ramp-1: #E3EEF5;
-  --ramp-2: #B8D4E6;
-  --ramp-3: #7FB0CF;
-  --ramp-4: #4A8AB4;
-  --ramp-5: #005A8C;
+  /* --- Sequential ramp (for a single measure, low to high) --------------
+     Deakin's teal Gradient ramp, lightest to darkest. */
+  --ramp-1: #CEF3EE;
+  --ramp-2: #65D8CA;
+  --ramp-3: #58BCAF;
+  --ramp-4: #1F8475;
+  --ramp-5: #0B7161;
 
   /* --- Diverging ramp (for Likert distributions) ------------------------
-     Positive (Yes a lot) through to negative (No). "I do not know" uses the
-     neutral grey and must be visually distinct from the scale itself, since
-     it is a non-answer rather than a middling answer. */
-  --likert-pos-strong:  #1B7A5A;
-  --likert-pos-weak:    #7FBFA3;
-  --likert-neg-weak:    #E39B72;
-  --likert-neg-strong:  #C05A2E;
-  --likert-unknown:     #C4CDD6;
+     Positive (Yes) through to negative (No), using the guide's teal and
+     orange values - not the red/green Indicator pair, which would fail
+     the colour-blind-safety rule for this specific chart. "I do not know"
+     uses a neutral grey and must read as visually distinct from the scale
+     itself, since it is a non-answer rather than a middling one. */
+  --likert-pos-strong:  #0B7161;   /* Highlight Turquoise */
+  --likert-pos-weak:    #58BCAF;   /* Primary 1 */
+  --likert-neg-weak:    #FF9300;   /* Primary 4 */
+  --likert-neg-strong:  #AD4206;   /* Highlight Orange */
+  --likert-unknown:     #C4C4C4;   /* Grey gradient, step 4 */
 
-  /* --- Semantic --------------------------------------------------------- */
-  --status-info:     #005A8C;
-  --status-warn:     #B8791F;
-  --status-caution:  #C05A2E;
+  /* --- Semantic ----------------------------------------------------------
+     Deakin's three Indicator colours, used for status rather than data. */
+  --status-info:     #007D9B;   /* Primary 3 */
+  --status-warn:     #F76919;   /* Indicator ">" */
+  --status-caution:  #DD0328;   /* Indicator "-" */
+  --status-positive: #379F48;   /* Indicator "+" */
 
-  /* --- Typography ------------------------------------------------------- */
+  /* --- Typography -----------------------------------------------------
+     Sizes follow the guide's hierarchy table (Dashboard Title 20pt,
+     Subtitle 10pt, Container Title 12pt, Container Subtitle 8pt, KPI
+     Values 24pt, KPI Subtext/Visualisation Values 9pt, Chart Elements
+     8pt), mapped onto a 16px root rather than converted pt-for-px. */
   --font-body: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-  --text-display:  2.25rem;
-  --text-h1:       1.75rem;
-  --text-h2:       1.375rem;
-  --text-h3:       1.125rem;
+  --text-display:  1.75rem;   /* KPI values, 24pt-equivalent */
+  --text-h1:       1.5rem;    /* Dashboard title, 20pt-equivalent */
+  --text-h2:       1.25rem;
+  --text-h3:       1rem;      /* Container title, 12pt-equivalent */
   --text-body:     0.9375rem;
-  --text-small:    0.8125rem;
-  --text-caption:  0.75rem;
+  --text-small:    0.8125rem; /* Dashboard subtitle, 10pt-equivalent */
+  --text-caption:  0.6875rem; /* Container subtitle / chart elements, 8-9pt */
 
   --leading-tight: 1.2;
   --leading-body:  1.55;
 
-  /* --- Spacing (4px base) ----------------------------------------------- */
+  /* --- Spacing (4px base) -------------------------------------------------
+     Guide: "10px between items... stick to a min of 8px and max 20px."
+     --gap-dashboard is that inter-container gap; the --space-* scale
+     below still covers padding and type spacing, which the rule doesn't
+     govern. */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 2.5rem;
+  --gap-dashboard: 1.25rem;   /* 20px - the guide's stated max */
 
   /* --- Shape ------------------------------------------------------------ */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
 
-  --shadow-card:  0 1px 3px rgba(22, 34, 46, 0.08);
-  --shadow-raised: 0 4px 12px rgba(22, 34, 46, 0.10);
+  --shadow-card:  0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-raised: 0 4px 12px rgba(0, 0, 0, 0.10);
 
-  /* --- Layout ----------------------------------------------------------- */
-  --max-width: 1440px;
+  /* --- Layout -----------------------------------------------------------
+     Guide: "Total dashboard size is recommended to be 1400 x 800." */
+  --max-width: 1400px;
   --chart-min-height: 320px;
 }
 
@@ -133,12 +156,25 @@ h1 { font-size: var(--text-h1); }
 h2 { font-size: var(--text-h2); }
 h3 { font-size: var(--text-h3); font-weight: 600; }
 
-/* --- Card ---------------------------------------------------------------- */
+/* --- Card -----------------------------------------------------------------
+   Two-tone container per the guide's "container header pane" pattern: a
+   light grey header strip (title/subtitle) over a white body (the chart) -
+   not a single flat white box. */
 .card {
   background: var(--surface-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.card__header {
+  background: var(--surface-sunken);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.card__body {
   padding: var(--space-5);
 }
 
@@ -150,9 +186,9 @@ h3 { font-size: var(--text-h3); font-weight: 600; }
 
 /* The question the chart answers, in plain language. Every chart gets one. */
 .card__subtitle {
-  font-size: var(--text-small);
+  font-size: var(--text-caption);
   color: var(--text-secondary);
-  margin: 0 0 var(--space-4);
+  margin: 0;
 }
 
 /* How to read the chart, where the encoding is not self-evident. */
@@ -164,7 +200,10 @@ h3 { font-size: var(--text-h3); font-weight: 600; }
   border-top: 1px solid var(--border-subtle);
 }
 
-/* --- KPI ----------------------------------------------------------------- */
+/* --- KPI --------------------------------------------------------------
+   Guide: KPI number is the largest, boldest element in the tile; keep the
+   colour consistent across every KPI rather than a different accent per
+   tile, so the row reads as one family, not a rainbow. */
 .kpi__value {
   font-size: var(--text-display);
   font-weight: 700;
@@ -173,7 +212,7 @@ h3 { font-size: var(--text-h3); font-weight: 600; }
   font-variant-numeric: tabular-nums;
 }
 .kpi__label {
-  font-size: var(--text-small);
+  font-size: var(--text-caption);
   color: var(--text-secondary);
   margin-top: var(--space-2);
 }

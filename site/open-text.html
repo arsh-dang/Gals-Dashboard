@@ -9,41 +9,61 @@
 <body>
 <div class="page">
 
-  <header class="page-header">
-    <div class="banner-mock" role="note">
-      <strong>Mock data.</strong> Every number on this page is synthetic test data generated to build this dashboard.
-      Real survey collection is pending Deakin ethics approval — nothing here describes an actual respondent.
+  <div class="banner-mock" role="note">
+    <strong>Mock data.</strong> Every number on this page is synthetic test data generated to build this dashboard.
+    Real survey collection is pending Deakin ethics approval — nothing here describes an actual respondent.
+  </div>
+
+  <header class="deakin-banner">
+    <div class="deakin-banner__brand">
+      <!-- placeholder logo mark; swap for the official Deakin University logo asset -->
+      <span class="deakin-banner__logo" aria-hidden="true">SIT</span>
+      <div>
+        <p class="deakin-banner__title">STEM Impact Tracker</p>
+        <p class="deakin-banner__subtitle">Open-text responses — filterable list, not charted</p>
+      </div>
     </div>
-    <h1>STEM Impact Tracker</h1>
-    <nav class="site-nav" aria-label="Dashboard view">
-      <a href="index.html">Provider view</a>
-      <a href="teacher.html">Teacher view</a>
-      <a href="open-text.html" aria-current="page">Open-text responses</a>
-    </nav>
-    <p class="page-header__subtitle">
-      Free-text survey answers, shown as a filterable list rather than charted — they aren't structured data. Region
-      and activity are shown as context, not as a claimed link to a specific programme.
-    </p>
+    <div class="deakin-banner__actions">
+      <a href="index.html" class="deakin-banner__icon" title="Provider view (home)" aria-label="Provider view (home)">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      </a>
+      <a href="#data-notes" class="deakin-banner__icon" title="About this dashboard" aria-label="About this dashboard">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none"/></svg>
+      </a>
+    </div>
   </header>
 
+  <nav class="site-nav" aria-label="Dashboard view">
+    <a href="index.html">Provider view</a>
+    <a href="teacher.html">Teacher view</a>
+    <a href="open-text.html" aria-current="page">Open-text responses</a>
+  </nav>
+
+  <p class="page-lede">
+    Free-text survey answers, shown as a filterable list rather than charted — they aren't structured data. Region
+    and activity are shown as context, not as a claimed link to a specific programme.
+  </p>
+
   <div id="unavailable-message" class="card" style="display:none;">
-    <h3 class="card__title">No open-text responses in this data drop</h3>
-    <p>
-      <code>open_text.csv</code> is not present in <code>./data/</code>, and the script that would produce it from
-      the raw Qualtrics export (<code>reshape_v3.py</code>, referenced in the data contract) isn't in this drop
-      either — so nothing has been invented to fill the gap.
-    </p>
-    <p>
-      This page is otherwise complete: once <code>open_text.csv</code> is added (columns
-      <code>ResponseId,question,source_column,response</code>, per the data contract) and the build is re-run
-      (<code>node build/build.js</code>), it will render here automatically — filterable by question, region and
-      activity, with a theme column ready for coding.
-    </p>
-    <p>
-      Theme coding slots in the same way: add <code>open_text_themes.csv</code> with columns
-      <code>ResponseId,question,theme</code>, keyed the same way as the responses themselves, and every row's theme
-      column populates on the next build. Until that file exists, the column is present and shows "not yet coded".
-    </p>
+    <div class="card__body">
+      <h3 class="card__title">No open-text responses in this data drop</h3>
+      <p>
+        <code>open_text.csv</code> is not present in <code>./data/</code>, and the script that would produce it from
+        the raw Qualtrics export (<code>reshape_v3.py</code>, referenced in the data contract) isn't in this drop
+        either — so nothing has been invented to fill the gap.
+      </p>
+      <p>
+        This page is otherwise complete: once <code>open_text.csv</code> is added (columns
+        <code>ResponseId,question,source_column,response</code>, per the data contract) and the build is re-run
+        (<code>node build/build.js</code>), it will render here automatically — filterable by question, region and
+        activity, with a theme column ready for coding.
+      </p>
+      <p>
+        Theme coding slots in the same way: add <code>open_text_themes.csv</code> with columns
+        <code>ResponseId,question,theme</code>, keyed the same way as the responses themselves, and every row's theme
+        column populates on the next build. Until that file exists, the column is present and shows "not yet coded".
+      </p>
+    </div>
   </div>
 
   <main id="open-text-content" style="display:none;">
@@ -72,22 +92,32 @@
     </form>
 
     <div class="card">
-      <h3 class="card__title">Responses</h3>
-      <p class="card__subtitle">
-        "Activities" lists every activity this respondent has outcome ratings for — the survey doesn't record which
-        activity a free-text answer was specifically about.
-      </p>
-      <div id="open-text-list"></div>
+      <div class="card__header">
+        <h3 class="card__title">Responses</h3>
+        <p class="card__subtitle">
+          "Activities" lists every activity this respondent has outcome ratings for — the survey doesn't record which
+          activity a free-text answer was specifically about.
+        </p>
+      </div>
+      <div class="card__body">
+        <div id="open-text-list"></div>
+      </div>
     </div>
 
   </main>
 
   <footer class="page-footer">
-    <div class="data-notes card">
-      <h3 class="card__title">Data notes</h3>
-      <ul>
-        <li>Colours are drawn from a placeholder palette (<code>site/css/tokens.css</code>) pending Deakin's official brand palette.</li>
-      </ul>
+    <div class="page-footer__bar">
+      <span>Contact: <a href="mailto:stem-impact-tracker@deakin.edu.au">stem-impact-tracker@deakin.edu.au</a> (placeholder)</span>
+      <span id="data-refreshed"></span>
+    </div>
+    <div class="data-notes card" id="data-notes">
+      <div class="card__header"><h3 class="card__title">Data notes</h3></div>
+      <div class="card__body">
+        <ul>
+          <li>Colours follow the real Deakin Dashboard Style Guide (Nov 2025) — see <code>site/css/tokens.css</code> for sourcing notes.</li>
+        </ul>
+      </div>
     </div>
   </footer>
 

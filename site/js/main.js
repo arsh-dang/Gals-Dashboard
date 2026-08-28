@@ -16,6 +16,8 @@
     battery: 'skills',
   };
 
+  U.renderFooterDate('data-refreshed');
+
   // --- KPI snapshot: whole-sample orientation, independent of the filter
   // bar below (which already shows a filtered count in filter-status) - so
   // this doesn't need to re-render on every filter change.

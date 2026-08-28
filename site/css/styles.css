@@ -7,32 +7,110 @@
   padding: var(--space-6) var(--space-5) var(--space-7);
 }
 
-.page-header {
-  margin-bottom: var(--space-5);
-}
-
-.page-header h1 {
-  font-size: var(--text-display);
-  color: var(--brand-primary);
-}
-
-.page-header__subtitle {
-  color: var(--text-secondary);
-  font-size: var(--text-body);
-  max-width: 62ch;
-}
-
 .banner-mock {
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--gap-dashboard);
 }
 
 .banner-mock strong { color: var(--status-warn); }
+
+.page-lede {
+  color: var(--text-secondary);
+  font-size: var(--text-body);
+  max-width: 68ch;
+  margin: 0 0 var(--gap-dashboard);
+}
+
+/* --- Deakin banner --------------------------------------------------------
+   Per the style guide: "banner should contain the Deakin logo and the
+   dashboard title on the left, and the home and information icons on the
+   right." A solid brand-colour bar, not a card. */
+.deakin-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  background: var(--brand-primary);
+  color: var(--text-inverse);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-4);
+}
+
+.deakin-banner__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.deakin-banner__logo {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: var(--text-inverse);
+  color: var(--brand-primary);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.deakin-banner__title {
+  margin: 0;
+  font-size: var(--text-h1);
+  font-weight: 700;
+  line-height: var(--leading-tight);
+}
+
+.deakin-banner__subtitle {
+  margin: 2px 0 0;
+  font-size: var(--text-small);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.deakin-banner__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+
+.deakin-banner__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  color: var(--text-inverse);
+  background: rgba(255, 255, 255, 0.15);
+  transition: background-color 0.15s ease;
+}
+
+.deakin-banner__icon:hover { background: rgba(255, 255, 255, 0.28); }
+
+.deakin-banner__icon:focus-visible {
+  outline: 2px solid var(--text-inverse);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deakin-banner__icon { transition: none; }
+}
+
+@media (max-width: 560px) {
+  .deakin-banner { flex-wrap: wrap; }
+  .deakin-banner__subtitle { display: none; }
+}
 
 /* --- Site nav (provider / teacher / open-text switch) ----------------------- */
 .site-nav {
   display: flex;
   gap: var(--space-1);
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--gap-dashboard);
   padding-bottom: var(--space-2);
   border-bottom: 1px solid var(--border-subtle);
 }
@@ -69,26 +147,22 @@
   .site-nav a { transition: none; }
 }
 
-/* --- KPI snapshot row -------------------------------------------------------- */
+/* --- KPI snapshot row --------------------------------------------------
+   Guide: KPI values should be the largest, boldest element, kept simple
+   and consistent across tiles - one accent colour, not one per tile. */
 .kpi-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  gap: var(--gap-dashboard);
+  margin-bottom: var(--gap-dashboard);
 }
 
 .kpi-tile {
-  background: var(--surface-card);
-  border: 1px solid var(--border-subtle);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
   padding: var(--space-4) var(--space-5);
-  border-top: 3px solid var(--brand-accent);
 }
-
-.kpi-tile:nth-child(2) { border-top-color: var(--series-3); }
-.kpi-tile:nth-child(3) { border-top-color: var(--series-4); }
-.kpi-tile:nth-child(4) { border-top-color: var(--series-5); }
 
 /* --- Filter bar ------------------------------------------------------------ */
 .filter-bar {
@@ -96,12 +170,11 @@
   flex-wrap: wrap;
   gap: var(--space-4);
   align-items: flex-end;
-  background: var(--surface-card);
-  border: 1px solid var(--border-subtle);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-md);
   padding: var(--space-4) var(--space-5);
-  margin-bottom: var(--space-6);
-  box-shadow: var(--shadow-card);
+  margin-bottom: var(--gap-dashboard);
 }
 
 .filter-field {
@@ -162,12 +235,12 @@
 .view-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-6);
+  gap: var(--gap-dashboard);
 }
 
 .view-section {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .view-section__heading {
@@ -200,7 +273,7 @@
 .cards-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-  gap: var(--space-5);
+  gap: var(--gap-dashboard);
   align-items: start;
 }
 
@@ -524,11 +597,26 @@ svg text { font-family: var(--font-body); fill: var(--text-primary); }
 
 .page-footer {
   margin-top: var(--space-7);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--border-subtle);
-  color: var(--text-muted);
+}
+
+/* Guide: "The footer should note the contact details for the team
+   responsible for the dashboard. On the far right, the date of the data
+   snapshot." */
+.page-footer__bar {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  color: var(--text-secondary);
   font-size: var(--text-caption);
 }
+
+.page-footer__bar a { color: var(--brand-primary); }
 
 @media (max-width: 720px) {
   .cards-row { grid-template-columns: 1fr; }

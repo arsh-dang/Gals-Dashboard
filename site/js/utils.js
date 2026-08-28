@@ -219,6 +219,15 @@
     container.appendChild(details);
   }
 
+  // Guide: footer should carry "the date the data snapshot" was taken.
+  // meta.generatedAt is a build-time ISO timestamp; a plain date slice is
+  // enough here, no timezone-aware formatting needed for a coarse label.
+  function renderFooterDate(elementId) {
+    const el = document.getElementById(elementId);
+    if (!el || !window.SIT_DATA.meta.generatedAt) return;
+    el.textContent = `Data snapshot: ${window.SIT_DATA.meta.generatedAt.slice(0, 10)}`;
+  }
+
   window.SIT = window.SIT || {};
   window.SIT.utils = {
     cssVar,
@@ -236,6 +245,7 @@
     tooltip,
     onResize,
     renderDataTable,
+    renderFooterDate,
     SMALL_CELL_THRESHOLD,
   };
 })();

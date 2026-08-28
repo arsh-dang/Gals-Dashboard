@@ -4,6 +4,8 @@
   const U = window.SIT.utils;
   const { openText, meta } = window.SIT_DATA;
 
+  U.renderFooterDate('data-refreshed');
+
   if (!meta.openText.available) {
     document.getElementById('unavailable-message').style.display = '';
     return;

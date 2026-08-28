@@ -9,21 +9,35 @@
 <body>
 <div class="page">
 
-  <header class="page-header">
-    <div class="banner-mock" role="note">
-      <strong>Mock data.</strong> Every number on this page is synthetic test data generated to build this dashboard.
-      Real survey collection is pending Deakin ethics approval — nothing here describes an actual student or school.
+  <div class="banner-mock" role="note">
+    <strong>Mock data.</strong> Every number on this page is synthetic test data generated to build this dashboard.
+    Real survey collection is pending Deakin ethics approval — nothing here describes an actual student or school.
+  </div>
+
+  <header class="deakin-banner">
+    <div class="deakin-banner__brand">
+      <!-- placeholder logo mark; swap for the official Deakin University logo asset -->
+      <span class="deakin-banner__logo" aria-hidden="true">SIT</span>
+      <div>
+        <p class="deakin-banner__title">STEM Impact Tracker</p>
+        <p class="deakin-banner__subtitle">Teacher view — your own school's cohort, in more detail</p>
+      </div>
     </div>
-    <h1>STEM Impact Tracker</h1>
-    <nav class="site-nav" aria-label="Dashboard view">
-      <a href="index.html">Provider view</a>
-      <a href="teacher.html" aria-current="page">Teacher view</a>
-      <a href="open-text.html">Open-text responses</a>
-    </nav>
-    <p class="page-header__subtitle">
-      Teacher view — your own school's cohort, in more detail than the programme-level report.
-    </p>
+    <div class="deakin-banner__actions">
+      <a href="index.html" class="deakin-banner__icon" title="Provider view (home)" aria-label="Provider view (home)">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      </a>
+      <a href="#data-notes" class="deakin-banner__icon" title="About this dashboard" aria-label="About this dashboard">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none"/></svg>
+      </a>
+    </div>
   </header>
+
+  <nav class="site-nav" aria-label="Dashboard view">
+    <a href="index.html">Provider view</a>
+    <a href="teacher.html" aria-current="page">Teacher view</a>
+    <a href="open-text.html">Open-text responses</a>
+  </nav>
 
   <section class="teacher-gate" id="teacher-gate" aria-labelledby="gate-title">
     <span class="teacher-gate__badge">Teacher access</span>
@@ -57,12 +71,14 @@
   </section>
 
   <div id="suppressed-message" class="card" style="display:none;">
-    <span class="badge-suppressed" id="suppressed-badge"></span>
-    <p style="margin-top: var(--space-3);">
-      Fewer than <span id="threshold-label-suppressed"></span> respondents are recorded at this school in the current
-      data. To avoid identifying individual students, no breakdown is shown below that threshold — this matches the
-      suppression rule used throughout the provider dashboard.
-    </p>
+    <div class="card__body">
+      <span class="badge-suppressed" id="suppressed-badge"></span>
+      <p style="margin-top: var(--space-3);">
+        Fewer than <span id="threshold-label-suppressed"></span> respondents are recorded at this school in the current
+        data. To avoid identifying individual students, no breakdown is shown below that threshold — this matches the
+        suppression rule used throughout the provider dashboard.
+      </p>
+    </div>
   </div>
 
   <main class="view-grid" id="teacher-content" style="display:none;">
@@ -72,13 +88,17 @@
         <h2 id="heading-detail"><span class="view-number">1</span>Response detail</h2>
       </div>
       <div class="card">
-        <h3 class="card__title">What did your students actually say, per activity and outcome?</h3>
-        <p class="card__subtitle">
-          Full response distribution, not just the average — one panel per outcome statement, one bar per activity
-          your students took part in. This is the primary view here: your own cohort's actual answers, not a
-          programme-level summary.
-        </p>
-        <div id="chart-teacher-outcomes"></div>
+        <div class="card__header">
+          <h3 class="card__title">What did your students actually say, per activity and outcome?</h3>
+          <p class="card__subtitle">
+            Full response distribution, not just the average — one panel per outcome statement, one bar per activity
+            your students took part in. This is the primary view here: your own cohort's actual answers, not a
+            programme-level summary.
+          </p>
+        </div>
+        <div class="card__body">
+          <div id="chart-teacher-outcomes"></div>
+        </div>
       </div>
     </section>
 
@@ -87,13 +107,17 @@
         <h2 id="heading-snapshot"><span class="view-number">2</span>Your cohort</h2>
       </div>
       <div class="card">
-        <h3 class="card__title" id="snapshot-title">How many of your students took part in each activity?</h3>
-        <p class="card__subtitle">Respondent counts by activity type, this school only.</p>
-        <div class="chart-scroll"><div class="chart" id="chart-teacher-participation"></div></div>
-        <p class="card__note">
-          Counts under <span id="threshold-label-1"></span> are suppressed and marked the same way as the provider
-          dashboard — a small school cohort in a single activity is still identifiable.
-        </p>
+        <div class="card__header">
+          <h3 class="card__title" id="snapshot-title">How many of your students took part in each activity?</h3>
+          <p class="card__subtitle">Respondent counts by activity type, this school only.</p>
+        </div>
+        <div class="card__body">
+          <div class="chart-scroll"><div class="chart" id="chart-teacher-participation"></div></div>
+          <p class="card__note">
+            Counts under <span id="threshold-label-1"></span> are suppressed and marked the same way as the provider
+            dashboard — a small school cohort in a single activity is still identifiable.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -106,11 +130,15 @@
         </div>
       </div>
       <div class="card">
-        <h3 class="card__title" id="skills-title">What skills do your students say they built, by activity?</h3>
-        <p class="card__subtitle">
-          Multi-select — students could tick more than one, so these are frequencies, not averages.
-        </p>
-        <div id="chart-teacher-skills"></div>
+        <div class="card__header">
+          <h3 class="card__title" id="skills-title">What skills do your students say they built, by activity?</h3>
+          <p class="card__subtitle">
+            Multi-select — students could tick more than one, so these are frequencies, not averages.
+          </p>
+        </div>
+        <div class="card__body">
+          <div id="chart-teacher-skills"></div>
+        </div>
       </div>
     </section>
 
@@ -119,34 +147,42 @@
         <h2 id="heading-benchmark"><span class="view-number">4</span>For context</h2>
       </div>
       <details class="card" id="benchmark-details">
-        <summary style="cursor:pointer; font-weight:600;">How does your cohort compare to the overall programme? (optional)</summary>
-        <h3 class="card__title" style="margin-top: var(--space-4);">Is your cohort's average response typical of the overall sample?</h3>
-        <p class="card__subtitle">
-          Average score per outcome statement, your school (●) against all respondents (◆), on the survey's 1–4
-          scale. 4 = Yes a lot is the best answer; "I do not know" is excluded. This collapses across activity type —
-          use the detail above for an activity-by-activity view. Closed by default: your own cohort's detail is the
-          point of this page, not how it stacks up against the programme.
-        </p>
-        <div class="chart-scroll" id="chart-teacher-benchmark"></div>
-        <p class="card__note">
-          "×" marks an outcome statement with fewer than <span id="threshold-label-2"></span> of your students
-          answering — suppressed, not plotted. The diamond (all respondents) is shown even where your school's dot is
-          suppressed, since it draws on the full sample. The faint line through each mark is a 95% confidence
-          interval — with cohort sizes this small, treat any gap from the diamond as indicative, not conclusive.
-        </p>
+        <summary class="card__header" style="cursor:pointer;">How does your cohort compare to the overall programme? (optional)</summary>
+        <div class="card__body">
+          <h3 class="card__title">Is your cohort's average response typical of the overall sample?</h3>
+          <p class="card__subtitle">
+            Average score per outcome statement, your school (●) against all respondents (◆), on the survey's 1–4
+            scale. 4 = Yes a lot is the best answer; "I do not know" is excluded. This collapses across activity type —
+            use the detail above for an activity-by-activity view. Closed by default: your own cohort's detail is the
+            point of this page, not how it stacks up against the programme.
+          </p>
+          <div class="chart-scroll" id="chart-teacher-benchmark"></div>
+          <p class="card__note">
+            "×" marks an outcome statement with fewer than <span id="threshold-label-2"></span> of your students
+            answering — suppressed, not plotted. The diamond (all respondents) is shown even where your school's dot is
+            suppressed, since it draws on the full sample. The faint line through each mark is a 95% confidence
+            interval — with cohort sizes this small, treat any gap from the diamond as indicative, not conclusive.
+          </p>
+        </div>
       </details>
     </section>
 
   </main>
 
   <footer class="page-footer">
-    <div class="data-notes card">
-      <h3 class="card__title">Data notes</h3>
-      <ul>
-        <li>School cohorts in this mock dataset are small — most are well under the suppression threshold. Real collection may look different; this view is a first pass pending actual teacher feedback on what's useful.</li>
-        <li>Some respondents' raw <code>school</code> and <code>school_level</code> values in the source CSV contradict the data contract (populated on a Post-school row, which should be blank; the <code>school</code> value often looks like a leaked open-text answer). This recurred in the latest data drop (7 rows, up from 1 previously) - worth flagging to whoever maintains the reshape script. Both fields are treated as blank here rather than shown, per the contract's own rule, regardless of how many rows it affects.</li>
-        <li>Colours are drawn from a placeholder palette (<code>site/css/tokens.css</code>) pending Deakin's official brand palette.</li>
-      </ul>
+    <div class="page-footer__bar">
+      <span>Contact: <a href="mailto:stem-impact-tracker@deakin.edu.au">stem-impact-tracker@deakin.edu.au</a> (placeholder)</span>
+      <span id="data-refreshed"></span>
+    </div>
+    <div class="data-notes card" id="data-notes">
+      <div class="card__header"><h3 class="card__title">Data notes</h3></div>
+      <div class="card__body">
+        <ul>
+          <li>School cohorts in this mock dataset are small — most are well under the suppression threshold. Real collection may look different; this view is a first pass pending actual teacher feedback on what's useful.</li>
+          <li>Some respondents' raw <code>school</code> and <code>school_level</code> values in the source CSV contradict the data contract (populated on a Post-school row, which should be blank; the <code>school</code> value often looks like a leaked open-text answer). This recurred in the latest data drop (7 rows, up from 1 previously) - worth flagging to whoever maintains the reshape script. Both fields are treated as blank here rather than shown, per the contract's own rule, regardless of how many rows it affects.</li>
+          <li>Colours follow the real Deakin Dashboard Style Guide (Nov 2025) — see <code>site/css/tokens.css</code> for sourcing notes.</li>
+        </ul>
+      </div>
     </div>
   </footer>
 
