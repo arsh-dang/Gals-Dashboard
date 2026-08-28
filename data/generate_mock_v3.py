@@ -311,9 +311,18 @@ def build():
     r["Q1"] = loc
     is_student = random.random() < 0.84
 
-    for tag in ["Q2", "Q7"]:
-        if tag in QS:
-            r[tag] = ("2", "Female") if random.random() < 0.94 else answer(tag, arch)
+    # Decide GALS participation first - it constrains gender, since GALS is a
+    # girls' program. Roughly 55% of respondents come through GALS.
+    did_gals = random.random() < 0.55
+
+    # Q2 is gender. GALS participants are female; everyone else is a mix.
+    if did_gals:
+        r["Q2"] = ("2", "Female")
+    else:
+        r["Q2"] = pick(choices("Q2"), [0.46, 0.44, 0.05, 0.05])
+    # Q7 is "language other than English at home", not gender.
+    if "Q7" in QS:
+        r["Q7"] = pick(choices("Q7"), [0.22, 0.78])
     r["Q73"] = pick(BIRTH_YEARS)
     r["Q6"] = pick(OCCUPATIONS)
     if "Q111" in QS and random.random() < 0.72:
@@ -330,11 +339,11 @@ def build():
     if "Q8" in QS:
         r["Q8"] = answer("Q8", arch)
 
-    # activities: GALS always, plus others
+    # activities: GALS for the 55% who came through it, plus a spread of others
     all_acts = choices("Q9")
     gals = [a for a in all_acts if a[0] == "5"]
     others = [a for a in all_acts if a[0] != "5" and "please specify" not in a[1].lower()]
-    picks = gals + random.sample(others, random.randint(0, 3))
+    picks = (gals if did_gals else []) + random.sample(others, random.randint(1, 3))
     picks.sort(key=lambda p: int(p[0]))
     r["Q9"] = picks
     chosen = {p[0] for p in picks}

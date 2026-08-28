@@ -313,6 +313,17 @@ svg text { font-family: var(--font-body); fill: var(--text-primary); }
   border: 1px solid var(--border-strong);
 }
 
+/* --- Small multiples shared axis ruler ------------------------------------- */
+.small-multiples-ruler {
+  display: flex;
+  justify-content: space-between;
+  max-width: 320px;
+  margin: 0 0 var(--space-2) 150px;
+  font-size: var(--text-caption);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
 /* --- Tooltip ------------------------------------------------------------- */
 .viz-tooltip {
   position: fixed;

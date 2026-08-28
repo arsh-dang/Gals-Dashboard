@@ -100,6 +100,13 @@
   let schoolRatings = [];
   let schoolSelections = [];
 
+  // General-outcomes rows aren't tied to an activity, so they'd otherwise
+  // mix into "this school" and "all respondents" per-item averages
+  // alongside real activity-specific answers from the same students.
+  function excludeGeneral(rows) {
+    return rows.filter((r) => r.activityType !== meta.generalActivityType);
+  }
+
   function renderSkills() {
     const title = document.getElementById('skills-title');
     title.textContent = state.battery === 'skills'
@@ -162,8 +169,8 @@
     renderSkills();
 
     window.SIT.charts.teacherBenchmark.render(document.getElementById('chart-teacher-benchmark'), {
-      schoolRatings,
-      allRatings: ratings,
+      schoolRatings: excludeGeneral(schoolRatings),
+      allRatings: excludeGeneral(ratings),
       meta,
     });
   }

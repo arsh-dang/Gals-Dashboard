@@ -12,11 +12,12 @@ const OUT_DIR = path.join(__dirname, '..', 'site', 'data');
 
 const SMALL_CELL_THRESHOLD = 5;
 
-// Activity type dropped entirely: "Other" is not a real 8th program. All 134
-// of its rows come from Q107, a single generic overall-STEM-outcomes battery
-// that the reshape script bucketed under activity_type="Other". Keeping it
-// would make it look like the second-biggest program in participation charts.
-const EXCLUDED_ACTIVITY_TYPES = new Set(['Other']);
+// Q107 is a generic, non-activity-specific outcomes battery shown to
+// everyone - the reshape script now reports it under this label instead of
+// posing as an 8th "Other" activity. Still excluded from every activity
+// comparison (it isn't one), but shown separately, not dropped.
+const GENERAL_ACTIVITY_TYPE = 'General STEM outcomes (not activity-specific)';
+const EXCLUDED_ACTIVITY_TYPES = new Set([GENERAL_ACTIVITY_TYPE]);
 
 // Three outcome items exist under two wordings each. In every case, six of
 // the seven real activities use one wording and "School club or lunchtime
@@ -114,19 +115,26 @@ function buildItemWordingMap() {
 function main() {
   const respondentsRaw = readCsv('respondents.csv');
   const ratingsRaw = readCsv('activity_ratings.csv');
-  const selectionsRaw = readCsv('battery_selections.csv');
+
+  // battery_selections.csv is missing from this data drop (the reshape
+  // script that produces it needs survey_v3.qsf, which isn't present
+  // either) - degrade to an empty, clearly-flagged dataset rather than
+  // reusing the old file, whose ResponseIds belong to the previous 160-
+  // respondent mock set and would silently mismatch the new 180.
+  const SELECTIONS_PATH = path.join(DATA_DIR, 'battery_selections.csv');
+  const selectionsRaw = fs.existsSync(SELECTIONS_PATH) ? readCsv('battery_selections.csv') : [];
 
   const respondentById = new Map();
   const respondents = respondentsRaw.map((r) => {
     const isSchoolStudent = r.is_school_student === 'Yes';
     // Contract says school/school_level are blank for post-school respondents.
-    // One mock row breaks that (a stray open-text-looking value in `school`
-    // and a populated `school_level` on a Post-school row) - trust the
-    // contract's rule over the raw cell rather than surfacing the leak.
+    // One mock row broke that in the previous data drop - keep enforcing the
+    // contract's rule over the raw cell defensively.
     const rec = {
       id: r.ResponseId,
       region: r.region,
       gender: r.gender,
+      languageOtherThanEnglish: r.language_other_than_english === 'Yes',
       isSchoolStudent,
       school: isSchoolStudent ? (r.school || null) : null,
       schoolLevel: isSchoolStudent ? (r.school_level || null) : null,
@@ -139,28 +147,32 @@ function main() {
 
   const wordingMap = buildItemWordingMap();
 
-  const ratings = ratingsRaw
-    .filter((r) => !EXCLUDED_ACTIVITY_TYPES.has(r.activity_type))
-    .map((r) => {
-      const resp = respondentById.get(r.ResponseId);
-      const isDontKnow = r.is_dont_know === 'True' || r.is_dont_know === 'TRUE';
-      const code = Number(r.response_code);
-      const wording = wordingMap.get(r.item) || null;
-      return {
-        id: r.ResponseId,
-        activityType: r.activity_type,
-        item: r.item,
-        itemPairId: wording ? wording.pairId : null,
-        response: r.response,
-        code,
-        score: isDontKnow ? null : code, // excluded from every average, per contract
-        isDontKnow,
-        region: resp ? resp.region : null,
-        school: resp ? resp.school : null,
-        schoolLevel: resp ? resp.schoolLevel : null,
-        pathway: resp ? resp.pathway : null,
-      };
-    });
+  // activity_ratings.csv now ships a `score` column: 1=No..4=Yes a lot,
+  // higher is better, blank for "I do not know". Use it directly - no more
+  // 5-minus-code inversion for display. `response_code` is the raw survey
+  // value (1=Yes a lot) and is kept only for reference; never used for
+  // charts. General-outcomes rows are NOT dropped here - they ship in
+  // `ratings` like any other activity, and the frontend excludes them from
+  // every activity/region comparison via meta.excludedActivityTypes, but
+  // renders them on their own in a dedicated card.
+  const ratings = ratingsRaw.map((r) => {
+    const resp = respondentById.get(r.ResponseId);
+    const isDontKnow = r.is_dont_know === 'True' || r.is_dont_know === 'TRUE';
+    const wording = wordingMap.get(r.item) || null;
+    return {
+      id: r.ResponseId,
+      activityType: r.activity_type,
+      item: r.item,
+      itemPairId: wording ? wording.pairId : null,
+      response: r.response,
+      score: r.score === '' ? null : Number(r.score),
+      isDontKnow,
+      region: resp ? resp.region : null,
+      school: resp ? resp.school : null,
+      schoolLevel: resp ? resp.schoolLevel : null,
+      pathway: resp ? resp.pathway : null,
+    };
+  });
 
   const selections = selectionsRaw
     .filter((r) => !EXCLUDED_ACTIVITY_TYPES.has(r.activity_type))
@@ -192,10 +204,12 @@ function main() {
   const OPEN_TEXT_THEMES_PATH = path.join(DATA_DIR, 'open_text_themes.csv');
 
   const respondentActivities = new Map();
-  ratings.forEach((r) => {
-    if (!respondentActivities.has(r.id)) respondentActivities.set(r.id, new Set());
-    respondentActivities.get(r.id).add(r.activityType);
-  });
+  ratings
+    .filter((r) => !EXCLUDED_ACTIVITY_TYPES.has(r.activityType))
+    .forEach((r) => {
+      if (!respondentActivities.has(r.id)) respondentActivities.set(r.id, new Set());
+      respondentActivities.get(r.id).add(r.activityType);
+    });
 
   let openTextRaw = [];
   if (fs.existsSync(OPEN_TEXT_PATH)) {
@@ -260,7 +274,9 @@ function main() {
     .sort((a, b) => a.key.localeCompare(b.key));
 
   const itemCounts = new Map();
-  ratings.forEach((r) => itemCounts.set(r.item, (itemCounts.get(r.item) || 0) + (r.isDontKnow ? 0 : 1)));
+  ratings
+    .filter((r) => !EXCLUDED_ACTIVITY_TYPES.has(r.activityType))
+    .forEach((r) => itemCounts.set(r.item, (itemCounts.get(r.item) || 0) + (r.isDontKnow ? 0 : 1)));
   const outcomeItems = [...itemCounts.keys()].map((item) => {
     const wording = wordingMap.get(item);
     return {
@@ -280,17 +296,22 @@ function main() {
     generatedAt: new Date().toISOString(),
     totalRespondents: respondents.length,
     smallCellThreshold: SMALL_CELL_THRESHOLD,
+    generalActivityType: GENERAL_ACTIVITY_TYPE,
     excludedActivityTypes: [...EXCLUDED_ACTIVITY_TYPES],
+    batterySelectionsAvailable: selectionsRaw.length > 0,
     activityTypesWithBattery: [...activityTypesWithBattery],
     activityTypes,
     regions,
     schools,
     outcomeItems,
+    // score: 1=No, 2=Maybe, 3=Yes a little, 4=Yes a lot - higher is better,
+    // used directly with no inversion. "I do not know" isn't a scale
+    // position here; it's carried separately as isDontKnow and excluded
+    // from every average.
     scale: {
       order: [1, 2, 3, 4],
-      labels: { 1: 'Yes a lot', 2: 'Yes a little', 3: 'Maybe', 4: 'No', 5: 'I do not know' },
-      goodDirection: 'low',
-      dontKnowCode: 5,
+      labels: { 1: 'No', 2: 'Maybe', 3: 'Yes a little', 4: 'Yes a lot' },
+      goodDirection: 'high',
     },
     openText: {
       available: openText.length > 0,
@@ -314,9 +335,12 @@ function main() {
   write('meta.js', meta);
 
   console.log(`Wrote ${respondents.length} respondents, ${ratings.length} ratings, ${selections.length} selections, ${openText.length} open-text responses.`);
-  console.log(`Activity types (Other excluded): ${activityTypes.map((a) => `${a.key} (${a.respondentCount})`).join(', ')}`);
+  console.log(`Activity types (general outcomes excluded from comparison): ${activityTypes.map((a) => `${a.key} (${a.respondentCount})`).join(', ')}`);
   if (!openText.length) {
     console.log('No open_text.csv found in data/ - open-text.html will render its empty state.');
+  }
+  if (!selectionsRaw.length) {
+    console.log('No battery_selections.csv found in data/ - skills-and-identity views will render their empty state.');
   }
 }
 

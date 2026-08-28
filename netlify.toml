@@ -1,0 +1,17 @@
+[build]
+  command = "npm run build"
+  publish = "site"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# No analytics, no third-party trackers - the subject matter is children's
+# survey responses, and the dependency surface should stay minimal. Do not
+# add a Netlify Analytics snippet or any other tracking script here.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"

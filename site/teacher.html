@@ -123,7 +123,7 @@
         <h3 class="card__title" style="margin-top: var(--space-4);">Is your cohort's average response typical of the overall sample?</h3>
         <p class="card__subtitle">
           Average score per outcome statement, your school (●) against all respondents (◆), on the survey's 1–4
-          scale. 1 = Yes a lot is the best answer; "I do not know" is excluded. This collapses across activity type —
+          scale. 4 = Yes a lot is the best answer; "I do not know" is excluded. This collapses across activity type —
           use the detail above for an activity-by-activity view. Closed by default: your own cohort's detail is the
           point of this page, not how it stacks up against the programme.
         </p>
@@ -144,7 +144,7 @@
       <h3 class="card__title">Data notes</h3>
       <ul>
         <li>School cohorts in this mock dataset are small — most are well under the suppression threshold. Real collection may look different; this view is a first pass pending actual teacher feedback on what's useful.</li>
-        <li>One respondent's raw <code>school</code> and <code>school_level</code> values in the source CSV contradicted the data contract (populated on a Post-school row, which should be blank) — both are treated as blank here rather than shown, per the contract's own rule.</li>
+        <li>Some respondents' raw <code>school</code> and <code>school_level</code> values in the source CSV contradict the data contract (populated on a Post-school row, which should be blank; the <code>school</code> value often looks like a leaked open-text answer). This recurred in the latest data drop (7 rows, up from 1 previously) - worth flagging to whoever maintains the reshape script. Both fields are treated as blank here rather than shown, per the contract's own rule, regardless of how many rows it affects.</li>
         <li>Colours are drawn from a placeholder palette (<code>site/css/tokens.css</code>) pending Deakin's official brand palette.</li>
       </ul>
     </div>

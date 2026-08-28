@@ -1,0 +1,11 @@
+{
+  "name": "sit-dashboard",
+  "private": true,
+  "description": "STEM Impact Tracker - static dashboard build step",
+  "scripts": {
+    "build": "node build/build.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

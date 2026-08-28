@@ -76,6 +76,14 @@
     });
   });
 
+  // General-outcomes rows are real data, shipped like any other activity,
+  // but excluded from every activity/region comparison since they aren't
+  // tied to one. Chart modules stay generic (they just render what they're
+  // given) - this is the one place that decides what gets excluded.
+  function excludeGeneral(rows) {
+    return rows.filter((r) => r.activityType !== meta.generalActivityType);
+  }
+
   document.querySelectorAll('[data-battery]').forEach((btn) => {
     btn.addEventListener('click', () => {
       state.battery = btn.dataset.battery;
@@ -130,26 +138,37 @@
     activities.forEach((key) => {
       const item = document.createElement('span');
       item.className = 'legend__item';
-      const isGals = key === 'Girls as Leaders in STEM program';
-      item.innerHTML = `<span class="legend__swatch" style="background:${activityColorScale(key)}"></span>${key}${isGals ? ' (all respondents)' : ''}`;
+      item.innerHTML = `<span class="legend__swatch" style="background:${activityColorScale(key)}"></span>${key}`;
       container.appendChild(item);
     });
   }
 
+  const OUTCOMES_SUBTITLES = {
+    average: 'Average score per activity, on the survey\'s 1–4 scale. 4 = Yes a lot is the best answer; "I do not know" is excluded from every average.',
+    smallMultiples: 'Average score per outcome, one panel per activity. Every panel lists outcomes in the same order, so a row lines up across panels. Same 1–4 scale, 4 = Yes a lot is best.',
+    distribution: '% of respondents choosing each answer, per activity, split around the Maybe / Yes a little midpoint. "I do not know" is shown separately, not folded into the 100%.',
+  };
+
   function renderOutcomes() {
-    const rr = filteredRatings();
+    const rr = excludeGeneral(filteredRatings());
     const activities = window.SIT.charts.outcomes.activityKeysOrdered(meta);
     const chartEl = document.getElementById('chart-outcomes');
-    const subtitle = document.getElementById('outcomes-subtitle');
+    document.getElementById('outcomes-subtitle').textContent = OUTCOMES_SUBTITLES[state.outcomesMode];
+
+    const legendEl = document.getElementById('outcomes-activity-legend');
+    const noteEl = document.getElementById('outcomes-note');
+    const showLegendAndNote = state.outcomesMode !== 'distribution';
+    noteEl.style.display = showLegendAndNote ? '' : 'none';
 
     if (state.outcomesMode === 'average') {
-      subtitle.textContent = 'Average score per activity, on the survey\'s 1–4 scale. 1 = Yes a lot is the best answer; "I do not know" is excluded from every average.';
       window.SIT.charts.outcomes.renderAverage(chartEl, rr, meta, activityColorScale);
-      buildActivityLegend(document.getElementById('outcomes-activity-legend'), activities);
+      buildActivityLegend(legendEl, activities);
+    } else if (state.outcomesMode === 'smallMultiples') {
+      window.SIT.charts.outcomes.renderSmallMultiples(chartEl, rr, meta, activityColorScale);
+      legendEl.innerHTML = '';
     } else {
-      subtitle.textContent = '% of respondents choosing each answer, per activity. "I do not know" is shown separately, not folded into the 100%.';
       window.SIT.charts.outcomes.renderDistribution(chartEl, rr, meta, activityColorScale);
-      document.getElementById('outcomes-activity-legend').innerHTML = '';
+      legendEl.innerHTML = '';
     }
 
     const tableContainer = document.getElementById('table-outcomes');
@@ -160,13 +179,13 @@
         { label: 'Outcome statement', value: (d) => d.item },
         { label: 'Activity', value: (d) => d.activityType },
         { label: 'n', value: (d) => d.n, align: 'right' },
-        { label: 'Average (1=best, 4=worst)', value: (d) => (d.suppressed ? 'suppressed' : U.formatScore(d.mean)), align: 'right' },
+        { label: 'Average (4=best, 1=worst)', value: (d) => (d.suppressed ? 'suppressed' : U.formatScore(d.mean)), align: 'right' },
         {
-          label: '95% CI (raw scale)',
+          label: '95% CI',
           value: (d) => {
             if (d.suppressed) return '–';
             const ci = U.ciDisplayBounds(d);
-            return ci ? `${U.formatScore(5 - ci.high)}–${U.formatScore(5 - ci.low)}` : 'n too small';
+            return ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'n too small';
           },
           align: 'right',
         },
@@ -176,15 +195,38 @@
     });
   }
 
+  // --- General STEM outcomes: shown once, not per activity/region --------
+  function renderGeneralOutcomes() {
+    const rr = filteredRatings().filter((r) => r.activityType === meta.generalActivityType);
+    window.SIT.charts.outcomes.renderGeneral(document.getElementById('chart-general-outcomes'), rr, meta);
+    const n = U.countDistinctIds(rr);
+    document.getElementById('general-outcomes-n').textContent = `n=${n} in the current filter.`;
+  }
+
   // --- View 3: Skills and identity -----------------------------------------
   function renderSkills() {
+    const container = document.getElementById('chart-skills');
     const title = document.getElementById('skills-title');
+    const note = document.getElementById('skills-note');
+
+    if (!meta.batterySelectionsAvailable) {
+      title.textContent = 'Skills and identity data is not available in this data drop';
+      container.innerHTML = '';
+      const msg = document.createElement('p');
+      msg.className = 'card__note';
+      msg.textContent = 'battery_selections.csv is missing from the current data drop (the script that produces it needs a survey definition file that isn\'t present either). This view will populate automatically once it\'s added and the site is rebuilt.';
+      container.appendChild(msg);
+      note.style.display = 'none';
+      return;
+    }
+
+    note.style.display = '';
     title.textContent = state.battery === 'skills'
       ? 'What skills do participants say they built, by activity?'
       : 'How do participants describe themselves after taking part, by activity?';
-    window.SIT.charts.skills.render(document.getElementById('chart-skills'), {
+    window.SIT.charts.skills.render(container, {
       selections: filteredSelections(),
-      ratings: filteredRatings(),
+      ratings: excludeGeneral(filteredRatings()),
       meta,
       battery: state.battery,
       colorScale: activityColorScale,
@@ -193,7 +235,7 @@
 
   // --- View 4: Regional comparison ------------------------------------------
   function renderRegional() {
-    const rr = filteredRatings();
+    const rr = excludeGeneral(filteredRatings());
     window.SIT.charts.regional.render(document.getElementById('chart-regional'), rr, meta, regionColorScale);
 
     const legend = document.getElementById('regional-legend');
@@ -228,13 +270,13 @@
         { label: 'Outcome statement', value: (d) => d.item },
         { label: 'Region', value: (d) => d.region },
         { label: 'n', value: (d) => d.n, align: 'right' },
-        { label: 'Average (1=best, 4=worst)', value: (d) => (d.suppressed ? 'suppressed' : U.formatScore(d.mean)), align: 'right' },
+        { label: 'Average (4=best, 1=worst)', value: (d) => (d.suppressed ? 'suppressed' : U.formatScore(d.mean)), align: 'right' },
         {
-          label: '95% CI (raw scale)',
+          label: '95% CI',
           value: (d) => {
             if (d.suppressed) return '–';
             const ci = U.ciDisplayBounds(d);
-            return ci ? `${U.formatScore(5 - ci.high)}–${U.formatScore(5 - ci.low)}` : 'n too small';
+            return ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'n too small';
           },
           align: 'right',
         },
@@ -247,6 +289,7 @@
     updateFilterStatus();
     renderParticipation();
     renderOutcomes();
+    renderGeneralOutcomes();
     renderSkills();
     renderRegional();
   }

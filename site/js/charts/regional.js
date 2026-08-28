@@ -15,8 +15,7 @@
   }
 
   function displayTickLabel(displayValue) {
-    const code = 5 - displayValue;
-    return window.SIT_DATA.meta.scale.labels[code];
+    return window.SIT_DATA.meta.scale.labels[displayValue];
   }
 
   function truncate(text, max) {
@@ -96,8 +95,8 @@
         const display = U.toDisplayScore(summary.mean);
         const ci = U.ciDisplayBounds(summary);
         const tooltipHtml = `<strong>${region}</strong>${truncate(item.item, 60)}<br>
-              Average (raw scale, 1=Yes a lot … 4=No): ${U.formatScore(summary.mean)}<br>
-              95% CI: ${ci ? `${U.formatScore(5 - ci.high)}–${U.formatScore(5 - ci.low)}` : 'not enough responses to estimate'}<br>
+              Average (1=No … 4=Yes a lot): ${U.formatScore(summary.mean)}<br>
+              95% CI: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'not enough responses to estimate'}<br>
               n=${summary.n}${summary.unknownN ? `<br><span class="tt-muted">${summary.unknownN} more answered "I do not know" (excluded)</span>` : ''}`;
 
         if (ci) {
@@ -115,7 +114,7 @@
           .attr('fill', regionColorScale(region))
           .attr('tabindex', 0)
           .attr('role', 'img')
-          .attr('aria-label', `${region}, ${item.item}: average ${summary.mean.toFixed(2)} of 4, 1 is best, n=${summary.n}${ci ? `, 95% CI ${U.formatScore(5 - ci.high)} to ${U.formatScore(5 - ci.low)}` : ''}`)
+          .attr('aria-label', `${region}, ${item.item}: average ${summary.mean.toFixed(2)} of 4, 4 is best, n=${summary.n}${ci ? `, 95% CI ${U.formatScore(ci.low)} to ${U.formatScore(ci.high)}` : ''}`)
           .on('mouseenter focus', (evt) => tip.show(tooltipHtml, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());

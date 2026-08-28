@@ -8,48 +8,60 @@
 
   const U = window.SIT.utils;
 
+  // Sorted horizontal bars, generously spaced - full activity names fit
+  // without truncation or rotation, and with participation now roughly
+  // comparable across activities (no single one dominating), sorting by
+  // count is what makes the ordering itself informative.
   function renderActivityBars(container, ratings, meta, colorScale) {
     container.innerHTML = '';
-    const width = container.clientWidth || 480;
-    const height = 380;
-    const margin = { top: 24, right: 20, bottom: 132, left: 90 };
+    const width = Math.max(container.clientWidth || 640, 480);
+    const margin = { top: 12, right: 40, bottom: 32, left: 210 };
 
     const counts = meta.activityTypes
       .filter((a) => !meta.excludedActivityTypes.includes(a.key))
       .map((a) => ({ key: a.key, n: U.countDistinctIds(ratings.filter((r) => r.activityType === a.key)) }))
-      .sort((a, b) => (a.key === 'Girls as Leaders in STEM program' ? -1 : b.key === 'Girls as Leaders in STEM program' ? 1 : b.n - a.n));
+      .sort((a, b) => b.n - a.n);
+
+    const rowHeight = 40;
+    const height = margin.top + margin.bottom + counts.length * rowHeight;
 
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('role', 'img')
-      .attr('aria-label', 'Bar chart of respondent count by activity type');
+      .attr('aria-label', 'Sorted horizontal bar chart of respondent count by activity type');
 
-    const x = d3.scaleBand().domain(counts.map((d) => d.key)).range([margin.left, width - margin.right]).padding(0.3);
-    const yMax = Math.max(170, Math.ceil((d3.max(counts, (d) => d.n) + 10) / 10) * 10);
-    const y = d3.scaleLinear().domain([0, yMax]).range([height - margin.bottom, margin.top]);
+    // Scaled to this call's own data, not a fixed floor shared with the
+    // provider page - a 12-student school cohort on the same 0-120 axis as
+    // the 180-respondent sample would shrink every bar to a sliver. This is
+    // a count axis, not the 1-4 outcome scale the "fixed axis" rule is
+    // about, so fitting it to the data here is the right call, not the trap.
+    const maxN = d3.max(counts, (d) => d.n) || 1;
+    const step = maxN <= 20 ? 5 : 10;
+    const xMax = Math.max(step, Math.ceil((maxN + step * 0.5) / step) * step);
+    const x = d3.scaleLinear().domain([0, xMax]).range([margin.left, width - margin.right]);
+    const y = d3.scaleBand().domain(counts.map((d) => d.key)).range([margin.top, height - margin.bottom]).padding(0.35);
 
     svg.append('g')
       .attr('class', 'axis')
       .attr('transform', `translate(0,${height - margin.bottom})`)
-      .call(d3.axisBottom(x).tickSize(0))
-      .selectAll('text')
-      .attr('transform', 'translate(-10,4) rotate(-40)')
-      .style('text-anchor', 'end')
-      .text((d) => (d.length > 20 ? `${d.slice(0, 19)}…` : d))
-      .append('title').text((d) => d);
+      .call(d3.axisBottom(x).ticks(5));
 
-    svg.append('g')
-      .attr('class', 'axis')
-      .attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y).ticks(5));
-
-    svg.append('g')
-      .selectAll('line.gridline')
-      .data(y.ticks(5))
+    svg.selectAll('line.gridline')
+      .data(x.ticks(5))
       .join('line')
       .attr('class', 'gridline')
-      .attr('x1', margin.left).attr('x2', width - margin.right)
-      .attr('y1', (d) => y(d)).attr('y2', (d) => y(d));
+      .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
+      .attr('y1', margin.top).attr('y2', height - margin.bottom);
+
+    svg.selectAll('text.row-label')
+      .data(counts)
+      .join('text')
+      .attr('class', 'item-row-label')
+      .attr('x', margin.left - 12)
+      .attr('y', (d) => y(d.key) + y.bandwidth() / 2)
+      .attr('text-anchor', 'end')
+      .attr('dy', '0.32em')
+      .text((d) => d.key);
 
     const tip = U.tooltip();
 
@@ -57,10 +69,10 @@
       .data(counts)
       .join('rect')
       .attr('class', 'bar')
-      .attr('x', (d) => x(d.key))
-      .attr('width', x.bandwidth())
-      .attr('y', (d) => y(d.n))
-      .attr('height', (d) => y(0) - y(d.n))
+      .attr('x', margin.left)
+      .attr('y', (d) => y(d.key))
+      .attr('height', y.bandwidth())
+      .attr('width', (d) => x(d.n) - margin.left)
       .attr('fill', (d) => colorScale(d.key))
       .attr('tabindex', 0)
       .attr('role', 'img')
@@ -75,9 +87,9 @@
       .data(counts)
       .join('text')
       .attr('class', 'bar-label')
-      .attr('x', (d) => x(d.key) + x.bandwidth() / 2)
-      .attr('y', (d) => y(d.n) - 6)
-      .attr('text-anchor', 'middle')
+      .attr('x', (d) => x(d.n) + 8)
+      .attr('y', (d) => y(d.key) + y.bandwidth() / 2)
+      .attr('dy', '0.32em')
       .text((d) => d.n);
   }
 

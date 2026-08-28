@@ -73,23 +73,22 @@
     };
   }
 
-  // Displayed score: invert so higher = better, on a 1-4 scale that still
-  // maps onto the raw 1-4 codes (5 - code), per the workbook's own
-  // "Score (display)" calculated field.
+  // `score` already runs 1=No..4=Yes a lot, higher is better - no inversion
+  // needed. Kept as a named pass-through (rather than inlining `.mean`
+  // everywhere) so every chart's display value still reads through one
+  // function, in case that ever changes again.
   function toDisplayScore(rawMean) {
-    return rawMean === null ? null : 5 - rawMean;
+    return rawMean;
   }
 
-  // 95% CI bounds on the same inverted display scale as toDisplayScore,
-  // clamped to the 1-4 axis. Null if the summary has no computable margin
-  // (n<2) - callers should skip drawing a whisker in that case, not draw
-  // a zero-width one.
+  // 95% CI bounds on the display scale, clamped to the 1-4 axis. Null if
+  // the summary has no computable margin (n<2) - callers should skip
+  // drawing a whisker in that case, not draw a zero-width one.
   function ciDisplayBounds(summary) {
     if (summary.ciMargin === null || summary.mean === null) return null;
-    const display = toDisplayScore(summary.mean);
     return {
-      low: Math.max(1, display - summary.ciMargin),
-      high: Math.min(4, display + summary.ciMargin),
+      low: Math.max(1, summary.mean - summary.ciMargin),
+      high: Math.min(4, summary.mean + summary.ciMargin),
     };
   }
 
@@ -97,7 +96,7 @@
     const counts = { 1: 0, 2: 0, 3: 0, 4: 0, dontKnow: 0 };
     rows.forEach((r) => {
       if (r.isDontKnow) counts.dontKnow += 1;
-      else if (r.code >= 1 && r.code <= 4) counts[r.code] += 1;
+      else if (r.score >= 1 && r.score <= 4) counts[r.score] += 1;
     });
     return counts;
   }

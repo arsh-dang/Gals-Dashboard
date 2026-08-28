@@ -1,3 +1,8 @@
 .DS_Store
 node_modules/
 *.log
+
+# Backup of the pre-swap mock data (superseded, IDs don't match current
+# data/*.csv) - not part of the deployable project, kept out of the repo
+# to avoid confusion with the live dataset.
+old_data/
