@@ -231,6 +231,42 @@
   align-self: center;
 }
 
+/* --- Pager (open-text response list) ---------------------------------------- */
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.pager__button {
+  font: inherit;
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--brand-primary);
+  background: var(--surface-card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+}
+
+.pager__button:hover:not(:disabled) { background: var(--surface-sunken); }
+
+.pager__button:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.pager__status {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+}
+
 /* --- Section / view grid ---------------------------------------------------- */
 .view-grid {
   display: grid;

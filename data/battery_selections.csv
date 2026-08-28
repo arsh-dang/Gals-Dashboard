@@ -1,0 +1,1830 @@
+ResponseId,activity_type,battery,item,source_column
+R_MK0006588,School club or lunchtime activity,skills,Communication,Q16
+R_MK0006588,School club or lunchtime activity,skills,Design,Q16
+R_MK0006588,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0009873,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0009873,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0009873,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0010513,School club or lunchtime activity,skills,Communication,Q16
+R_MK0010513,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0011479,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0016269,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0016269,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0020810,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0020810,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0020810,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0020810,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0021392,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0021392,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0028706,School club or lunchtime activity,skills,Communication,Q16
+R_MK0028706,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0028706,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0028706,School club or lunchtime activity,skills,Design,Q16
+R_MK0036376,School club or lunchtime activity,skills,Design,Q16
+R_MK0036376,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0040482,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0040482,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0040482,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0048618,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0048618,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0048618,School club or lunchtime activity,skills,Design,Q16
+R_MK0056243,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0056243,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0056243,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0059808,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0059808,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0059808,School club or lunchtime activity,skills,Design,Q16
+R_MK0061389,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0061389,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0061389,School club or lunchtime activity,skills,Design,Q16
+R_MK0064312,School club or lunchtime activity,skills,Communication,Q16
+R_MK0064312,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0064312,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0064312,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0065971,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0065971,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0065971,School club or lunchtime activity,skills,Design,Q16
+R_MK0065971,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0067782,School club or lunchtime activity,skills,Communication,Q16
+R_MK0067782,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0067782,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0075610,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0075610,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0075610,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0075610,School club or lunchtime activity,skills,Design,Q16
+R_MK0075610,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0076859,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0076859,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0076859,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0076859,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0076859,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0076859,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0077148,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0081775,School club or lunchtime activity,skills,Communication,Q16
+R_MK0081775,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0081775,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0085820,School club or lunchtime activity,skills,Communication,Q16
+R_MK0085820,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0085820,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0085820,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0085820,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0087342,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0087342,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0087342,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0087342,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0091716,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0091716,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0105543,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0106136,School club or lunchtime activity,skills,Communication,Q16
+R_MK0106136,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0106136,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0106136,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0106136,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0106136,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0112332,School club or lunchtime activity,skills,Communication,Q16
+R_MK0112332,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0112332,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0112332,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0112332,School club or lunchtime activity,skills,Design,Q16
+R_MK0116896,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0116896,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0116896,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0117597,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0117597,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0117597,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0120777,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0121824,School club or lunchtime activity,skills,Communication,Q16
+R_MK0121824,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0121824,School club or lunchtime activity,skills,Design,Q16
+R_MK0123377,School club or lunchtime activity,skills,Communication,Q16
+R_MK0123377,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0123377,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0123377,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0123377,School club or lunchtime activity,skills,Design,Q16
+R_MK0124835,School club or lunchtime activity,skills,Communication,Q16
+R_MK0124835,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0124835,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0124835,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0124835,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0126334,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0126334,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0126334,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0126334,School club or lunchtime activity,skills,Design,Q16
+R_MK0126334,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0130102,School club or lunchtime activity,skills,Communication,Q16
+R_MK0130102,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0130102,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0130102,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0130102,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0130102,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0133624,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0134295,School club or lunchtime activity,skills,Communication,Q16
+R_MK0134295,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0134295,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0135330,School club or lunchtime activity,skills,Communication,Q16
+R_MK0135330,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0137222,School club or lunchtime activity,skills,Communication,Q16
+R_MK0137222,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0139904,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0139904,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0144860,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0144860,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0146961,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0146961,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0146961,School club or lunchtime activity,skills,Design,Q16
+R_MK0148593,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0148593,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0148593,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0149622,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0149622,School club or lunchtime activity,skills,Design,Q16
+R_MK0150326,School club or lunchtime activity,skills,Communication,Q16
+R_MK0150326,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0150326,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0151723,School club or lunchtime activity,skills,Communication,Q16
+R_MK0151723,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0151723,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0151723,School club or lunchtime activity,skills,Design,Q16
+R_MK0156575,School club or lunchtime activity,skills,Communication,Q16
+R_MK0159431,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0159431,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0159431,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0160688,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0161479,School club or lunchtime activity,skills,Communication,Q16
+R_MK0161479,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0161479,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0161479,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0161479,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0163738,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0163738,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0163738,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0163738,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0166521,School club or lunchtime activity,skills,Communication,Q16
+R_MK0166521,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0167936,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0167936,School club or lunchtime activity,skills,Responding flexibly to change,Q16
+R_MK0167936,School club or lunchtime activity,skills,Design,Q16
+R_MK0167936,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0168112,School club or lunchtime activity,skills,Communication,Q16
+R_MK0168112,School club or lunchtime activity,skills,Teamwork,Q16
+R_MK0168112,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0168112,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0168112,School club or lunchtime activity,skills,Design,Q16
+R_MK0169179,School club or lunchtime activity,skills,Leadership,Q16
+R_MK0169179,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0169179,School club or lunchtime activity,skills,Problem solving,Q16
+R_MK0176592,School club or lunchtime activity,skills,Critical thinking,Q16
+R_MK0176592,School club or lunchtime activity,skills,Creative thinking,Q16
+R_MK0176592,School club or lunchtime activity,skills,Design,Q16
+R_MK0176592,School club or lunchtime activity,skills,Experimenting,Q16
+R_MK0006588,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0009873,School club or lunchtime activity,identity,A leader,Q74
+R_MK0010513,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0010513,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0010513,School club or lunchtime activity,identity,A team player,Q74
+R_MK0011479,School club or lunchtime activity,identity,A leader,Q74
+R_MK0016269,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0020810,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0020810,School club or lunchtime activity,identity,A team player,Q74
+R_MK0021392,School club or lunchtime activity,identity,A designer,Q74
+R_MK0028706,School club or lunchtime activity,identity,A leader,Q74
+R_MK0028706,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0028706,School club or lunchtime activity,identity,A designer,Q74
+R_MK0028706,School club or lunchtime activity,identity,A team player,Q74
+R_MK0036376,School club or lunchtime activity,identity,A leader,Q74
+R_MK0036376,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0036376,School club or lunchtime activity,identity,A designer,Q74
+R_MK0036376,School club or lunchtime activity,identity,A team player,Q74
+R_MK0040482,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0040482,School club or lunchtime activity,identity,A designer,Q74
+R_MK0048618,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0048618,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0056243,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0056243,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0059808,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0061389,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0064312,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0065971,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0065971,School club or lunchtime activity,identity,A team player,Q74
+R_MK0067782,School club or lunchtime activity,identity,A designer,Q74
+R_MK0075610,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0075610,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0075610,School club or lunchtime activity,identity,A designer,Q74
+R_MK0076859,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0077148,School club or lunchtime activity,identity,A leader,Q74
+R_MK0077148,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0081775,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0085820,School club or lunchtime activity,identity,A leader,Q74
+R_MK0085820,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0085820,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0085820,School club or lunchtime activity,identity,A designer,Q74
+R_MK0087342,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0087342,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0087342,School club or lunchtime activity,identity,A designer,Q74
+R_MK0091716,School club or lunchtime activity,identity,A leader,Q74
+R_MK0091716,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0091716,School club or lunchtime activity,identity,A designer,Q74
+R_MK0091716,School club or lunchtime activity,identity,A team player,Q74
+R_MK0105543,School club or lunchtime activity,identity,A leader,Q74
+R_MK0105543,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0105543,School club or lunchtime activity,identity,A designer,Q74
+R_MK0106136,School club or lunchtime activity,identity,A designer,Q74
+R_MK0112332,School club or lunchtime activity,identity,A leader,Q74
+R_MK0112332,School club or lunchtime activity,identity,A designer,Q74
+R_MK0112332,School club or lunchtime activity,identity,A team player,Q74
+R_MK0116896,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0116896,School club or lunchtime activity,identity,A designer,Q74
+R_MK0117597,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0117597,School club or lunchtime activity,identity,A team player,Q74
+R_MK0120777,School club or lunchtime activity,identity,A leader,Q74
+R_MK0121824,School club or lunchtime activity,identity,A leader,Q74
+R_MK0121824,School club or lunchtime activity,identity,A designer,Q74
+R_MK0123377,School club or lunchtime activity,identity,A leader,Q74
+R_MK0124835,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0124835,School club or lunchtime activity,identity,A team player,Q74
+R_MK0126334,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0130102,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0130102,School club or lunchtime activity,identity,A team player,Q74
+R_MK0133624,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0133624,School club or lunchtime activity,identity,A team player,Q74
+R_MK0134295,School club or lunchtime activity,identity,A designer,Q74
+R_MK0135330,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0137222,School club or lunchtime activity,identity,A leader,Q74
+R_MK0137222,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0137222,School club or lunchtime activity,identity,A designer,Q74
+R_MK0137222,School club or lunchtime activity,identity,A team player,Q74
+R_MK0139904,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0139904,School club or lunchtime activity,identity,A designer,Q74
+R_MK0144860,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0144860,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0146961,School club or lunchtime activity,identity,A leader,Q74
+R_MK0146961,School club or lunchtime activity,identity,A designer,Q74
+R_MK0148593,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0149622,School club or lunchtime activity,identity,A leader,Q74
+R_MK0149622,School club or lunchtime activity,identity,A designer,Q74
+R_MK0150326,School club or lunchtime activity,identity,A leader,Q74
+R_MK0150326,School club or lunchtime activity,identity,A team player,Q74
+R_MK0151723,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0156575,School club or lunchtime activity,identity,A leader,Q74
+R_MK0156575,School club or lunchtime activity,identity,A designer,Q74
+R_MK0159431,School club or lunchtime activity,identity,A leader,Q74
+R_MK0159431,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0159431,School club or lunchtime activity,identity,A team player,Q74
+R_MK0160688,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0160688,School club or lunchtime activity,identity,A designer,Q74
+R_MK0161479,School club or lunchtime activity,identity,A leader,Q74
+R_MK0161479,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0161479,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0163738,School club or lunchtime activity,identity,A STEM person,Q74
+R_MK0166521,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0166521,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0166521,School club or lunchtime activity,identity,A team player,Q74
+R_MK0167936,School club or lunchtime activity,identity,A leader,Q74
+R_MK0167936,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0168112,School club or lunchtime activity,identity,A leader,Q74
+R_MK0168112,School club or lunchtime activity,identity,A good communicator,Q74
+R_MK0168112,School club or lunchtime activity,identity,A designer,Q74
+R_MK0168112,School club or lunchtime activity,identity,A team player,Q74
+R_MK0169179,School club or lunchtime activity,identity,A problem solver,Q74
+R_MK0169179,School club or lunchtime activity,identity,A team player,Q74
+R_MK0176592,School club or lunchtime activity,identity,A leader,Q74
+R_MK0003799,Competitions,skills,Teamwork,Q37
+R_MK0003799,Competitions,skills,Critical thinking,Q37
+R_MK0003799,Competitions,skills,Responding flexibly to change,Q37
+R_MK0004366,Competitions,skills,Critical thinking,Q37
+R_MK0004366,Competitions,skills,Experimenting,Q37
+R_MK0008438,Competitions,skills,Communication,Q37
+R_MK0008438,Competitions,skills,Teamwork,Q37
+R_MK0008438,Competitions,skills,Responding flexibly to change,Q37
+R_MK0008438,Competitions,skills,Design,Q37
+R_MK0008438,Competitions,skills,Problem solving,Q37
+R_MK0010513,Competitions,skills,Teamwork,Q37
+R_MK0010513,Competitions,skills,Critical thinking,Q37
+R_MK0019930,Competitions,skills,Communication,Q37
+R_MK0019930,Competitions,skills,Teamwork,Q37
+R_MK0019930,Competitions,skills,Leadership,Q37
+R_MK0019930,Competitions,skills,Experimenting,Q37
+R_MK0020810,Competitions,skills,Communication,Q37
+R_MK0020810,Competitions,skills,Critical thinking,Q37
+R_MK0020810,Competitions,skills,Creative thinking,Q37
+R_MK0020810,Competitions,skills,Design,Q37
+R_MK0021392,Competitions,skills,Leadership,Q37
+R_MK0021392,Competitions,skills,Design,Q37
+R_MK0021392,Competitions,skills,Experimenting,Q37
+R_MK0024716,Competitions,skills,Communication,Q37
+R_MK0024716,Competitions,skills,Critical thinking,Q37
+R_MK0024716,Competitions,skills,Leadership,Q37
+R_MK0024716,Competitions,skills,Creative thinking,Q37
+R_MK0024716,Competitions,skills,Design,Q37
+R_MK0024716,Competitions,skills,Problem solving,Q37
+R_MK0026424,Competitions,skills,Communication,Q37
+R_MK0026424,Competitions,skills,Critical thinking,Q37
+R_MK0026424,Competitions,skills,Experimenting,Q37
+R_MK0030869,Competitions,skills,Critical thinking,Q37
+R_MK0030869,Competitions,skills,Creative thinking,Q37
+R_MK0030869,Competitions,skills,Responding flexibly to change,Q37
+R_MK0030869,Competitions,skills,Design,Q37
+R_MK0034746,Competitions,skills,Communication,Q37
+R_MK0034746,Competitions,skills,Teamwork,Q37
+R_MK0034746,Competitions,skills,Critical thinking,Q37
+R_MK0034746,Competitions,skills,Responding flexibly to change,Q37
+R_MK0034746,Competitions,skills,Design,Q37
+R_MK0035898,Competitions,skills,Design,Q37
+R_MK0035898,Competitions,skills,Problem solving,Q37
+R_MK0036376,Competitions,skills,Responding flexibly to change,Q37
+R_MK0036376,Competitions,skills,Problem solving,Q37
+R_MK0037653,Competitions,skills,Communication,Q37
+R_MK0037653,Competitions,skills,Teamwork,Q37
+R_MK0037653,Competitions,skills,Responding flexibly to change,Q37
+R_MK0037653,Competitions,skills,Design,Q37
+R_MK0038667,Competitions,skills,Leadership,Q37
+R_MK0038667,Competitions,skills,Experimenting,Q37
+R_MK0041355,Competitions,skills,Problem solving,Q37
+R_MK0042313,Competitions,skills,Leadership,Q37
+R_MK0042313,Competitions,skills,Experimenting,Q37
+R_MK0042313,Competitions,skills,Problem solving,Q37
+R_MK0044408,Competitions,skills,Teamwork,Q37
+R_MK0044408,Competitions,skills,Leadership,Q37
+R_MK0044408,Competitions,skills,Experimenting,Q37
+R_MK0045275,Competitions,skills,Responding flexibly to change,Q37
+R_MK0049670,Competitions,skills,Teamwork,Q37
+R_MK0049670,Competitions,skills,Responding flexibly to change,Q37
+R_MK0049670,Competitions,skills,Design,Q37
+R_MK0049670,Competitions,skills,Problem solving,Q37
+R_MK0055575,Competitions,skills,Teamwork,Q37
+R_MK0055575,Competitions,skills,Critical thinking,Q37
+R_MK0055575,Competitions,skills,Leadership,Q37
+R_MK0057652,Competitions,skills,Leadership,Q37
+R_MK0057652,Competitions,skills,Design,Q37
+R_MK0064312,Competitions,skills,Communication,Q37
+R_MK0064312,Competitions,skills,Teamwork,Q37
+R_MK0064312,Competitions,skills,Critical thinking,Q37
+R_MK0064312,Competitions,skills,Responding flexibly to change,Q37
+R_MK0064312,Competitions,skills,Design,Q37
+R_MK0071164,Competitions,skills,Responding flexibly to change,Q37
+R_MK0071164,Competitions,skills,Experimenting,Q37
+R_MK0072647,Competitions,skills,Communication,Q37
+R_MK0072647,Competitions,skills,Teamwork,Q37
+R_MK0072647,Competitions,skills,Critical thinking,Q37
+R_MK0072647,Competitions,skills,Creative thinking,Q37
+R_MK0073957,Competitions,skills,Communication,Q37
+R_MK0073957,Competitions,skills,Teamwork,Q37
+R_MK0073957,Competitions,skills,Problem solving,Q37
+R_MK0074166,Competitions,skills,Leadership,Q37
+R_MK0074166,Competitions,skills,Responding flexibly to change,Q37
+R_MK0074166,Competitions,skills,Problem solving,Q37
+R_MK0092349,Competitions,skills,Communication,Q37
+R_MK0092349,Competitions,skills,Teamwork,Q37
+R_MK0092349,Competitions,skills,Critical thinking,Q37
+R_MK0092349,Competitions,skills,Leadership,Q37
+R_MK0092349,Competitions,skills,Responding flexibly to change,Q37
+R_MK0101840,Competitions,skills,Communication,Q37
+R_MK0101840,Competitions,skills,Responding flexibly to change,Q37
+R_MK0101840,Competitions,skills,Experimenting,Q37
+R_MK0101840,Competitions,skills,Problem solving,Q37
+R_MK0102464,Competitions,skills,Teamwork,Q37
+R_MK0102464,Competitions,skills,Critical thinking,Q37
+R_MK0102464,Competitions,skills,Responding flexibly to change,Q37
+R_MK0102464,Competitions,skills,Problem solving,Q37
+R_MK0106136,Competitions,skills,Responding flexibly to change,Q37
+R_MK0106136,Competitions,skills,Experimenting,Q37
+R_MK0106136,Competitions,skills,Problem solving,Q37
+R_MK0109259,Competitions,skills,Communication,Q37
+R_MK0109259,Competitions,skills,Leadership,Q37
+R_MK0109259,Competitions,skills,Responding flexibly to change,Q37
+R_MK0109259,Competitions,skills,Experimenting,Q37
+R_MK0112332,Competitions,skills,Teamwork,Q37
+R_MK0112332,Competitions,skills,Critical thinking,Q37
+R_MK0112332,Competitions,skills,Responding flexibly to change,Q37
+R_MK0112332,Competitions,skills,Problem solving,Q37
+R_MK0114340,Competitions,skills,Leadership,Q37
+R_MK0114340,Competitions,skills,Responding flexibly to change,Q37
+R_MK0114340,Competitions,skills,Experimenting,Q37
+R_MK0115101,Competitions,skills,Leadership,Q37
+R_MK0115101,Competitions,skills,Design,Q37
+R_MK0117597,Competitions,skills,Responding flexibly to change,Q37
+R_MK0117597,Competitions,skills,Design,Q37
+R_MK0117597,Competitions,skills,Experimenting,Q37
+R_MK0117597,Competitions,skills,Problem solving,Q37
+R_MK0118236,Competitions,skills,Teamwork,Q37
+R_MK0118236,Competitions,skills,Design,Q37
+R_MK0118236,Competitions,skills,Problem solving,Q37
+R_MK0133624,Competitions,skills,Communication,Q37
+R_MK0133624,Competitions,skills,Teamwork,Q37
+R_MK0133624,Competitions,skills,Responding flexibly to change,Q37
+R_MK0133624,Competitions,skills,Design,Q37
+R_MK0136736,Competitions,skills,Teamwork,Q37
+R_MK0136736,Competitions,skills,Creative thinking,Q37
+R_MK0136736,Competitions,skills,Responding flexibly to change,Q37
+R_MK0137222,Competitions,skills,Leadership,Q37
+R_MK0137222,Competitions,skills,Problem solving,Q37
+R_MK0143612,Competitions,skills,Communication,Q37
+R_MK0143612,Competitions,skills,Teamwork,Q37
+R_MK0143612,Competitions,skills,Leadership,Q37
+R_MK0143612,Competitions,skills,Creative thinking,Q37
+R_MK0143612,Competitions,skills,Responding flexibly to change,Q37
+R_MK0145650,Competitions,skills,Communication,Q37
+R_MK0145650,Competitions,skills,Responding flexibly to change,Q37
+R_MK0145650,Competitions,skills,Experimenting,Q37
+R_MK0148593,Competitions,skills,Communication,Q37
+R_MK0148593,Competitions,skills,Teamwork,Q37
+R_MK0148593,Competitions,skills,Critical thinking,Q37
+R_MK0148593,Competitions,skills,Responding flexibly to change,Q37
+R_MK0150326,Competitions,skills,Responding flexibly to change,Q37
+R_MK0150326,Competitions,skills,Experimenting,Q37
+R_MK0150326,Competitions,skills,Problem solving,Q37
+R_MK0151723,Competitions,skills,Teamwork,Q37
+R_MK0151723,Competitions,skills,Creative thinking,Q37
+R_MK0151723,Competitions,skills,Design,Q37
+R_MK0151723,Competitions,skills,Problem solving,Q37
+R_MK0152162,Competitions,skills,Responding flexibly to change,Q37
+R_MK0156575,Competitions,skills,Communication,Q37
+R_MK0156575,Competitions,skills,Teamwork,Q37
+R_MK0156575,Competitions,skills,Leadership,Q37
+R_MK0156575,Competitions,skills,Creative thinking,Q37
+R_MK0156575,Competitions,skills,Experimenting,Q37
+R_MK0158689,Competitions,skills,Teamwork,Q37
+R_MK0158689,Competitions,skills,Leadership,Q37
+R_MK0158689,Competitions,skills,Design,Q37
+R_MK0158689,Competitions,skills,Problem solving,Q37
+R_MK0162960,Competitions,skills,Teamwork,Q37
+R_MK0162960,Competitions,skills,Critical thinking,Q37
+R_MK0162960,Competitions,skills,Experimenting,Q37
+R_MK0169179,Competitions,skills,Critical thinking,Q37
+R_MK0169179,Competitions,skills,Creative thinking,Q37
+R_MK0170452,Competitions,skills,Communication,Q37
+R_MK0170452,Competitions,skills,Leadership,Q37
+R_MK0170452,Competitions,skills,Responding flexibly to change,Q37
+R_MK0170452,Competitions,skills,Design,Q37
+R_MK0172581,Competitions,skills,Creative thinking,Q37
+R_MK0172581,Competitions,skills,Responding flexibly to change,Q37
+R_MK0172581,Competitions,skills,Experimenting,Q37
+R_MK0173433,Competitions,skills,Communication,Q37
+R_MK0173433,Competitions,skills,Leadership,Q37
+R_MK0173433,Competitions,skills,Design,Q37
+R_MK0173433,Competitions,skills,Problem solving,Q37
+R_MK0175827,Competitions,skills,Communication,Q37
+R_MK0175827,Competitions,skills,Leadership,Q37
+R_MK0175827,Competitions,skills,Responding flexibly to change,Q37
+R_MK0175827,Competitions,skills,Problem solving,Q37
+R_MK0003799,Competitions,identity,A team player,Q75
+R_MK0004366,Competitions,identity,A STEM person,Q75
+R_MK0008438,Competitions,identity,A STEM person,Q75
+R_MK0010513,Competitions,identity,A leader,Q75
+R_MK0010513,Competitions,identity,A STEM person,Q75
+R_MK0019930,Competitions,identity,A leader,Q75
+R_MK0019930,Competitions,identity,A STEM person,Q75
+R_MK0020810,Competitions,identity,A designer,Q75
+R_MK0021392,Competitions,identity,A good communicator,Q75
+R_MK0021392,Competitions,identity,A STEM person,Q75
+R_MK0021392,Competitions,identity,A designer,Q75
+R_MK0024716,Competitions,identity,A good communicator,Q75
+R_MK0024716,Competitions,identity,A STEM person,Q75
+R_MK0024716,Competitions,identity,A designer,Q75
+R_MK0026424,Competitions,identity,A problem solver,Q75
+R_MK0026424,Competitions,identity,A designer,Q75
+R_MK0030869,Competitions,identity,A good communicator,Q75
+R_MK0034746,Competitions,identity,A problem solver,Q75
+R_MK0035898,Competitions,identity,A leader,Q75
+R_MK0036376,Competitions,identity,A good communicator,Q75
+R_MK0036376,Competitions,identity,A STEM person,Q75
+R_MK0036376,Competitions,identity,A designer,Q75
+R_MK0037653,Competitions,identity,A problem solver,Q75
+R_MK0037653,Competitions,identity,A team player,Q75
+R_MK0037653,Competitions,identity,A designer,Q75
+R_MK0038667,Competitions,identity,A problem solver,Q75
+R_MK0041355,Competitions,identity,A STEM person,Q75
+R_MK0041355,Competitions,identity,A problem solver,Q75
+R_MK0042313,Competitions,identity,A good communicator,Q75
+R_MK0042313,Competitions,identity,A problem solver,Q75
+R_MK0042313,Competitions,identity,A designer,Q75
+R_MK0044408,Competitions,identity,A team player,Q75
+R_MK0045275,Competitions,identity,A STEM person,Q75
+R_MK0045275,Competitions,identity,A problem solver,Q75
+R_MK0049670,Competitions,identity,A STEM person,Q75
+R_MK0055575,Competitions,identity,A STEM person,Q75
+R_MK0057652,Competitions,identity,A problem solver,Q75
+R_MK0057652,Competitions,identity,A designer,Q75
+R_MK0064312,Competitions,identity,A STEM person,Q75
+R_MK0064312,Competitions,identity,A team player,Q75
+R_MK0071164,Competitions,identity,A good communicator,Q75
+R_MK0072647,Competitions,identity,A problem solver,Q75
+R_MK0072647,Competitions,identity,A team player,Q75
+R_MK0072647,Competitions,identity,A designer,Q75
+R_MK0073957,Competitions,identity,A STEM person,Q75
+R_MK0073957,Competitions,identity,A problem solver,Q75
+R_MK0074166,Competitions,identity,A leader,Q75
+R_MK0074166,Competitions,identity,A good communicator,Q75
+R_MK0074166,Competitions,identity,A team player,Q75
+R_MK0074166,Competitions,identity,A designer,Q75
+R_MK0092349,Competitions,identity,A problem solver,Q75
+R_MK0101840,Competitions,identity,A team player,Q75
+R_MK0102464,Competitions,identity,A STEM person,Q75
+R_MK0102464,Competitions,identity,A team player,Q75
+R_MK0102464,Competitions,identity,A designer,Q75
+R_MK0106136,Competitions,identity,A problem solver,Q75
+R_MK0109259,Competitions,identity,A leader,Q75
+R_MK0109259,Competitions,identity,A problem solver,Q75
+R_MK0112332,Competitions,identity,A leader,Q75
+R_MK0112332,Competitions,identity,A good communicator,Q75
+R_MK0112332,Competitions,identity,A STEM person,Q75
+R_MK0112332,Competitions,identity,A designer,Q75
+R_MK0114340,Competitions,identity,A good communicator,Q75
+R_MK0115101,Competitions,identity,A problem solver,Q75
+R_MK0115101,Competitions,identity,A team player,Q75
+R_MK0117597,Competitions,identity,A good communicator,Q75
+R_MK0118236,Competitions,identity,A STEM person,Q75
+R_MK0133624,Competitions,identity,A team player,Q75
+R_MK0136736,Competitions,identity,A leader,Q75
+R_MK0136736,Competitions,identity,A good communicator,Q75
+R_MK0136736,Competitions,identity,A STEM person,Q75
+R_MK0136736,Competitions,identity,A problem solver,Q75
+R_MK0136736,Competitions,identity,A team player,Q75
+R_MK0137222,Competitions,identity,A STEM person,Q75
+R_MK0143612,Competitions,identity,A leader,Q75
+R_MK0143612,Competitions,identity,A problem solver,Q75
+R_MK0143612,Competitions,identity,A designer,Q75
+R_MK0145650,Competitions,identity,A leader,Q75
+R_MK0145650,Competitions,identity,A good communicator,Q75
+R_MK0145650,Competitions,identity,A problem solver,Q75
+R_MK0148593,Competitions,identity,A leader,Q75
+R_MK0148593,Competitions,identity,A good communicator,Q75
+R_MK0148593,Competitions,identity,A problem solver,Q75
+R_MK0148593,Competitions,identity,A team player,Q75
+R_MK0150326,Competitions,identity,A problem solver,Q75
+R_MK0151723,Competitions,identity,A leader,Q75
+R_MK0151723,Competitions,identity,A team player,Q75
+R_MK0152162,Competitions,identity,A good communicator,Q75
+R_MK0152162,Competitions,identity,A STEM person,Q75
+R_MK0152162,Competitions,identity,A team player,Q75
+R_MK0152162,Competitions,identity,A designer,Q75
+R_MK0156575,Competitions,identity,A good communicator,Q75
+R_MK0156575,Competitions,identity,A team player,Q75
+R_MK0158689,Competitions,identity,A leader,Q75
+R_MK0158689,Competitions,identity,A STEM person,Q75
+R_MK0158689,Competitions,identity,A team player,Q75
+R_MK0158689,Competitions,identity,A designer,Q75
+R_MK0162960,Competitions,identity,A team player,Q75
+R_MK0162960,Competitions,identity,A designer,Q75
+R_MK0169179,Competitions,identity,A leader,Q75
+R_MK0169179,Competitions,identity,A team player,Q75
+R_MK0169179,Competitions,identity,A designer,Q75
+R_MK0170452,Competitions,identity,A STEM person,Q75
+R_MK0170452,Competitions,identity,A team player,Q75
+R_MK0172581,Competitions,identity,A STEM person,Q75
+R_MK0172581,Competitions,identity,A problem solver,Q75
+R_MK0172581,Competitions,identity,A designer,Q75
+R_MK0173433,Competitions,identity,A problem solver,Q75
+R_MK0175827,Competitions,identity,A leader,Q75
+R_MK0175827,Competitions,identity,A good communicator,Q75
+R_MK0175827,Competitions,identity,A STEM person,Q75
+R_MK0175827,Competitions,identity,A problem solver,Q75
+R_MK0175827,Competitions,identity,A team player,Q75
+R_MK0000490,Tech school programs,skills,Communication,Q46
+R_MK0000490,Tech school programs,skills,Creative thinking,Q46
+R_MK0000490,Tech school programs,skills,Design,Q46
+R_MK0000490,Tech school programs,skills,Experimenting,Q46
+R_MK0003799,Tech school programs,skills,Teamwork,Q46
+R_MK0003799,Tech school programs,skills,Creative thinking,Q46
+R_MK0003799,Tech school programs,skills,Problem solving,Q46
+R_MK0006588,Tech school programs,skills,Teamwork,Q46
+R_MK0006588,Tech school programs,skills,Creative thinking,Q46
+R_MK0006588,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0007455,Tech school programs,skills,Communication,Q46
+R_MK0007455,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0007455,Tech school programs,skills,Design,Q46
+R_MK0007455,Tech school programs,skills,Experimenting,Q46
+R_MK0008438,Tech school programs,skills,Leadership,Q46
+R_MK0008438,Tech school programs,skills,Design,Q46
+R_MK0009873,Tech school programs,skills,Creative thinking,Q46
+R_MK0014844,Tech school programs,skills,Communication,Q46
+R_MK0014844,Tech school programs,skills,Critical thinking,Q46
+R_MK0014844,Tech school programs,skills,Creative thinking,Q46
+R_MK0014844,Tech school programs,skills,Design,Q46
+R_MK0014844,Tech school programs,skills,Experimenting,Q46
+R_MK0017999,Tech school programs,skills,Teamwork,Q46
+R_MK0017999,Tech school programs,skills,Design,Q46
+R_MK0025998,Tech school programs,skills,Creative thinking,Q46
+R_MK0025998,Tech school programs,skills,Design,Q46
+R_MK0025998,Tech school programs,skills,Problem solving,Q46
+R_MK0027532,Tech school programs,skills,Critical thinking,Q46
+R_MK0027532,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0027532,Tech school programs,skills,Design,Q46
+R_MK0029613,Tech school programs,skills,Communication,Q46
+R_MK0029613,Tech school programs,skills,Critical thinking,Q46
+R_MK0031367,Tech school programs,skills,Leadership,Q46
+R_MK0031367,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0033904,Tech school programs,skills,Critical thinking,Q46
+R_MK0033904,Tech school programs,skills,Leadership,Q46
+R_MK0033904,Tech school programs,skills,Design,Q46
+R_MK0033904,Tech school programs,skills,Experimenting,Q46
+R_MK0035898,Tech school programs,skills,Leadership,Q46
+R_MK0035898,Tech school programs,skills,Creative thinking,Q46
+R_MK0035898,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0035898,Tech school programs,skills,Experimenting,Q46
+R_MK0042313,Tech school programs,skills,Critical thinking,Q46
+R_MK0042313,Tech school programs,skills,Experimenting,Q46
+R_MK0046739,Tech school programs,skills,Teamwork,Q46
+R_MK0046739,Tech school programs,skills,Creative thinking,Q46
+R_MK0046739,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0046739,Tech school programs,skills,Experimenting,Q46
+R_MK0047565,Tech school programs,skills,Communication,Q46
+R_MK0047565,Tech school programs,skills,Critical thinking,Q46
+R_MK0047565,Tech school programs,skills,Experimenting,Q46
+R_MK0048618,Tech school programs,skills,Critical thinking,Q46
+R_MK0048618,Tech school programs,skills,Design,Q46
+R_MK0048618,Tech school programs,skills,Experimenting,Q46
+R_MK0048618,Tech school programs,skills,Problem solving,Q46
+R_MK0050485,Tech school programs,skills,Communication,Q46
+R_MK0050485,Tech school programs,skills,Teamwork,Q46
+R_MK0050485,Tech school programs,skills,Leadership,Q46
+R_MK0052507,Tech school programs,skills,Communication,Q46
+R_MK0052507,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0054491,Tech school programs,skills,Teamwork,Q46
+R_MK0054491,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0054491,Tech school programs,skills,Design,Q46
+R_MK0056243,Tech school programs,skills,Critical thinking,Q46
+R_MK0056243,Tech school programs,skills,Leadership,Q46
+R_MK0056243,Tech school programs,skills,Creative thinking,Q46
+R_MK0056243,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0056243,Tech school programs,skills,Problem solving,Q46
+R_MK0058187,Tech school programs,skills,Design,Q46
+R_MK0058187,Tech school programs,skills,Experimenting,Q46
+R_MK0061389,Tech school programs,skills,Critical thinking,Q46
+R_MK0061389,Tech school programs,skills,Leadership,Q46
+R_MK0061389,Tech school programs,skills,Problem solving,Q46
+R_MK0064312,Tech school programs,skills,Teamwork,Q46
+R_MK0064312,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0064312,Tech school programs,skills,Design,Q46
+R_MK0064312,Tech school programs,skills,Problem solving,Q46
+R_MK0065971,Tech school programs,skills,Leadership,Q46
+R_MK0065971,Tech school programs,skills,Creative thinking,Q46
+R_MK0065971,Tech school programs,skills,Problem solving,Q46
+R_MK0068468,Tech school programs,skills,Critical thinking,Q46
+R_MK0068468,Tech school programs,skills,Experimenting,Q46
+R_MK0069966,Tech school programs,skills,Teamwork,Q46
+R_MK0069966,Tech school programs,skills,Critical thinking,Q46
+R_MK0070349,Tech school programs,skills,Communication,Q46
+R_MK0070349,Tech school programs,skills,Critical thinking,Q46
+R_MK0070349,Tech school programs,skills,Leadership,Q46
+R_MK0070349,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0078823,Tech school programs,skills,Communication,Q46
+R_MK0078823,Tech school programs,skills,Critical thinking,Q46
+R_MK0078823,Tech school programs,skills,Leadership,Q46
+R_MK0078823,Tech school programs,skills,Creative thinking,Q46
+R_MK0080759,Tech school programs,skills,Communication,Q46
+R_MK0080759,Tech school programs,skills,Leadership,Q46
+R_MK0080759,Tech school programs,skills,Creative thinking,Q46
+R_MK0080759,Tech school programs,skills,Design,Q46
+R_MK0080759,Tech school programs,skills,Experimenting,Q46
+R_MK0083877,Tech school programs,skills,Leadership,Q46
+R_MK0083877,Tech school programs,skills,Creative thinking,Q46
+R_MK0084645,Tech school programs,skills,Leadership,Q46
+R_MK0086561,Tech school programs,skills,Communication,Q46
+R_MK0086561,Tech school programs,skills,Teamwork,Q46
+R_MK0086561,Tech school programs,skills,Critical thinking,Q46
+R_MK0086561,Tech school programs,skills,Creative thinking,Q46
+R_MK0086561,Tech school programs,skills,Problem solving,Q46
+R_MK0088710,Tech school programs,skills,Creative thinking,Q46
+R_MK0088710,Tech school programs,skills,Design,Q46
+R_MK0088710,Tech school programs,skills,Experimenting,Q46
+R_MK0091716,Tech school programs,skills,Critical thinking,Q46
+R_MK0091716,Tech school programs,skills,Problem solving,Q46
+R_MK0094190,Tech school programs,skills,Communication,Q46
+R_MK0094190,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0094190,Tech school programs,skills,Problem solving,Q46
+R_MK0096137,Tech school programs,skills,Communication,Q46
+R_MK0096137,Tech school programs,skills,Leadership,Q46
+R_MK0096137,Tech school programs,skills,Creative thinking,Q46
+R_MK0096137,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0098826,Tech school programs,skills,Critical thinking,Q46
+R_MK0098826,Tech school programs,skills,Problem solving,Q46
+R_MK0099981,Tech school programs,skills,Communication,Q46
+R_MK0099981,Tech school programs,skills,Critical thinking,Q46
+R_MK0099981,Tech school programs,skills,Leadership,Q46
+R_MK0099981,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0110205,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0110205,Tech school programs,skills,Design,Q46
+R_MK0111911,Tech school programs,skills,Communication,Q46
+R_MK0111911,Tech school programs,skills,Teamwork,Q46
+R_MK0111911,Tech school programs,skills,Critical thinking,Q46
+R_MK0111911,Tech school programs,skills,Leadership,Q46
+R_MK0115101,Tech school programs,skills,Teamwork,Q46
+R_MK0115101,Tech school programs,skills,Critical thinking,Q46
+R_MK0115101,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0115101,Tech school programs,skills,Design,Q46
+R_MK0115101,Tech school programs,skills,Experimenting,Q46
+R_MK0115101,Tech school programs,skills,Problem solving,Q46
+R_MK0116896,Tech school programs,skills,Communication,Q46
+R_MK0116896,Tech school programs,skills,Leadership,Q46
+R_MK0116896,Tech school programs,skills,Experimenting,Q46
+R_MK0116896,Tech school programs,skills,Problem solving,Q46
+R_MK0117597,Tech school programs,skills,Teamwork,Q46
+R_MK0117597,Tech school programs,skills,Leadership,Q46
+R_MK0117597,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0117597,Tech school programs,skills,Experimenting,Q46
+R_MK0120777,Tech school programs,skills,Communication,Q46
+R_MK0120777,Tech school programs,skills,Teamwork,Q46
+R_MK0120777,Tech school programs,skills,Critical thinking,Q46
+R_MK0120777,Tech school programs,skills,Design,Q46
+R_MK0120777,Tech school programs,skills,Experimenting,Q46
+R_MK0123377,Tech school programs,skills,Communication,Q46
+R_MK0123377,Tech school programs,skills,Critical thinking,Q46
+R_MK0123377,Tech school programs,skills,Experimenting,Q46
+R_MK0124835,Tech school programs,skills,Communication,Q46
+R_MK0124835,Tech school programs,skills,Teamwork,Q46
+R_MK0124835,Tech school programs,skills,Leadership,Q46
+R_MK0124835,Tech school programs,skills,Creative thinking,Q46
+R_MK0124835,Tech school programs,skills,Design,Q46
+R_MK0128763,Tech school programs,skills,Teamwork,Q46
+R_MK0128763,Tech school programs,skills,Critical thinking,Q46
+R_MK0128763,Tech school programs,skills,Experimenting,Q46
+R_MK0129148,Tech school programs,skills,Teamwork,Q46
+R_MK0129148,Tech school programs,skills,Creative thinking,Q46
+R_MK0130102,Tech school programs,skills,Communication,Q46
+R_MK0130102,Tech school programs,skills,Creative thinking,Q46
+R_MK0130102,Tech school programs,skills,Problem solving,Q46
+R_MK0132168,Tech school programs,skills,Communication,Q46
+R_MK0132168,Tech school programs,skills,Critical thinking,Q46
+R_MK0134295,Tech school programs,skills,Communication,Q46
+R_MK0134295,Tech school programs,skills,Critical thinking,Q46
+R_MK0134295,Tech school programs,skills,Creative thinking,Q46
+R_MK0134295,Tech school programs,skills,Experimenting,Q46
+R_MK0137222,Tech school programs,skills,Experimenting,Q46
+R_MK0138361,Tech school programs,skills,Communication,Q46
+R_MK0138361,Tech school programs,skills,Creative thinking,Q46
+R_MK0138361,Tech school programs,skills,Experimenting,Q46
+R_MK0138361,Tech school programs,skills,Problem solving,Q46
+R_MK0140966,Tech school programs,skills,Communication,Q46
+R_MK0140966,Tech school programs,skills,Teamwork,Q46
+R_MK0140966,Tech school programs,skills,Critical thinking,Q46
+R_MK0140966,Tech school programs,skills,Creative thinking,Q46
+R_MK0141468,Tech school programs,skills,Critical thinking,Q46
+R_MK0141468,Tech school programs,skills,Leadership,Q46
+R_MK0141468,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0141468,Tech school programs,skills,Problem solving,Q46
+R_MK0142343,Tech school programs,skills,Teamwork,Q46
+R_MK0142343,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0144860,Tech school programs,skills,Critical thinking,Q46
+R_MK0144860,Tech school programs,skills,Experimenting,Q46
+R_MK0147145,Tech school programs,skills,Teamwork,Q46
+R_MK0147145,Tech school programs,skills,Leadership,Q46
+R_MK0147145,Tech school programs,skills,Experimenting,Q46
+R_MK0147145,Tech school programs,skills,Problem solving,Q46
+R_MK0149622,Tech school programs,skills,Critical thinking,Q46
+R_MK0149622,Tech school programs,skills,Leadership,Q46
+R_MK0149622,Tech school programs,skills,Creative thinking,Q46
+R_MK0154144,Tech school programs,skills,Teamwork,Q46
+R_MK0154144,Tech school programs,skills,Critical thinking,Q46
+R_MK0155495,Tech school programs,skills,Communication,Q46
+R_MK0155495,Tech school programs,skills,Teamwork,Q46
+R_MK0155495,Tech school programs,skills,Experimenting,Q46
+R_MK0155495,Tech school programs,skills,Problem solving,Q46
+R_MK0158689,Tech school programs,skills,Experimenting,Q46
+R_MK0161479,Tech school programs,skills,Critical thinking,Q46
+R_MK0161479,Tech school programs,skills,Creative thinking,Q46
+R_MK0161479,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0161479,Tech school programs,skills,Experimenting,Q46
+R_MK0164642,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0164642,Tech school programs,skills,Problem solving,Q46
+R_MK0165992,Tech school programs,skills,Communication,Q46
+R_MK0165992,Tech school programs,skills,Creative thinking,Q46
+R_MK0165992,Tech school programs,skills,Design,Q46
+R_MK0165992,Tech school programs,skills,Experimenting,Q46
+R_MK0166521,Tech school programs,skills,Creative thinking,Q46
+R_MK0166521,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0166521,Tech school programs,skills,Design,Q46
+R_MK0168112,Tech school programs,skills,Leadership,Q46
+R_MK0168112,Tech school programs,skills,Creative thinking,Q46
+R_MK0168112,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0168112,Tech school programs,skills,Design,Q46
+R_MK0171638,Tech school programs,skills,Communication,Q46
+R_MK0171638,Tech school programs,skills,Leadership,Q46
+R_MK0179259,Tech school programs,skills,Responding flexibly to change,Q46
+R_MK0179259,Tech school programs,skills,Design,Q46
+R_MK0000490,Tech school programs,identity,A problem solver,Q76
+R_MK0000490,Tech school programs,identity,A designer,Q76
+R_MK0003799,Tech school programs,identity,A leader,Q76
+R_MK0006588,Tech school programs,identity,A good communicator,Q76
+R_MK0006588,Tech school programs,identity,A STEM person,Q76
+R_MK0006588,Tech school programs,identity,A problem solver,Q76
+R_MK0006588,Tech school programs,identity,A designer,Q76
+R_MK0007455,Tech school programs,identity,A STEM person,Q76
+R_MK0007455,Tech school programs,identity,A team player,Q76
+R_MK0007455,Tech school programs,identity,A designer,Q76
+R_MK0008438,Tech school programs,identity,A good communicator,Q76
+R_MK0008438,Tech school programs,identity,A STEM person,Q76
+R_MK0008438,Tech school programs,identity,A team player,Q76
+R_MK0008438,Tech school programs,identity,A designer,Q76
+R_MK0009873,Tech school programs,identity,A good communicator,Q76
+R_MK0009873,Tech school programs,identity,A problem solver,Q76
+R_MK0014844,Tech school programs,identity,A good communicator,Q76
+R_MK0014844,Tech school programs,identity,A STEM person,Q76
+R_MK0014844,Tech school programs,identity,A problem solver,Q76
+R_MK0014844,Tech school programs,identity,A designer,Q76
+R_MK0017999,Tech school programs,identity,A STEM person,Q76
+R_MK0017999,Tech school programs,identity,A problem solver,Q76
+R_MK0025998,Tech school programs,identity,A leader,Q76
+R_MK0027532,Tech school programs,identity,A designer,Q76
+R_MK0029613,Tech school programs,identity,A leader,Q76
+R_MK0031367,Tech school programs,identity,A STEM person,Q76
+R_MK0033904,Tech school programs,identity,A leader,Q76
+R_MK0033904,Tech school programs,identity,A STEM person,Q76
+R_MK0033904,Tech school programs,identity,A problem solver,Q76
+R_MK0033904,Tech school programs,identity,A team player,Q76
+R_MK0035898,Tech school programs,identity,A leader,Q76
+R_MK0035898,Tech school programs,identity,A STEM person,Q76
+R_MK0035898,Tech school programs,identity,A problem solver,Q76
+R_MK0035898,Tech school programs,identity,A team player,Q76
+R_MK0042313,Tech school programs,identity,A leader,Q76
+R_MK0042313,Tech school programs,identity,A problem solver,Q76
+R_MK0046739,Tech school programs,identity,A STEM person,Q76
+R_MK0046739,Tech school programs,identity,A designer,Q76
+R_MK0047565,Tech school programs,identity,A leader,Q76
+R_MK0047565,Tech school programs,identity,A good communicator,Q76
+R_MK0047565,Tech school programs,identity,A problem solver,Q76
+R_MK0047565,Tech school programs,identity,A team player,Q76
+R_MK0047565,Tech school programs,identity,A designer,Q76
+R_MK0048618,Tech school programs,identity,A problem solver,Q76
+R_MK0050485,Tech school programs,identity,A problem solver,Q76
+R_MK0052507,Tech school programs,identity,A good communicator,Q76
+R_MK0052507,Tech school programs,identity,A team player,Q76
+R_MK0052507,Tech school programs,identity,A designer,Q76
+R_MK0054491,Tech school programs,identity,A designer,Q76
+R_MK0056243,Tech school programs,identity,A leader,Q76
+R_MK0056243,Tech school programs,identity,A STEM person,Q76
+R_MK0056243,Tech school programs,identity,A designer,Q76
+R_MK0058187,Tech school programs,identity,A designer,Q76
+R_MK0061389,Tech school programs,identity,A leader,Q76
+R_MK0061389,Tech school programs,identity,A good communicator,Q76
+R_MK0061389,Tech school programs,identity,A STEM person,Q76
+R_MK0061389,Tech school programs,identity,A problem solver,Q76
+R_MK0061389,Tech school programs,identity,A team player,Q76
+R_MK0061389,Tech school programs,identity,A designer,Q76
+R_MK0064312,Tech school programs,identity,A team player,Q76
+R_MK0065971,Tech school programs,identity,A designer,Q76
+R_MK0068468,Tech school programs,identity,A good communicator,Q76
+R_MK0068468,Tech school programs,identity,A team player,Q76
+R_MK0068468,Tech school programs,identity,A designer,Q76
+R_MK0069966,Tech school programs,identity,A good communicator,Q76
+R_MK0069966,Tech school programs,identity,A problem solver,Q76
+R_MK0070349,Tech school programs,identity,A team player,Q76
+R_MK0070349,Tech school programs,identity,A designer,Q76
+R_MK0078823,Tech school programs,identity,A good communicator,Q76
+R_MK0078823,Tech school programs,identity,A problem solver,Q76
+R_MK0080759,Tech school programs,identity,A leader,Q76
+R_MK0080759,Tech school programs,identity,A team player,Q76
+R_MK0083877,Tech school programs,identity,A STEM person,Q76
+R_MK0083877,Tech school programs,identity,A designer,Q76
+R_MK0084645,Tech school programs,identity,A problem solver,Q76
+R_MK0086561,Tech school programs,identity,A STEM person,Q76
+R_MK0088710,Tech school programs,identity,A STEM person,Q76
+R_MK0088710,Tech school programs,identity,A problem solver,Q76
+R_MK0088710,Tech school programs,identity,A designer,Q76
+R_MK0091716,Tech school programs,identity,A leader,Q76
+R_MK0091716,Tech school programs,identity,A good communicator,Q76
+R_MK0094190,Tech school programs,identity,A problem solver,Q76
+R_MK0094190,Tech school programs,identity,A designer,Q76
+R_MK0096137,Tech school programs,identity,A leader,Q76
+R_MK0096137,Tech school programs,identity,A STEM person,Q76
+R_MK0096137,Tech school programs,identity,A designer,Q76
+R_MK0098826,Tech school programs,identity,A team player,Q76
+R_MK0099981,Tech school programs,identity,A leader,Q76
+R_MK0099981,Tech school programs,identity,A good communicator,Q76
+R_MK0099981,Tech school programs,identity,A STEM person,Q76
+R_MK0099981,Tech school programs,identity,A designer,Q76
+R_MK0110205,Tech school programs,identity,A designer,Q76
+R_MK0111911,Tech school programs,identity,A leader,Q76
+R_MK0115101,Tech school programs,identity,A leader,Q76
+R_MK0115101,Tech school programs,identity,A good communicator,Q76
+R_MK0116896,Tech school programs,identity,A STEM person,Q76
+R_MK0116896,Tech school programs,identity,A team player,Q76
+R_MK0117597,Tech school programs,identity,A STEM person,Q76
+R_MK0120777,Tech school programs,identity,A leader,Q76
+R_MK0120777,Tech school programs,identity,A problem solver,Q76
+R_MK0123377,Tech school programs,identity,A leader,Q76
+R_MK0123377,Tech school programs,identity,A good communicator,Q76
+R_MK0123377,Tech school programs,identity,A STEM person,Q76
+R_MK0123377,Tech school programs,identity,A problem solver,Q76
+R_MK0123377,Tech school programs,identity,A team player,Q76
+R_MK0123377,Tech school programs,identity,A designer,Q76
+R_MK0124835,Tech school programs,identity,A good communicator,Q76
+R_MK0128763,Tech school programs,identity,A designer,Q76
+R_MK0129148,Tech school programs,identity,A leader,Q76
+R_MK0129148,Tech school programs,identity,A good communicator,Q76
+R_MK0129148,Tech school programs,identity,A STEM person,Q76
+R_MK0129148,Tech school programs,identity,A designer,Q76
+R_MK0130102,Tech school programs,identity,A team player,Q76
+R_MK0130102,Tech school programs,identity,A designer,Q76
+R_MK0132168,Tech school programs,identity,A leader,Q76
+R_MK0132168,Tech school programs,identity,A problem solver,Q76
+R_MK0132168,Tech school programs,identity,A team player,Q76
+R_MK0134295,Tech school programs,identity,A leader,Q76
+R_MK0134295,Tech school programs,identity,A good communicator,Q76
+R_MK0134295,Tech school programs,identity,A problem solver,Q76
+R_MK0134295,Tech school programs,identity,A team player,Q76
+R_MK0137222,Tech school programs,identity,A team player,Q76
+R_MK0138361,Tech school programs,identity,A problem solver,Q76
+R_MK0140966,Tech school programs,identity,A leader,Q76
+R_MK0141468,Tech school programs,identity,A leader,Q76
+R_MK0141468,Tech school programs,identity,A good communicator,Q76
+R_MK0141468,Tech school programs,identity,A STEM person,Q76
+R_MK0141468,Tech school programs,identity,A team player,Q76
+R_MK0142343,Tech school programs,identity,A leader,Q76
+R_MK0144860,Tech school programs,identity,A STEM person,Q76
+R_MK0144860,Tech school programs,identity,A problem solver,Q76
+R_MK0147145,Tech school programs,identity,A leader,Q76
+R_MK0149622,Tech school programs,identity,A leader,Q76
+R_MK0149622,Tech school programs,identity,A STEM person,Q76
+R_MK0154144,Tech school programs,identity,A good communicator,Q76
+R_MK0154144,Tech school programs,identity,A team player,Q76
+R_MK0155495,Tech school programs,identity,A designer,Q76
+R_MK0158689,Tech school programs,identity,A leader,Q76
+R_MK0158689,Tech school programs,identity,A good communicator,Q76
+R_MK0158689,Tech school programs,identity,A designer,Q76
+R_MK0161479,Tech school programs,identity,A STEM person,Q76
+R_MK0161479,Tech school programs,identity,A team player,Q76
+R_MK0164642,Tech school programs,identity,A good communicator,Q76
+R_MK0165992,Tech school programs,identity,A leader,Q76
+R_MK0165992,Tech school programs,identity,A problem solver,Q76
+R_MK0166521,Tech school programs,identity,A STEM person,Q76
+R_MK0168112,Tech school programs,identity,A good communicator,Q76
+R_MK0168112,Tech school programs,identity,A STEM person,Q76
+R_MK0168112,Tech school programs,identity,A team player,Q76
+R_MK0171638,Tech school programs,identity,A leader,Q76
+R_MK0179259,Tech school programs,identity,A problem solver,Q76
+R_MK0000490,University programs,skills,Leadership,Q55
+R_MK0000490,University programs,skills,Design,Q55
+R_MK0001420,University programs,skills,Teamwork,Q55
+R_MK0001420,University programs,skills,Creative thinking,Q55
+R_MK0001420,University programs,skills,Experimenting,Q55
+R_MK0001420,University programs,skills,Problem solving,Q55
+R_MK0002929,University programs,skills,Communication,Q55
+R_MK0002929,University programs,skills,Teamwork,Q55
+R_MK0002929,University programs,skills,Critical thinking,Q55
+R_MK0002929,University programs,skills,Creative thinking,Q55
+R_MK0002929,University programs,skills,Experimenting,Q55
+R_MK0007455,University programs,skills,Design,Q55
+R_MK0011479,University programs,skills,Communication,Q55
+R_MK0012823,University programs,skills,Communication,Q55
+R_MK0012823,University programs,skills,Leadership,Q55
+R_MK0012823,University programs,skills,Creative thinking,Q55
+R_MK0012823,University programs,skills,Experimenting,Q55
+R_MK0013558,University programs,skills,Communication,Q55
+R_MK0013558,University programs,skills,Teamwork,Q55
+R_MK0013558,University programs,skills,Creative thinking,Q55
+R_MK0013558,University programs,skills,Design,Q55
+R_MK0013558,University programs,skills,Problem solving,Q55
+R_MK0019930,University programs,skills,Leadership,Q55
+R_MK0026424,University programs,skills,Critical thinking,Q55
+R_MK0026424,University programs,skills,Responding flexibly to change,Q55
+R_MK0026424,University programs,skills,Design,Q55
+R_MK0029613,University programs,skills,Responding flexibly to change,Q55
+R_MK0029613,University programs,skills,Design,Q55
+R_MK0029613,University programs,skills,Problem solving,Q55
+R_MK0032671,University programs,skills,Critical thinking,Q55
+R_MK0032671,University programs,skills,Leadership,Q55
+R_MK0032671,University programs,skills,Creative thinking,Q55
+R_MK0032671,University programs,skills,Design,Q55
+R_MK0032671,University programs,skills,Experimenting,Q55
+R_MK0034746,University programs,skills,Responding flexibly to change,Q55
+R_MK0034746,University programs,skills,Experimenting,Q55
+R_MK0034746,University programs,skills,Problem solving,Q55
+R_MK0043999,University programs,skills,Leadership,Q55
+R_MK0043999,University programs,skills,Design,Q55
+R_MK0044408,University programs,skills,Responding flexibly to change,Q55
+R_MK0044408,University programs,skills,Design,Q55
+R_MK0044408,University programs,skills,Experimenting,Q55
+R_MK0045275,University programs,skills,Teamwork,Q55
+R_MK0045275,University programs,skills,Critical thinking,Q55
+R_MK0045275,University programs,skills,Leadership,Q55
+R_MK0045275,University programs,skills,Creative thinking,Q55
+R_MK0045275,University programs,skills,Design,Q55
+R_MK0045275,University programs,skills,Experimenting,Q55
+R_MK0046739,University programs,skills,Communication,Q55
+R_MK0046739,University programs,skills,Creative thinking,Q55
+R_MK0046739,University programs,skills,Responding flexibly to change,Q55
+R_MK0051316,University programs,skills,Teamwork,Q55
+R_MK0051316,University programs,skills,Leadership,Q55
+R_MK0051316,University programs,skills,Design,Q55
+R_MK0051316,University programs,skills,Experimenting,Q55
+R_MK0053554,University programs,skills,Communication,Q55
+R_MK0053554,University programs,skills,Responding flexibly to change,Q55
+R_MK0054491,University programs,skills,Communication,Q55
+R_MK0054491,University programs,skills,Design,Q55
+R_MK0054491,University programs,skills,Experimenting,Q55
+R_MK0054491,University programs,skills,Problem solving,Q55
+R_MK0055575,University programs,skills,Teamwork,Q55
+R_MK0055575,University programs,skills,Creative thinking,Q55
+R_MK0055575,University programs,skills,Responding flexibly to change,Q55
+R_MK0055575,University programs,skills,Experimenting,Q55
+R_MK0068468,University programs,skills,Communication,Q55
+R_MK0068468,University programs,skills,Teamwork,Q55
+R_MK0068468,University programs,skills,Creative thinking,Q55
+R_MK0068468,University programs,skills,Responding flexibly to change,Q55
+R_MK0068468,University programs,skills,Experimenting,Q55
+R_MK0068468,University programs,skills,Problem solving,Q55
+R_MK0070349,University programs,skills,Communication,Q55
+R_MK0070349,University programs,skills,Experimenting,Q55
+R_MK0071164,University programs,skills,Teamwork,Q55
+R_MK0073957,University programs,skills,Critical thinking,Q55
+R_MK0076859,University programs,skills,Teamwork,Q55
+R_MK0076859,University programs,skills,Leadership,Q55
+R_MK0076859,University programs,skills,Design,Q55
+R_MK0077148,University programs,skills,Experimenting,Q55
+R_MK0080759,University programs,skills,Teamwork,Q55
+R_MK0080759,University programs,skills,Responding flexibly to change,Q55
+R_MK0080759,University programs,skills,Problem solving,Q55
+R_MK0087342,University programs,skills,Teamwork,Q55
+R_MK0087342,University programs,skills,Critical thinking,Q55
+R_MK0087342,University programs,skills,Creative thinking,Q55
+R_MK0087342,University programs,skills,Experimenting,Q55
+R_MK0088710,University programs,skills,Communication,Q55
+R_MK0088710,University programs,skills,Experimenting,Q55
+R_MK0088710,University programs,skills,Problem solving,Q55
+R_MK0089583,University programs,skills,Design,Q55
+R_MK0090307,University programs,skills,Creative thinking,Q55
+R_MK0091716,University programs,skills,Teamwork,Q55
+R_MK0091716,University programs,skills,Critical thinking,Q55
+R_MK0091716,University programs,skills,Creative thinking,Q55
+R_MK0091716,University programs,skills,Experimenting,Q55
+R_MK0094190,University programs,skills,Creative thinking,Q55
+R_MK0094190,University programs,skills,Design,Q55
+R_MK0094190,University programs,skills,Experimenting,Q55
+R_MK0098826,University programs,skills,Experimenting,Q55
+R_MK0100924,University programs,skills,Communication,Q55
+R_MK0100924,University programs,skills,Creative thinking,Q55
+R_MK0100924,University programs,skills,Design,Q55
+R_MK0100924,University programs,skills,Experimenting,Q55
+R_MK0100924,University programs,skills,Problem solving,Q55
+R_MK0101840,University programs,skills,Creative thinking,Q55
+R_MK0101840,University programs,skills,Responding flexibly to change,Q55
+R_MK0102464,University programs,skills,Communication,Q55
+R_MK0102464,University programs,skills,Teamwork,Q55
+R_MK0102464,University programs,skills,Creative thinking,Q55
+R_MK0102464,University programs,skills,Responding flexibly to change,Q55
+R_MK0102464,University programs,skills,Problem solving,Q55
+R_MK0108204,University programs,skills,Critical thinking,Q55
+R_MK0108204,University programs,skills,Leadership,Q55
+R_MK0108204,University programs,skills,Creative thinking,Q55
+R_MK0108204,University programs,skills,Experimenting,Q55
+R_MK0108204,University programs,skills,Problem solving,Q55
+R_MK0121824,University programs,skills,Teamwork,Q55
+R_MK0121824,University programs,skills,Responding flexibly to change,Q55
+R_MK0121824,University programs,skills,Design,Q55
+R_MK0121824,University programs,skills,Problem solving,Q55
+R_MK0122299,University programs,skills,Critical thinking,Q55
+R_MK0122299,University programs,skills,Leadership,Q55
+R_MK0122299,University programs,skills,Problem solving,Q55
+R_MK0125986,University programs,skills,Teamwork,Q55
+R_MK0125986,University programs,skills,Leadership,Q55
+R_MK0125986,University programs,skills,Creative thinking,Q55
+R_MK0125986,University programs,skills,Problem solving,Q55
+R_MK0128763,University programs,skills,Communication,Q55
+R_MK0128763,University programs,skills,Teamwork,Q55
+R_MK0128763,University programs,skills,Design,Q55
+R_MK0128763,University programs,skills,Problem solving,Q55
+R_MK0134295,University programs,skills,Leadership,Q55
+R_MK0134295,University programs,skills,Creative thinking,Q55
+R_MK0134295,University programs,skills,Design,Q55
+R_MK0134295,University programs,skills,Experimenting,Q55
+R_MK0135330,University programs,skills,Communication,Q55
+R_MK0135330,University programs,skills,Creative thinking,Q55
+R_MK0135330,University programs,skills,Responding flexibly to change,Q55
+R_MK0135330,University programs,skills,Experimenting,Q55
+R_MK0135330,University programs,skills,Problem solving,Q55
+R_MK0139904,University programs,skills,Communication,Q55
+R_MK0139904,University programs,skills,Teamwork,Q55
+R_MK0139904,University programs,skills,Creative thinking,Q55
+R_MK0139904,University programs,skills,Responding flexibly to change,Q55
+R_MK0142343,University programs,skills,Teamwork,Q55
+R_MK0142343,University programs,skills,Problem solving,Q55
+R_MK0143612,University programs,skills,Teamwork,Q55
+R_MK0143612,University programs,skills,Critical thinking,Q55
+R_MK0143612,University programs,skills,Leadership,Q55
+R_MK0143612,University programs,skills,Responding flexibly to change,Q55
+R_MK0143612,University programs,skills,Design,Q55
+R_MK0143612,University programs,skills,Experimenting,Q55
+R_MK0152162,University programs,skills,Responding flexibly to change,Q55
+R_MK0152162,University programs,skills,Problem solving,Q55
+R_MK0155495,University programs,skills,Communication,Q55
+R_MK0155495,University programs,skills,Teamwork,Q55
+R_MK0155495,University programs,skills,Creative thinking,Q55
+R_MK0155495,University programs,skills,Design,Q55
+R_MK0155495,University programs,skills,Experimenting,Q55
+R_MK0157486,University programs,skills,Critical thinking,Q55
+R_MK0157486,University programs,skills,Creative thinking,Q55
+R_MK0157486,University programs,skills,Experimenting,Q55
+R_MK0163738,University programs,skills,Critical thinking,Q55
+R_MK0163738,University programs,skills,Creative thinking,Q55
+R_MK0163738,University programs,skills,Responding flexibly to change,Q55
+R_MK0167936,University programs,skills,Creative thinking,Q55
+R_MK0167936,University programs,skills,Responding flexibly to change,Q55
+R_MK0168112,University programs,skills,Design,Q55
+R_MK0168112,University programs,skills,Experimenting,Q55
+R_MK0168112,University programs,skills,Problem solving,Q55
+R_MK0169179,University programs,skills,Critical thinking,Q55
+R_MK0169179,University programs,skills,Leadership,Q55
+R_MK0169179,University programs,skills,Responding flexibly to change,Q55
+R_MK0169179,University programs,skills,Design,Q55
+R_MK0169179,University programs,skills,Experimenting,Q55
+R_MK0176592,University programs,skills,Communication,Q55
+R_MK0176592,University programs,skills,Teamwork,Q55
+R_MK0176592,University programs,skills,Leadership,Q55
+R_MK0176592,University programs,skills,Problem solving,Q55
+R_MK0179259,University programs,skills,Responding flexibly to change,Q55
+R_MK0179259,University programs,skills,Problem solving,Q55
+R_MK0000490,University programs,identity,A STEM person,Q77
+R_MK0001420,University programs,identity,A good communicator,Q77
+R_MK0002929,University programs,identity,A leader,Q77
+R_MK0002929,University programs,identity,A STEM person,Q77
+R_MK0002929,University programs,identity,A problem solver,Q77
+R_MK0002929,University programs,identity,A team player,Q77
+R_MK0007455,University programs,identity,A leader,Q77
+R_MK0007455,University programs,identity,A good communicator,Q77
+R_MK0007455,University programs,identity,A problem solver,Q77
+R_MK0011479,University programs,identity,A good communicator,Q77
+R_MK0011479,University programs,identity,A team player,Q77
+R_MK0012823,University programs,identity,A good communicator,Q77
+R_MK0012823,University programs,identity,A problem solver,Q77
+R_MK0012823,University programs,identity,A team player,Q77
+R_MK0013558,University programs,identity,A good communicator,Q77
+R_MK0013558,University programs,identity,A problem solver,Q77
+R_MK0013558,University programs,identity,A designer,Q77
+R_MK0019930,University programs,identity,A problem solver,Q77
+R_MK0026424,University programs,identity,A STEM person,Q77
+R_MK0026424,University programs,identity,A problem solver,Q77
+R_MK0029613,University programs,identity,A good communicator,Q77
+R_MK0029613,University programs,identity,A designer,Q77
+R_MK0032671,University programs,identity,A good communicator,Q77
+R_MK0032671,University programs,identity,A STEM person,Q77
+R_MK0032671,University programs,identity,A designer,Q77
+R_MK0034746,University programs,identity,A leader,Q77
+R_MK0034746,University programs,identity,A problem solver,Q77
+R_MK0043999,University programs,identity,A team player,Q77
+R_MK0044408,University programs,identity,A designer,Q77
+R_MK0045275,University programs,identity,A leader,Q77
+R_MK0045275,University programs,identity,A STEM person,Q77
+R_MK0046739,University programs,identity,A leader,Q77
+R_MK0046739,University programs,identity,A problem solver,Q77
+R_MK0051316,University programs,identity,A leader,Q77
+R_MK0051316,University programs,identity,A STEM person,Q77
+R_MK0051316,University programs,identity,A problem solver,Q77
+R_MK0053554,University programs,identity,A STEM person,Q77
+R_MK0053554,University programs,identity,A problem solver,Q77
+R_MK0053554,University programs,identity,A team player,Q77
+R_MK0054491,University programs,identity,A leader,Q77
+R_MK0054491,University programs,identity,A good communicator,Q77
+R_MK0054491,University programs,identity,A problem solver,Q77
+R_MK0054491,University programs,identity,A team player,Q77
+R_MK0055575,University programs,identity,A leader,Q77
+R_MK0055575,University programs,identity,A good communicator,Q77
+R_MK0055575,University programs,identity,A STEM person,Q77
+R_MK0055575,University programs,identity,A team player,Q77
+R_MK0068468,University programs,identity,A good communicator,Q77
+R_MK0070349,University programs,identity,A leader,Q77
+R_MK0070349,University programs,identity,A STEM person,Q77
+R_MK0070349,University programs,identity,A problem solver,Q77
+R_MK0070349,University programs,identity,A team player,Q77
+R_MK0070349,University programs,identity,A designer,Q77
+R_MK0071164,University programs,identity,A leader,Q77
+R_MK0071164,University programs,identity,A good communicator,Q77
+R_MK0071164,University programs,identity,A STEM person,Q77
+R_MK0071164,University programs,identity,A team player,Q77
+R_MK0073957,University programs,identity,A STEM person,Q77
+R_MK0076859,University programs,identity,A leader,Q77
+R_MK0076859,University programs,identity,A good communicator,Q77
+R_MK0076859,University programs,identity,A STEM person,Q77
+R_MK0076859,University programs,identity,A problem solver,Q77
+R_MK0077148,University programs,identity,A STEM person,Q77
+R_MK0077148,University programs,identity,A problem solver,Q77
+R_MK0077148,University programs,identity,A team player,Q77
+R_MK0080759,University programs,identity,A leader,Q77
+R_MK0080759,University programs,identity,A designer,Q77
+R_MK0087342,University programs,identity,A leader,Q77
+R_MK0088710,University programs,identity,A STEM person,Q77
+R_MK0089583,University programs,identity,A leader,Q77
+R_MK0089583,University programs,identity,A good communicator,Q77
+R_MK0090307,University programs,identity,A good communicator,Q77
+R_MK0091716,University programs,identity,A leader,Q77
+R_MK0091716,University programs,identity,A STEM person,Q77
+R_MK0091716,University programs,identity,A problem solver,Q77
+R_MK0094190,University programs,identity,A good communicator,Q77
+R_MK0094190,University programs,identity,A STEM person,Q77
+R_MK0098826,University programs,identity,A leader,Q77
+R_MK0098826,University programs,identity,A team player,Q77
+R_MK0098826,University programs,identity,A designer,Q77
+R_MK0100924,University programs,identity,A STEM person,Q77
+R_MK0100924,University programs,identity,A problem solver,Q77
+R_MK0101840,University programs,identity,A leader,Q77
+R_MK0101840,University programs,identity,A good communicator,Q77
+R_MK0101840,University programs,identity,A designer,Q77
+R_MK0102464,University programs,identity,A leader,Q77
+R_MK0108204,University programs,identity,A leader,Q77
+R_MK0108204,University programs,identity,A problem solver,Q77
+R_MK0108204,University programs,identity,A designer,Q77
+R_MK0121824,University programs,identity,A leader,Q77
+R_MK0121824,University programs,identity,A STEM person,Q77
+R_MK0121824,University programs,identity,A problem solver,Q77
+R_MK0122299,University programs,identity,A good communicator,Q77
+R_MK0125986,University programs,identity,A leader,Q77
+R_MK0125986,University programs,identity,A problem solver,Q77
+R_MK0128763,University programs,identity,A STEM person,Q77
+R_MK0128763,University programs,identity,A problem solver,Q77
+R_MK0134295,University programs,identity,A leader,Q77
+R_MK0134295,University programs,identity,A team player,Q77
+R_MK0134295,University programs,identity,A designer,Q77
+R_MK0135330,University programs,identity,A team player,Q77
+R_MK0139904,University programs,identity,A leader,Q77
+R_MK0142343,University programs,identity,A team player,Q77
+R_MK0143612,University programs,identity,A good communicator,Q77
+R_MK0143612,University programs,identity,A problem solver,Q77
+R_MK0143612,University programs,identity,A designer,Q77
+R_MK0152162,University programs,identity,A good communicator,Q77
+R_MK0155495,University programs,identity,A good communicator,Q77
+R_MK0155495,University programs,identity,A problem solver,Q77
+R_MK0157486,University programs,identity,A good communicator,Q77
+R_MK0157486,University programs,identity,A designer,Q77
+R_MK0163738,University programs,identity,A STEM person,Q77
+R_MK0163738,University programs,identity,A team player,Q77
+R_MK0163738,University programs,identity,A designer,Q77
+R_MK0167936,University programs,identity,A STEM person,Q77
+R_MK0167936,University programs,identity,A team player,Q77
+R_MK0168112,University programs,identity,A good communicator,Q77
+R_MK0168112,University programs,identity,A STEM person,Q77
+R_MK0168112,University programs,identity,A team player,Q77
+R_MK0169179,University programs,identity,A leader,Q77
+R_MK0169179,University programs,identity,A good communicator,Q77
+R_MK0169179,University programs,identity,A problem solver,Q77
+R_MK0169179,University programs,identity,A designer,Q77
+R_MK0176592,University programs,identity,A good communicator,Q77
+R_MK0176592,University programs,identity,A problem solver,Q77
+R_MK0179259,University programs,identity,A leader,Q77
+R_MK0179259,University programs,identity,A team player,Q77
+R_MK0001420,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0001420,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0001420,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0001420,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0001420,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0002929,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0002929,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0002929,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0005158,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0006588,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0006588,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0006588,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0006588,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0010513,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0010513,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0012823,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0012823,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0012823,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0012823,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0015743,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0015743,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0015743,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0015743,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0015743,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0017999,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0017999,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0018956,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0018956,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0018956,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0018956,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0018956,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0019930,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0020810,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0020810,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0020810,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0021392,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0021392,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0021392,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0022179,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0022179,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0022179,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0022179,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0025998,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0026424,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0026424,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0026424,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0026424,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0027532,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0027532,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0027532,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0027532,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0028706,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0028706,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0029613,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0029613,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0029613,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0030869,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0030869,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0030869,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0030869,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0030869,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0031367,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0031367,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0033904,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0033904,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0033904,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0036376,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0036376,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0036376,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0036376,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0041355,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0041355,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0048618,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0048618,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0049670,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0050485,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0050485,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0050485,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0051316,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0051316,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0051316,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0053554,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0053554,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0053554,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0055575,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0055575,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0057652,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0057652,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0057652,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0057652,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0058187,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0058187,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0058187,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0059808,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0059808,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0059808,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0061389,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0061389,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0061389,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0061389,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0062732,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0062732,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0062732,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0064312,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0064312,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0064312,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0067782,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0067782,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0068468,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0068468,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0068468,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0069966,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0069966,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0070349,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0074166,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0074166,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0074166,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0075610,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0075610,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0075610,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0075610,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0079985,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0079985,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0081775,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0081775,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0081775,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0082895,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0082895,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0082895,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0083877,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0083877,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0083877,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0083877,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0083877,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0084645,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0084645,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0085820,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0085820,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0085820,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0085820,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0085820,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0086561,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0086561,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0086561,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0086561,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0088710,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0089583,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0089583,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0089583,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0089583,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0091716,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0091716,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0091716,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0091716,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0093864,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0093864,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0093864,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0093864,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0094190,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0094190,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0094190,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0094190,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0095545,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0095545,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0096137,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0096137,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0097211,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0097211,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0098826,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0098826,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0099981,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0099981,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0099981,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0099981,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0100924,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0100924,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0100924,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0102464,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0102464,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0102464,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0103297,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0103297,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0103297,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0103297,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0103297,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0104887,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0104887,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0104887,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0104887,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0106136,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0106136,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0106136,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0107629,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0107629,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0107629,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0113534,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0113534,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0114340,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0114340,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0115101,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0115101,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0117597,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0119937,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0120777,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0120777,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0120777,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0121824,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0121824,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0121824,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0124835,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0124835,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0125986,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0125986,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0125986,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0125986,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0125986,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0125986,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0126334,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0126334,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0126334,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0126334,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0127356,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0127356,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0127356,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0127356,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0129148,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0129148,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0129148,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0129148,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0130102,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0130102,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0130102,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0130102,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0130102,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0131540,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0131540,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0132168,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0132168,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0132168,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0132168,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0133624,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0133624,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0133624,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0134295,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0134295,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0134295,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0135330,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0135330,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0137222,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0137222,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0137222,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0137222,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0139904,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0139904,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0139904,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0140966,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0141468,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0144860,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0145650,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0145650,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0145650,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0145650,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0145650,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0146961,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0146961,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0146961,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0146961,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0147145,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0147145,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0149622,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0149622,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0151723,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0151723,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0152162,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0152162,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0154144,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0154144,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0154144,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0155495,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0155495,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0155495,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0155495,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0158689,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0158689,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0158689,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0158689,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0160688,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0160688,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0160688,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0162960,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0162960,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0163738,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0163738,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0163738,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0163738,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0163738,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0164642,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0164642,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0165992,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0165992,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0165992,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0168112,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0168112,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0168112,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0168112,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0169179,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0169179,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0170452,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0170452,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0170452,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0170452,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0170452,Girls as Leaders in STEM program,skills,Problem solving,Q64
+R_MK0172581,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0173433,Girls as Leaders in STEM program,skills,Communication,Q64
+R_MK0173433,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0174555,Girls as Leaders in STEM program,skills,Critical thinking,Q64
+R_MK0174555,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0175827,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0175827,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0175827,Girls as Leaders in STEM program,skills,Design,Q64
+R_MK0176592,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0177728,Girls as Leaders in STEM program,skills,Teamwork,Q64
+R_MK0177728,Girls as Leaders in STEM program,skills,Creative thinking,Q64
+R_MK0177728,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0179259,Girls as Leaders in STEM program,skills,Leadership,Q64
+R_MK0179259,Girls as Leaders in STEM program,skills,Responding flexibly to change,Q64
+R_MK0179259,Girls as Leaders in STEM program,skills,Experimenting,Q64
+R_MK0001420,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0002929,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0002929,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0002929,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0005158,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0006588,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0006588,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0006588,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0006588,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0010513,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0012823,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0012823,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0015743,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0015743,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0017999,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0017999,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0017999,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0018956,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0019930,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0019930,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0020810,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0020810,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0021392,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0022179,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0025998,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0026424,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0026424,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0027532,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0028706,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0029613,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0030869,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0031367,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0033904,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0033904,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0033904,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0033904,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0036376,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0036376,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0036376,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0041355,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0041355,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0041355,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0041355,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0048618,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0048618,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0048618,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0048618,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0049670,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0050485,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0051316,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0051316,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0051316,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0051316,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0053554,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0053554,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0053554,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0055575,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0055575,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0055575,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0057652,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0058187,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0058187,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0059808,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0059808,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0061389,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0061389,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0061389,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0062732,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0062732,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0062732,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0064312,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0067782,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0067782,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0068468,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0069966,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0069966,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0069966,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0070349,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0074166,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0074166,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0075610,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0075610,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0079985,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0081775,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0081775,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0081775,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0081775,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0082895,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0082895,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0083877,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0084645,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0084645,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0084645,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0085820,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0085820,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0085820,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0085820,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0086561,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0086561,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0088710,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0088710,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0089583,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0089583,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0091716,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0091716,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0093864,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0093864,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0093864,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0094190,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0094190,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0095545,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0095545,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0095545,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0095545,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0096137,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0096137,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0097211,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0097211,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0097211,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0098826,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0098826,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0099981,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0099981,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0099981,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0099981,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0100924,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0100924,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0102464,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0102464,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0102464,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0102464,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0103297,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0103297,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0104887,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0104887,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0106136,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0106136,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0107629,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0107629,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0107629,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0113534,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0114340,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0114340,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0115101,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0117597,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0117597,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0119937,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0119937,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0120777,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0120777,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0120777,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0120777,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0121824,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0121824,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0124835,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0124835,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0124835,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0125986,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0125986,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0126334,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0126334,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0126334,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0126334,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0126334,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0127356,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0127356,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0127356,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0129148,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0129148,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0129148,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0129148,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0130102,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0130102,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0130102,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0131540,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0132168,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0132168,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0133624,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0133624,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0134295,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0134295,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0135330,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0137222,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0139904,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0139904,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0139904,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0140966,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0141468,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0141468,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0141468,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0144860,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0145650,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0145650,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0146961,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0146961,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0147145,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0147145,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0149622,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0149622,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0149622,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0151723,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0151723,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0152162,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0154144,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0155495,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0155495,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0155495,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0158689,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0160688,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0162960,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0162960,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0163738,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0163738,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0163738,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0164642,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0165992,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0165992,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0168112,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0168112,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0168112,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0168112,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0168112,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0169179,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0169179,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0169179,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0170452,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0170452,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0172581,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0172581,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0173433,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0173433,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0173433,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0174555,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0175827,Girls as Leaders in STEM program,identity,A leader,Q78
+R_MK0175827,Girls as Leaders in STEM program,identity,A good communicator,Q78
+R_MK0175827,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0175827,Girls as Leaders in STEM program,identity,A designer,Q78
+R_MK0176592,Girls as Leaders in STEM program,identity,A team player,Q78
+R_MK0177728,Girls as Leaders in STEM program,identity,A STEM person,Q78
+R_MK0177728,Girls as Leaders in STEM program,identity,A problem solver,Q78
+R_MK0179259,Girls as Leaders in STEM program,identity,A STEM person,Q78

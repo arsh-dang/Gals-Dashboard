@@ -13,7 +13,8 @@
 
   document.getElementById('open-text-content').style.display = '';
 
-  const state = { question: '', region: '', activity: '' };
+  const PAGE_SIZE = 50;
+  const state = { question: '', region: '', activity: '', page: 0 };
 
   const questionSelect = document.getElementById('filter-question');
   meta.openText.questions.forEach((q) => {
@@ -41,13 +42,14 @@
       activitySelect.appendChild(opt);
     });
 
-  questionSelect.addEventListener('change', () => { state.question = questionSelect.value; render(); });
-  regionSelect.addEventListener('change', () => { state.region = regionSelect.value; render(); });
-  activitySelect.addEventListener('change', () => { state.activity = activitySelect.value; render(); });
+  questionSelect.addEventListener('change', () => { state.question = questionSelect.value; state.page = 0; render(); });
+  regionSelect.addEventListener('change', () => { state.region = regionSelect.value; state.page = 0; render(); });
+  activitySelect.addEventListener('change', () => { state.activity = activitySelect.value; state.page = 0; render(); });
   document.getElementById('filter-reset').addEventListener('click', () => {
     state.question = '';
     state.region = '';
     state.activity = '';
+    state.page = 0;
     questionSelect.value = '';
     regionSelect.value = '';
     activitySelect.value = '';
@@ -63,9 +65,22 @@
     });
   }
 
+  // A real data drop runs into the thousands of rows - unpaginated, that's
+  // an unusable wall of text (and slow to render) regardless of how well
+  // the filters narrow it down. 50 rows per page keeps the list scannable.
   function render() {
     const rows = filteredRows();
-    document.getElementById('filter-status').textContent = `Showing ${rows.length} of ${openText.length} responses`;
+    const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+    state.page = Math.min(state.page, totalPages - 1);
+    const start = state.page * PAGE_SIZE;
+    const pageRows = rows.slice(start, start + PAGE_SIZE);
+
+    const status = document.getElementById('filter-status');
+    if (rows.length === 0) {
+      status.textContent = `Showing 0 of ${openText.length} responses`;
+    } else {
+      status.textContent = `Showing ${start + 1} to ${Math.min(start + PAGE_SIZE, rows.length)} of ${rows.length} responses (filtered from ${openText.length} total)`;
+    }
 
     const container = document.getElementById('open-text-list');
     container.innerHTML = '';
@@ -78,12 +93,48 @@
         { label: 'Activities (context)', value: (d) => (d.activityTypes.length ? d.activityTypes.join(', ') : 'N/A') },
         { label: 'Theme', value: (d) => d.theme || 'Not yet coded' },
       ],
-      rows,
+      rows: pageRows,
     });
     // The data table is normally a <details> disclosure behind a chart;
-    // here the table IS the content, so open it by default.
+    // here the table IS the content, so force it open and hide the
+    // "Show data table" toggle - leaving it visible would suggest this is
+    // optional supporting detail rather than the whole page.
     const details = container.querySelector('details');
-    if (details) details.open = true;
+    if (details) {
+      details.open = true;
+      const summary = details.querySelector('summary');
+      if (summary) summary.style.display = 'none';
+    }
+
+    renderPager(totalPages);
+  }
+
+  function renderPager(totalPages) {
+    const pager = document.getElementById('open-text-pager');
+    pager.innerHTML = '';
+    if (totalPages <= 1) return;
+
+    const prev = document.createElement('button');
+    prev.type = 'button';
+    prev.className = 'pager__button';
+    prev.textContent = 'Previous';
+    prev.disabled = state.page === 0;
+    prev.addEventListener('click', () => { state.page -= 1; render(); });
+
+    const status = document.createElement('span');
+    status.className = 'pager__status';
+    status.textContent = `Page ${state.page + 1} of ${totalPages}`;
+
+    const next = document.createElement('button');
+    next.type = 'button';
+    next.className = 'pager__button';
+    next.textContent = 'Next';
+    next.disabled = state.page >= totalPages - 1;
+    next.addEventListener('click', () => { state.page += 1; render(); });
+
+    pager.appendChild(prev);
+    pager.appendChild(status);
+    pager.appendChild(next);
   }
 
   render();
