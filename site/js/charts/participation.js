@@ -98,7 +98,11 @@
   function renderSuppressionGrid(container, respondents, meta) {
     container.innerHTML = '';
     const schoolRows = respondents.filter((r) => r.isSchoolStudent && r.schoolLevel);
-    const levels = YEAR_ORDER.filter((lvl) => schoolRows.some((r) => r.schoolLevel === lvl));
+    // Always show every year level, not just ones with current respondents,
+    // so a future data update that adds Year 11/12 students shows up here
+    // with no code change - an empty year reads as a suppressed "n=0" cell
+    // rather than a missing column.
+    const levels = YEAR_ORDER;
     const regions = meta.regions.map((r) => r.key);
 
     const grid = document.createElement('div');
@@ -120,9 +124,13 @@
 
     const maxCount = d3.max(regions, (region) => d3.max(levels, (lvl) => schoolRows.filter((r) => r.region === region && r.schoolLevel === lvl).length))
  || 1;
-    const shade = d3.scaleQuantize().domain([U.SMALL_CELL_THRESHOLD, maxCount]).range([
-      U.cssVar('--ramp-1'), U.cssVar('--ramp-2'), U.cssVar('--ramp-3'), U.cssVar('--ramp-4'), U.cssVar('--ramp-5'),
-    ]);
+    const rampColors = [U.cssVar('--ramp-1'), U.cssVar('--ramp-2'), U.cssVar('--ramp-3'), U.cssVar('--ramp-4'), U.cssVar('--ramp-5')];
+    const shade = d3.scaleQuantize().domain([U.SMALL_CELL_THRESHOLD, maxCount]).range(rampColors);
+    // The top two ramp steps are dark enough that the brand-teal number
+    // reads as low-contrast (ramp-5 is nearly the same colour as the text
+    // itself) - switch to white text on those cells instead of a fixed
+    // colour for every shade.
+    const textColorFor = (bg) => (rampColors.indexOf(bg) >= 3 ? U.cssVar('--text-inverse') : U.cssVar('--brand-primary'));
 
     const tip = U.tooltip();
 
@@ -146,9 +154,11 @@
           cell.appendChild(badge);
           cell.setAttribute('aria-label', `${region}, ${lvl}: suppressed, fewer than ${U.SMALL_CELL_THRESHOLD} respondents`);
         } else {
-          cell.style.background = shade(n);
+          const bg = shade(n);
+          cell.style.background = bg;
           const span = document.createElement('span');
           span.className = 'suppression-grid__count';
+          span.style.color = textColorFor(bg);
           span.textContent = n;
           cell.appendChild(span);
           cell.setAttribute('aria-label', `${region}, ${lvl}: ${n} respondents`);
