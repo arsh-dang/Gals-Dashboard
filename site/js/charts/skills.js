@@ -46,7 +46,7 @@
       if (U.isSuppressed(denom)) {
         const badge = document.createElement('span');
         badge.className = 'badge-suppressed';
-        badge.textContent = denom === 0 ? 'No respondents in current filter' : `Suppressed — n<${U.SMALL_CELL_THRESHOLD}`;
+        badge.textContent = denom === 0 ? 'No respondents in current filter' : `Suppressed: n<${U.SMALL_CELL_THRESHOLD}`;
         cell.appendChild(badge);
         return;
       }

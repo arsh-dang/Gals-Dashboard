@@ -86,7 +86,7 @@
             .style('font-size', '0.7rem')
             .text('×')
             .attr('tabindex', 0)
-            .on('mouseenter focus', (evt) => tip.show(`<strong>${region}</strong>${truncate(item.item, 60)}<br>Suppressed — fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${rows.length})`, evt))
+            .on('mouseenter focus', (evt) => tip.show(`<strong>${region}</strong>${truncate(item.item, 60)}<br>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${rows.length})`, evt))
             .on('mousemove', (evt) => tip.move(evt))
             .on('mouseleave blur', () => tip.hide());
           return;

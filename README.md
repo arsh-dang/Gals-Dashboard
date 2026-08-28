@@ -36,13 +36,13 @@ Re-run `node build/build.js` any time the CSVs in `./data/` change.
 
 - **Drag-and-drop**: run `node build/build.js` locally, then drag the `site/`
   folder onto [app.netlify.com/drop](https://app.netlify.com/drop). This
-  skips the build step entirely — you're deploying the already-built output.
+  skips the build step entirely: you're deploying the already-built output.
 - **Connect a repo**: point a new Netlify site at this repository. It reads
   `netlify.toml` automatically and runs the build on every push, so the live
   site always reflects the latest `./data/` CSVs.
 
 No environment variables or secrets are needed. No analytics or third-party
-trackers are included, intentionally — see `data/` notes below.
+trackers are included, intentionally; see `data/` notes below.
 
 ## Data
 
@@ -52,7 +52,7 @@ trackers are included, intentionally — see `data/` notes below.
   Skills-and-identity and Open-text views degrade to an explicit empty state
   (never invented data) when these aren't present.
 - `data/open_text_themes.csv`: optional, only relevant once `open_text.csv`
-  exists. Columns `ResponseId,question,theme` — populates the theme column
+  exists. Columns `ResponseId,question,theme` populate the theme column
   on the open-text list once coding is done.
 
 ## A note on the mock-data banner

@@ -133,7 +133,7 @@
     if (!state.school) {
       gate.classList.remove('teacher-gate--active');
       gateTitle.textContent = 'Sign in to your cohort';
-      gateSubtitle.textContent = 'Select your region and school to view your students\' results. This identifies your cohort — it isn\'t a secured login, since there\'s no real account behind this mock dataset.';
+      gateSubtitle.textContent = 'Select your region and school to view your students\' results. This identifies your cohort; it isn\'t a secured login, since there\'s no real account behind this mock dataset.';
       suppressedMsg.style.display = 'none';
       content.style.display = 'none';
       status.textContent = '';
@@ -142,7 +142,7 @@
 
     gate.classList.add('teacher-gate--active');
     gateTitle.textContent = `Signed in: ${state.school}`;
-    gateSubtitle.textContent = `${state.region || meta.schools.find((s) => s.key === state.school).region} — narrow by year below, or switch school.`;
+    gateSubtitle.textContent = `${state.region || meta.schools.find((s) => s.key === state.school).region}. Narrow by year below, or switch school.`;
 
     const cohortFilters = { school: state.school, schoolLevel: state.schoolLevel };
     schoolRatings = U.applyFilters(ratings, cohortFilters);

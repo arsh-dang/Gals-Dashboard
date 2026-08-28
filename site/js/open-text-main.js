@@ -73,9 +73,9 @@
       columns: [
         { label: 'Response', value: (d) => d.response },
         { label: 'Question', value: (d) => d.question },
-        { label: 'Region', value: (d) => d.region || '—' },
-        { label: 'School year', value: (d) => d.schoolLevel || '—' },
-        { label: 'Activities (context)', value: (d) => (d.activityTypes.length ? d.activityTypes.join(', ') : '—') },
+        { label: 'Region', value: (d) => d.region || 'N/A' },
+        { label: 'School year', value: (d) => d.schoolLevel || 'N/A' },
+        { label: 'Activities (context)', value: (d) => (d.activityTypes.length ? d.activityTypes.join(', ') : 'N/A') },
         { label: 'Theme', value: (d) => d.theme || 'Not yet coded' },
       ],
       rows,

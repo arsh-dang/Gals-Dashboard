@@ -125,7 +125,7 @@
           .style('font-size', '0.7rem')
           .text('×')
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${cell.activityType}</strong>${truncate(cell.item, 60)}<br>Suppressed — fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${cell.n})`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`<strong>${cell.activityType}</strong>${truncate(cell.item, 60)}<br>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${cell.n})`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
         return;
@@ -231,7 +231,7 @@
             .style('font-size', '0.65rem')
             .text('×')
             .attr('tabindex', 0)
-            .on('mouseenter focus', (evt) => tip.show(`<strong>${activityType}</strong>${truncate(item.item, 60)}<br>Suppressed — fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${rows.length})`, evt))
+            .on('mouseenter focus', (evt) => tip.show(`<strong>${activityType}</strong>${truncate(item.item, 60)}<br>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${rows.length})`, evt))
             .on('mousemove', (evt) => tip.move(evt))
             .on('mouseleave blur', () => tip.hide());
           return;
@@ -477,7 +477,7 @@
           .style('font-size', '0.7rem')
           .text('×')
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`${truncate(r.item, 60)}<br>Suppressed — fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${r.n})`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`${truncate(r.item, 60)}<br>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${r.n})`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
         return;

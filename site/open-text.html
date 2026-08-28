@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>STEM Impact Tracker — Open-text responses</title>
+<title>STEM Impact Tracker: Open-text responses</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
 
   <div class="banner-mock" role="note">
     <strong>Mock data.</strong> Every number on this page is synthetic test data generated to build this dashboard.
-    Real survey collection is pending Deakin ethics approval — nothing here describes an actual respondent.
+    Real survey collection is pending Deakin ethics approval. Nothing here describes an actual respondent.
   </div>
 
   <header class="deakin-banner">
@@ -20,7 +20,7 @@
       <span class="deakin-banner__logo" aria-hidden="true">SIT</span>
       <div>
         <p class="deakin-banner__title">STEM Impact Tracker</p>
-        <p class="deakin-banner__subtitle">Open-text responses — filterable list, not charted</p>
+        <p class="deakin-banner__subtitle">Open-text responses: filterable list, not charted</p>
       </div>
     </div>
     <div class="deakin-banner__actions">
@@ -40,7 +40,7 @@
   </nav>
 
   <p class="page-lede">
-    Free-text survey answers, shown as a filterable list rather than charted — they aren't structured data. Region
+    Free-text survey answers, shown as a filterable list rather than charted, since they aren't structured data. Region
     and activity are shown as context, not as a claimed link to a specific programme.
   </p>
 
@@ -50,12 +50,12 @@
       <p>
         <code>open_text.csv</code> is not present in <code>./data/</code>, and the script that would produce it from
         the raw Qualtrics export (<code>reshape_v3.py</code>, referenced in the data contract) isn't in this drop
-        either — so nothing has been invented to fill the gap.
+        either, so nothing has been invented to fill the gap.
       </p>
       <p>
         This page is otherwise complete: once <code>open_text.csv</code> is added (columns
         <code>ResponseId,question,source_column,response</code>, per the data contract) and the build is re-run
-        (<code>node build/build.js</code>), it will render here automatically — filterable by question, region and
+        (<code>node build/build.js</code>), it will render here automatically, filterable by question, region and
         activity, with a theme column ready for coding.
       </p>
       <p>
@@ -95,7 +95,7 @@
       <div class="card__header">
         <h3 class="card__title">Responses</h3>
         <p class="card__subtitle">
-          "Activities" lists every activity this respondent has outcome ratings for — the survey doesn't record which
+          "Activities" lists every activity this respondent has outcome ratings for. The survey doesn't record which
           activity a free-text answer was specifically about.
         </p>
       </div>
@@ -115,7 +115,7 @@
       <div class="card__header"><h3 class="card__title">Data notes</h3></div>
       <div class="card__body">
         <ul>
-          <li>Colours follow the real Deakin Dashboard Style Guide (Nov 2025) — see <code>site/css/tokens.css</code> for sourcing notes.</li>
+          <li>Colours follow the real Deakin Dashboard Style Guide (Nov 2025); see <code>site/css/tokens.css</code> for sourcing notes.</li>
         </ul>
       </div>
     </div>

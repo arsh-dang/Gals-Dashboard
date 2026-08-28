@@ -155,14 +155,14 @@
         }
         cell.addEventListener('mouseenter', (evt) => {
           tip.show(suppressed
-            ? `<strong>${region} · ${lvl}</strong>Suppressed — fewer than ${U.SMALL_CELL_THRESHOLD} respondents`
+            ? `<strong>${region} · ${lvl}</strong>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents`
             : `<strong>${region} · ${lvl}</strong>${n} respondents`, evt);
         });
         cell.addEventListener('mousemove', (evt) => tip.move(evt));
         cell.addEventListener('mouseleave', () => tip.hide());
         cell.addEventListener('focus', (evt) => {
           tip.show(suppressed
-            ? `<strong>${region} · ${lvl}</strong>Suppressed — fewer than ${U.SMALL_CELL_THRESHOLD} respondents`
+            ? `<strong>${region} · ${lvl}</strong>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents`
             : `<strong>${region} · ${lvl}</strong>${n} respondents`, evt);
         });
         cell.addEventListener('blur', () => tip.hide());

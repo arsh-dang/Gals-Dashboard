@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>STEM Impact Tracker — Provider view</title>
+<title>STEM Impact Tracker: Provider view</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
 
   <div class="banner-mock" role="note">
     <strong>Mock data.</strong> Every number on this page is synthetic test data generated to build this dashboard.
-    Real survey collection is pending Deakin ethics approval — nothing here describes an actual programme or participant.
+    Real survey collection is pending Deakin ethics approval. Nothing here describes an actual programme or participant.
   </div>
 
   <header class="deakin-banner">
@@ -20,7 +20,7 @@
       <span class="deakin-banner__logo" aria-hidden="true">SIT</span>
       <div>
         <p class="deakin-banner__title">STEM Impact Tracker</p>
-        <p class="deakin-banner__subtitle">Provider view — participation and outcomes across STEM activities</p>
+        <p class="deakin-banner__subtitle">Provider view: participation and outcomes across STEM activities</p>
       </div>
     </div>
     <div class="deakin-banner__actions">
@@ -75,7 +75,7 @@
             <div class="chart-scroll"><div class="chart" id="chart-participation-bars"></div></div>
             <p class="card__note">
               GALS is still the largest single activity (most respondents took part in it alongside something else),
-              but participation across the seven activities is now broadly comparable — no single bar dominates the
+              but participation across the seven activities is now broadly comparable, and no single bar dominates the
               chart. A general, non-activity-specific outcomes question in the source data is shown separately in
               the Outcomes section below, not included here.
             </p>
@@ -85,14 +85,14 @@
         <div class="card">
           <div class="card__header">
             <h3 class="card__title">Where do school-student respondents come from?</h3>
-            <p class="card__subtitle">Respondent count by region and school year — school students only.</p>
+            <p class="card__subtitle">Respondent count by region and school year, school students only.</p>
           </div>
           <div class="card__body">
             <div class="chart-scroll" id="chart-suppression-grid"></div>
             <p class="card__note">
               Cells with fewer than <span id="threshold-label-1"></span> respondents are suppressed and marked, not
               silently dropped or shown as zero. Geelong is the only region with usable numbers across most year
-              levels — treat any other region's row as indicative at best.
+              levels; treat any other region's row as indicative at best.
             </p>
           </div>
         </div>
@@ -121,14 +121,14 @@
           <div class="chart-scroll" id="chart-outcomes"></div>
           <div class="legend" id="outcomes-activity-legend"></div>
           <p class="card__note" id="outcomes-note">
-            The faint line through each dot is a 95% confidence interval — the activity types sit close together, and
+            The faint line through each dot is a 95% confidence interval: the activity types sit close together, and
             without it the differences between them look more certain than the sample size supports. Hover a dot for
             the exact interval and respondent count.
             "≈ wording variant" marks three outcome statements that appear twice with near-identical wording (a
-            survey artifact — one activity's question block used slightly different phrasing than the rest). They are
+            survey artifact: one activity's question block used slightly different phrasing than the rest). They are
             shown as separate rows for now, adjacent to their pair, so the pattern is visible rather than looking like
             missing data. "×" marks an activity/outcome combination with fewer than
-            <span id="threshold-label-2"></span> respondents in the current filter — suppressed, not plotted.
+            <span id="threshold-label-2"></span> respondents in the current filter: suppressed, not plotted.
           </p>
           <div id="table-outcomes"></div>
         </div>
@@ -139,7 +139,7 @@
           <h3 class="card__title">General STEM outcomes (not activity-specific)</h3>
           <p class="card__subtitle">
             A separate question block asked of everyone regardless of which activity they took part in. Shown here on
-            its own — it isn't a real 8th activity, so it's excluded from every activity and region comparison above
+            its own: it isn't a real 8th activity, so it's excluded from every activity and region comparison above
             and elsewhere on this page.
           </p>
         </div>
@@ -166,14 +166,14 @@
         <div class="card__header">
           <h3 class="card__title" id="skills-title">What skills do participants say they built, by activity?</h3>
           <p class="card__subtitle">
-            Multi-select — respondents could tick more than one, so these are frequencies, not averages. Percentage of
+            Multi-select: respondents could tick more than one, so these are frequencies, not averages. Percentage of
             that activity's participants who selected each item.
           </p>
         </div>
         <div class="card__body">
           <div id="chart-skills"></div>
           <p class="card__note" id="skills-note">
-            Only activities with a skills/identity battery in the survey are shown here — Excursions, Online STEM
+            Only activities with a skills/identity battery in the survey are shown here: Excursions, Online STEM
             activities, and the general-outcomes block never asked these questions, which is a survey branch, not
             missing data.
           </p>
@@ -199,7 +199,7 @@
           <p class="card__note">
             The faint line through each dot is a 95% confidence interval, same reasoning as the outcomes-by-activity
             view above. "×" marks a region/outcome combination with fewer than <span id="threshold-label-3"></span>
-            respondents — suppressed, not plotted. Most regions outside Geelong will show several suppressed cells;
+            respondents: suppressed, not plotted. Most regions outside Geelong will show several suppressed cells;
             that is the honest state of this sample, not a rendering gap.
           </p>
           <div id="table-regional"></div>
@@ -219,10 +219,10 @@
       <div class="card__body">
         <ul id="data-notes-list">
           <li>Source: <code>respondents.csv</code> and <code>activity_ratings.csv</code> from the reshaped Qualtrics export. <code>battery_selections.csv</code> and <code>open_text.csv</code> are not present in this data drop, so the views that depend on them show an explicit empty state rather than stale or invented data.</li>
-          <li>"General STEM outcomes (not activity-specific)" is a real question block asked of everyone, shown on its own in the Outcomes section — it is not a real 8th activity, so it's excluded from every activity and region comparison.</li>
+          <li>"General STEM outcomes (not activity-specific)" is a real question block asked of everyone, shown on its own in the Outcomes section. It is not a real 8th activity, so it's excluded from every activity and region comparison.</li>
           <li>The scale runs 1 = No → 4 = Yes a lot, with "I do not know" tracked separately rather than as a fifth scale position. Higher is better and every average is used directly, with no inversion.</li>
           <li>Cells under 5 respondents are suppressed and visibly marked throughout, never silently dropped or averaged.</li>
-          <li>Colours follow the real Deakin Dashboard Style Guide (Nov 2025) — see <code>site/css/tokens.css</code> for sourcing notes.</li>
+          <li>Colours follow the real Deakin Dashboard Style Guide (Nov 2025); see <code>site/css/tokens.css</code> for sourcing notes.</li>
         </ul>
       </div>
     </div>
