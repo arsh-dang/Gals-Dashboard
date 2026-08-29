@@ -174,6 +174,15 @@ function main() {
     };
   });
 
+  // respondents.csv does not actually ship a did_gals column, despite the
+  // brief describing one - derived instead from GALS activity participation
+  // in activity_ratings.csv. This reproduces the ~60% rate described (111 of
+  // 180 respondents here), so it's a reliable stand-in, not a guess.
+  const galsParticipantIds = new Set(
+    ratings.filter((r) => r.activityType === 'Girls as Leaders in STEM program').map((r) => r.id),
+  );
+  respondents.forEach((r) => { r.didGals = galsParticipantIds.has(r.id); });
+
   const selections = selectionsRaw
     .filter((r) => !EXCLUDED_ACTIVITY_TYPES.has(r.activity_type))
     .map((r) => {
@@ -189,6 +198,50 @@ function main() {
         pathway: resp ? resp.pathway : null,
       };
     });
+
+  // --- aspirations.csv: a 10-item matrix about future-in-STEM, same score
+  // convention as activity_ratings.csv (1=No..4=Yes a lot, blank/isDontKnow
+  // excluded from averages). Not tied to any activity - the interesting cut
+  // is didGals vs everyone else, not activity type.
+  const aspirationsRaw = readCsv('aspirations.csv');
+  const aspirations = aspirationsRaw.map((r) => {
+    const resp = respondentById.get(r.ResponseId);
+    const isDontKnow = r.is_dont_know === 'True' || r.is_dont_know === 'TRUE';
+    return {
+      id: r.ResponseId,
+      item: r.item,
+      score: r.score === '' ? null : Number(r.score),
+      isDontKnow,
+      region: resp ? resp.region : null,
+      schoolLevel: resp ? resp.schoolLevel : null,
+      pathway: resp ? resp.pathway : null,
+      didGals: resp ? resp.didGals : false,
+    };
+  });
+
+  // --- subject_career.csv: multi-select (and two single-choice) responses
+  // about subject choice and career decisions, one row per ticked option.
+  // `question` is kept exactly as supplied, including any "(post-school)"
+  // suffix - checked against respondent pathway and confirmed that suffix
+  // does NOT track who actually answered which wording (both pathways
+  // answer both variants, in matching proportions). Grouping strictly by
+  // the literal `question` string, as required, already keeps every
+  // wording variant separate regardless of what drives the branching.
+  const subjectCareerRaw = readCsv('subject_career.csv');
+  const subjectCareer = subjectCareerRaw.map((r) => {
+    const resp = respondentById.get(r.ResponseId);
+    return {
+      id: r.ResponseId,
+      questionGroup: r.question_group,
+      question: r.question,
+      item: r.item,
+      multiSelect: r.multi_select === 'True',
+      region: resp ? resp.region : null,
+      schoolLevel: resp ? resp.schoolLevel : null,
+      pathway: resp ? resp.pathway : null,
+      didGals: resp ? resp.didGals : false,
+    };
+  });
 
   // --- open_text.csv: optional. Not present in every data drop (branching
   // means most respondents never saw a free-text question), and the reshape
@@ -292,9 +345,40 @@ function main() {
     return ak.localeCompare(bk) || a.item.localeCompare(b.item);
   });
 
+  const aspirationItems = [...new Set(aspirations.map((a) => a.item))];
+
+  const subjectCareerQuestionMap = new Map();
+  subjectCareer.forEach((r) => {
+    if (!subjectCareerQuestionMap.has(r.question)) {
+      subjectCareerQuestionMap.set(r.question, {
+        question: r.question,
+        questionGroup: r.questionGroup,
+        multiSelect: r.multiSelect,
+        respondentIds: new Set(),
+      });
+    }
+    subjectCareerQuestionMap.get(r.question).respondentIds.add(r.id);
+  });
+  const subjectCareerQuestions = [...subjectCareerQuestionMap.values()].map((q) => ({
+    question: q.question,
+    questionGroup: q.questionGroup,
+    multiSelect: q.multiSelect,
+    respondentCount: q.respondentIds.size,
+    galsCount: [...q.respondentIds].filter((id) => galsParticipantIds.has(id)).length,
+    nonGalsCount: [...q.respondentIds].filter((id) => !galsParticipantIds.has(id)).length,
+  }));
+
+  const didGalsCounts = {
+    gals: respondents.filter((r) => r.didGals).length,
+    nonGals: respondents.filter((r) => !r.didGals).length,
+  };
+
   const meta = {
     generatedAt: new Date().toISOString(),
     totalRespondents: respondents.length,
+    didGalsCounts,
+    aspirationItems,
+    subjectCareerQuestions,
     smallCellThreshold: SMALL_CELL_THRESHOLD,
     generalActivityType: GENERAL_ACTIVITY_TYPE,
     excludedActivityTypes: [...EXCLUDED_ACTIVITY_TYPES],
@@ -331,10 +415,12 @@ function main() {
   write('respondents.js', respondents);
   write('ratings.js', ratings);
   write('selections.js', selections);
+  write('aspirations.js', aspirations);
+  write('subjectCareer.js', subjectCareer);
   write('openText.js', openText);
   write('meta.js', meta);
 
-  console.log(`Wrote ${respondents.length} respondents, ${ratings.length} ratings, ${selections.length} selections, ${openText.length} open-text responses.`);
+  console.log(`Wrote ${respondents.length} respondents (${didGalsCounts.gals} GALS, ${didGalsCounts.nonGals} non-GALS), ${ratings.length} ratings, ${selections.length} selections, ${aspirations.length} aspiration ratings, ${subjectCareer.length} subject/career selections, ${openText.length} open-text responses.`);
   console.log(`Activity types (general outcomes excluded from comparison): ${activityTypes.map((a) => `${a.key} (${a.respondentCount})`).join(', ')}`);
   if (!openText.length) {
     console.log('No open_text.csv found in data/ - open-text.html will render its empty state.');

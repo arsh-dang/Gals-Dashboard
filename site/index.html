@@ -207,6 +207,60 @@
       </div>
     </section>
 
+    <!-- View 5: Aspirations and subject choice -->
+    <section class="view-section" id="section-aspirations" aria-labelledby="heading-aspirations">
+      <div class="view-section__heading">
+        <h2 id="heading-aspirations"><span class="view-number">5</span>Aspirations and subject choice</h2>
+      </div>
+      <div class="card">
+        <div class="card__header">
+          <h3 class="card__title">Does taking part in GALS shift how girls see their future in STEM?</h3>
+          <p class="card__subtitle">
+            Average score per item, GALS participants against everyone else, same 1–4 scale as outcomes above (4 =
+            Yes a lot is best). Not tied to any activity, so grouped by GALS participation rather than activity type.
+          </p>
+        </div>
+        <div class="card__body">
+          <div class="chart-scroll" id="chart-aspirations"></div>
+          <div class="legend" id="aspirations-legend"></div>
+          <p class="card__note">
+            The faint line through each dot is a 95% confidence interval, same reasoning as elsewhere on this page.
+            The "Diff" column on the right is the GALS average minus the everyone-else average on the raw 1–4 scale;
+            in this mock data it is small and mixed in direction (roughly ±0.2), which is expected, not a rendering
+            issue: the generator has no built-in assumption that GALS improves aspirations, so a larger or more
+            one-directional gap would be the surprising result. Read the difference alongside the confidence
+            intervals, which usually overlap; that overlap is the honest signal that this sample cannot support a
+            claim of significance either way. "×" marks a group/item combination with fewer than
+            <span id="threshold-label-4"></span> respondents: suppressed, not plotted.
+          </p>
+          <div id="table-aspirations"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__header">
+          <h3 class="card__title">Subject selection and career aspirations</h3>
+          <div class="view-toggle" role="group" aria-label="Question group">
+            <button type="button" data-question-group="Subject selection" aria-pressed="true">Subject selection</button>
+            <button type="button" data-question-group="Career aspirations" aria-pressed="false">Career aspirations</button>
+          </div>
+          <p class="card__subtitle">
+            Multi-select (two questions are single-choice): percentage of respondents choosing each option, grouped
+            by question and split by GALS participation where the numbers allow.
+          </p>
+        </div>
+        <div class="card__body">
+          <div id="chart-subject-career"></div>
+          <p class="card__note">
+            Some questions carry a "(post-school)" label in their wording. In this data that label does not track
+            which respondents actually answered them: both school-student and post-school respondents appear under
+            both wordings, in closely matching proportions. Each distinct question is still shown as its own panel,
+            which keeps wording variants separate regardless of what actually drives the branching.
+          </p>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="page-footer">
@@ -218,8 +272,9 @@
       <div class="card__header"><h3 class="card__title">Data notes</h3></div>
       <div class="card__body">
         <ul id="data-notes-list">
-          <li>Source: <code>respondents.csv</code> and <code>activity_ratings.csv</code> from the reshaped Qualtrics export. <code>battery_selections.csv</code> and <code>open_text.csv</code> are not present in this data drop, so the views that depend on them show an explicit empty state rather than stale or invented data.</li>
+          <li>Source: <code>respondents.csv</code>, <code>activity_ratings.csv</code>, <code>battery_selections.csv</code>, <code>aspirations.csv</code>, <code>subject_career.csv</code> and <code>open_text.csv</code> from the reshaped Qualtrics export. If a future data drop removes any of these, the affected view shows an explicit empty state rather than stale or invented data.</li>
           <li>"General STEM outcomes (not activity-specific)" is a real question block asked of everyone, shown on its own in the Outcomes section. It is not a real 8th activity, so it's excluded from every activity and region comparison.</li>
+          <li><code>respondents.csv</code> does not actually ship a <code>did_gals</code> column; the Aspirations section derives it from GALS activity participation in <code>activity_ratings.csv</code>, which reproduces the expected ~60% rate.</li>
           <li>The scale runs 1 = No → 4 = Yes a lot, with "I do not know" tracked separately rather than as a fifth scale position. Higher is better and every average is used directly, with no inversion.</li>
           <li>Cells under 5 respondents are suppressed and visibly marked throughout, never silently dropped or averaged.</li>
           <li>Colours follow the real Deakin Dashboard Style Guide (Nov 2025); see <code>site/css/tokens.css</code> for sourcing notes.</li>
@@ -234,12 +289,16 @@
 <script src="data/respondents.js"></script>
 <script src="data/ratings.js"></script>
 <script src="data/selections.js"></script>
+<script src="data/aspirations.js"></script>
+<script src="data/subjectCareer.js"></script>
 <script src="data/meta.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/charts/participation.js"></script>
 <script src="js/charts/outcomes.js"></script>
 <script src="js/charts/skills.js"></script>
 <script src="js/charts/regional.js"></script>
+<script src="js/charts/aspirations.js"></script>
+<script src="js/charts/subjectCareer.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

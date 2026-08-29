@@ -36,6 +36,84 @@ BLOCKS = {
     "general": dict(out="Q107", skl=None, idn=None),
 }
 
+# --- Respondent-level question sets (not tied to any activity) ----------------
+# Aspirations: a 10-item matrix on the same 1-4 scale as the outcome batteries.
+ASPIRATIONS_MATRIX = "Q25"
+
+# Subject selection and career-decision multi-selects. Grouped so the dashboard
+# can show them as themed sections rather than a flat list of questions.
+MULTI_SETS = {
+    "Q20":  ("Subject selection", "Subjects interested in studying in Year 11 or 12"),
+    "Q21":  ("Subject selection", "What helps decide which subjects to choose"),
+    "Q22":  ("Subject selection", "Why choosing STEM subjects feels hard"),
+    "Q108": ("Subject selection", "Reasons for wanting to choose STEM subjects"),
+    "Q109": ("Subject selection", "Reasons for choosing STEM subjects"),
+    "Q110": ("Subject selection", "Reasons for not choosing STEM subjects"),
+    "Q82":  ("Subject selection", "What helped decide to take those subjects (post-school)"),
+    "Q83":  ("Subject selection", "Reasons for not studying STEM subjects (post-school)"),
+    "Q26":  ("Career aspirations", "What helps decide future plans"),
+    "Q91":  ("Career aspirations", "What helps decide which jobs to do (post-school)"),
+    "Q89":  ("Career aspirations", "What would help to know more about STEM careers"),
+}
+
+# Single-choice questions worth reporting alongside the above.
+SINGLE_SETS = {
+    "Q90": ("Career aspirations", "Do you think you will study STEM in the future? (post-school)"),
+    "Q96": ("Career aspirations", "How much do you know about local STEM jobs? (post-school)"),
+}
+
+
+def build_aspirations(d, dn):
+    """Q25 - the future/aspirations matrix. Same scale handling as outcomes."""
+    tag = ASPIRATIONS_MATRIX
+    if tag not in QS:
+        return pd.DataFrame()
+    it = items(tag)
+    rows = []
+    for cid, label in it.items():
+        col = f"{tag}_{cid}"
+        if col not in d.columns:
+            continue
+        for i in d.index:
+            v = d.at[i, col].strip()
+            if not v:
+                continue
+            num = dn.at[i, col].strip() if dn is not None and col in dn.columns else ""
+            dk = v.lower().startswith("i do not know")
+            score = 5 - int(num) if (num.isdigit() and not dk) else ""
+            rows.append(dict(ResponseId=d.at[i, "ResponseId"],
+                             item=label, response=v, response_code=num,
+                             score=score, is_dont_know=dk, source_column=col))
+    return pd.DataFrame(rows)
+
+
+def build_multi_sets(d):
+    """Subject selection and career multi-selects, one row per ticked option."""
+    rows = []
+    for tag, (group, question) in MULTI_SETS.items():
+        if tag not in d.columns:
+            continue
+        for i in d.index:
+            v = d.at[i, tag].strip()
+            if not v:
+                continue
+            for part in [p.strip() for p in v.split(",") if p.strip()]:
+                rows.append(dict(ResponseId=d.at[i, "ResponseId"], question_group=group,
+                                 question=question, item=part, multi_select=True,
+                                 source_column=tag))
+    for tag, (group, question) in SINGLE_SETS.items():
+        if tag not in d.columns:
+            continue
+        for i in d.index:
+            v = d.at[i, tag].strip()
+            if v:
+                rows.append(dict(ResponseId=d.at[i, "ResponseId"], question_group=group,
+                                 question=question, item=v, multi_select=False,
+                                 source_column=tag))
+    return pd.DataFrame(rows)
+
+
+
 def items(tag):
     ch = QS[tag].get("Choices", {})
     order = QS[tag].get("ChoiceOrder", sorted(ch, key=lambda x: int(x)))
@@ -69,6 +147,7 @@ def main():
     resp["pathway"] = resp.is_school_student.map(
         lambda v: "School student" if v.strip().lower() == "yes" else ("Post-school" if v.strip() else "Unknown"))
     resp["n_activities"] = resp.activities_selected.map(lambda v: len([x for x in v.split(",") if x.strip()]) if v.strip() else 0)
+
 
     # long ratings
     rows = []
@@ -127,8 +206,19 @@ def main():
                                source_column=tag, response=v))
     open_text = pd.DataFrame(ot)
 
+    # GALS participation flag, derived from the ratings table. Lets aspirations
+    # and subject choice be compared between participants and everyone else.
+    gals_ids = set(ratings.loc[ratings.activity_type.str.contains("Girls as Leaders",
+                                                                 na=False), "ResponseId"]) \
+        if not ratings.empty else set()
+    resp["did_gals"] = resp.ResponseId.isin(gals_ids)
+
+    aspirations = build_aspirations(d, dn)
+    subject_career = build_multi_sets(d)
+
     for name, df in (("respondents", resp), ("activity_ratings", ratings),
-                     ("battery_selections", selections), ("open_text", open_text)):
+                     ("battery_selections", selections), ("open_text", open_text),
+                     ("aspirations", aspirations), ("subject_career", subject_career)):
         df.to_csv(f"{OUT}/{name}.csv", index=False)
         print(f"  {name+'.csv':24s} {len(df):6d} rows")
 

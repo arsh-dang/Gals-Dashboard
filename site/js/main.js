@@ -8,12 +8,16 @@
 
   const activityColorScale = U.buildActivityColorScale(meta.activityTypes.map((a) => a.key));
   const regionColorScale = window.SIT.charts.regional.buildRegionColorScale(meta.regions.map((r) => r.key));
+  const didGalsColors = { gals: U.cssVar('--brand-primary'), nonGals: U.cssVar('--series-6') };
+
+  const { aspirations, subjectCareer } = window.SIT_DATA;
 
   const state = {
     region: '',
     schoolLevel: '',
     outcomesMode: 'average',
     battery: 'skills',
+    questionGroup: 'Subject selection',
   };
 
   U.renderFooterDate('data-refreshed');
@@ -56,7 +60,7 @@
     schoolLevelSelect.appendChild(opt);
   });
 
-  document.querySelectorAll('#threshold-label-1, #threshold-label-2, #threshold-label-3').forEach((el) => {
+  document.querySelectorAll('#threshold-label-1, #threshold-label-2, #threshold-label-3, #threshold-label-4').forEach((el) => {
     el.textContent = meta.smallCellThreshold;
   });
 
@@ -94,6 +98,14 @@
     });
   });
 
+  document.querySelectorAll('[data-question-group]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.questionGroup = btn.dataset.questionGroup;
+      document.querySelectorAll('[data-question-group]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      renderSubjectCareer();
+    });
+  });
+
   // --- Filtered data accessors ------------------------------------------
   function filters() {
     return { region: state.region, schoolLevel: state.schoolLevel };
@@ -101,6 +113,8 @@
   function filteredRatings() { return U.applyFilters(ratings, filters()); }
   function filteredSelections() { return U.applyFilters(selections, filters()); }
   function filteredRespondents() { return U.applyFilters(respondents, filters()); }
+  function filteredAspirations() { return U.applyFilters(aspirations, filters()); }
+  function filteredSubjectCareer() { return U.applyFilters(subjectCareer, filters()); }
 
   function updateFilterStatus() {
     const n = U.countDistinctIds(filteredRespondents());
@@ -287,6 +301,49 @@
     });
   }
 
+  // --- View 5: Aspirations and subject choice -------------------------------
+  function renderAspirations() {
+    const rows = filteredAspirations();
+    window.SIT.charts.aspirations.render(document.getElementById('chart-aspirations'), rows, meta, didGalsColors);
+
+    const legend = document.getElementById('aspirations-legend');
+    legend.innerHTML = `
+      <span class="legend__item"><span class="legend__swatch" style="background:${didGalsColors.gals}"></span>Took part in GALS (n=${meta.didGalsCounts.gals})</span>
+      <span class="legend__item"><span class="legend__swatch" style="background:${didGalsColors.nonGals}"></span>Did not take part in GALS (n=${meta.didGalsCounts.nonGals})</span>
+    `;
+
+    const tableContainer = document.getElementById('table-aspirations');
+    tableContainer.innerHTML = '';
+    const tableRows = [];
+    meta.aspirationItems.forEach((item) => {
+      [['gals', 'GALS'], ['nonGals', 'Not GALS']].forEach(([key, label]) => {
+        const cellRows = rows.filter((r) => r.item === item && (key === 'gals' ? r.didGals : !r.didGals));
+        const summary = U.summarizeScores(cellRows);
+        tableRows.push({
+          item, group: label, n: cellRows.length, suppressed: U.isSuppressed(cellRows.length), mean: summary.mean,
+        });
+      });
+    });
+    U.renderDataTable(tableContainer, {
+      columns: [
+        { label: 'Aspiration statement', value: (d) => d.item },
+        { label: 'Group', value: (d) => d.group },
+        { label: 'n', value: (d) => d.n, align: 'right' },
+        { label: 'Average (4=best, 1=worst)', value: (d) => (d.suppressed ? 'suppressed' : U.formatScore(d.mean)), align: 'right' },
+      ],
+      rows: tableRows,
+    });
+  }
+
+  function renderSubjectCareer() {
+    window.SIT.charts.subjectCareer.render(document.getElementById('chart-subject-career'), {
+      rows: filteredSubjectCareer(),
+      meta,
+      questionGroup: state.questionGroup,
+      colors: didGalsColors,
+    });
+  }
+
   function renderAll() {
     updateFilterStatus();
     renderParticipation();
@@ -294,6 +351,8 @@
     renderGeneralOutcomes();
     renderSkills();
     renderRegional();
+    renderAspirations();
+    renderSubjectCareer();
   }
 
   let resizeTimer = null;
