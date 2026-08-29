@@ -46,14 +46,31 @@ trackers are included, intentionally; see `data/` notes below.
 
 ## Data
 
-- `data/respondents.csv`, `data/activity_ratings.csv`: required. See
+- `data/respondents.csv`, `data/activity_ratings.csv`, `data/aspirations.csv`,
+  `data/subject_career.csv`: required. See
   `.claude/skills/sit-dashboard/references/data-contract.md` for the schema.
+  `respondents.csv` should include a `did_gals` column; if a future drop omits
+  it, the build falls back to deriving it from GALS activity participation.
 - `data/battery_selections.csv`, `data/open_text.csv`: optional. The
   Skills-and-identity and Open-text views degrade to an explicit empty state
   (never invented data) when these aren't present.
 - `data/open_text_themes.csv`: optional, only relevant once `open_text.csv`
   exists. Columns `ResponseId,question,theme` populate the theme column
   on the open-text list once coding is done.
+
+## Icons and link-preview image
+
+`site/favicon.svg` is the hand-authored source for every icon. The PNGs
+(`apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `og-image.png`) are
+committed binaries, not generated during the Netlify build - regenerating
+them needs Playwright (a full browser download), which isn't worth adding as
+a build dependency for an asset that only changes when the design does.
+Regenerate them after editing `favicon.svg` or the preview text with:
+
+```
+npm install --no-save playwright
+node scripts/generate-icon-assets.js
+```
 
 ## A note on the mock-data banner
 
