@@ -140,6 +140,10 @@ function main() {
       schoolLevel: isSchoolStudent ? (r.school_level || null) : null,
       pathway: r.pathway,
       nActivities: Number(r.n_activities) || 0,
+      // did_gals: real column as of this data drop (previously absent and
+      // derived from GALS activity participation instead - kept as a
+      // fallback below for any future drop that drops the column again).
+      didGals: r.did_gals === 'True' ? true : r.did_gals === 'False' ? false : null,
     };
     respondentById.set(rec.id, rec);
     return rec;
@@ -174,14 +178,16 @@ function main() {
     };
   });
 
-  // respondents.csv does not actually ship a did_gals column, despite the
-  // brief describing one - derived instead from GALS activity participation
-  // in activity_ratings.csv. This reproduces the ~60% rate described (111 of
-  // 180 respondents here), so it's a reliable stand-in, not a guess.
-  const galsParticipantIds = new Set(
+  // did_gals was absent from an earlier data drop; when that happens, fall
+  // back to GALS activity participation as a stand-in (checked once against
+  // a drop that had both columns - they matched exactly, 113/113).
+  const galsActivityIds = new Set(
     ratings.filter((r) => r.activityType === 'Girls as Leaders in STEM program').map((r) => r.id),
   );
-  respondents.forEach((r) => { r.didGals = galsParticipantIds.has(r.id); });
+  respondents.forEach((r) => {
+    if (r.didGals === null) r.didGals = galsActivityIds.has(r.id);
+  });
+  const galsParticipantIds = new Set(respondents.filter((r) => r.didGals).map((r) => r.id));
 
   const selections = selectionsRaw
     .filter((r) => !EXCLUDED_ACTIVITY_TYPES.has(r.activity_type))

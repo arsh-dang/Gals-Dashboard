@@ -252,10 +252,9 @@
         <div class="card__body">
           <div id="chart-subject-career"></div>
           <p class="card__note">
-            Some questions carry a "(post-school)" label in their wording. In this data that label does not track
-            which respondents actually answered them: both school-student and post-school respondents appear under
-            both wordings, in closely matching proportions. Each distinct question is still shown as its own panel,
-            which keeps wording variants separate regardless of what actually drives the branching.
+            Some questions are worded for a specific pathway (for example "(current students)" or "(looking back)")
+            and are answered only by that group; others are asked of everyone. Each distinct question is shown as
+            its own panel either way, so a pathway-specific wording is never pooled with a general one.
           </p>
         </div>
       </div>
@@ -274,7 +273,7 @@
         <ul id="data-notes-list">
           <li>Source: <code>respondents.csv</code>, <code>activity_ratings.csv</code>, <code>battery_selections.csv</code>, <code>aspirations.csv</code>, <code>subject_career.csv</code> and <code>open_text.csv</code> from the reshaped Qualtrics export. If a future data drop removes any of these, the affected view shows an explicit empty state rather than stale or invented data.</li>
           <li>"General STEM outcomes (not activity-specific)" is a real question block asked of everyone, shown on its own in the Outcomes section. It is not a real 8th activity, so it's excluded from every activity and region comparison.</li>
-          <li><code>respondents.csv</code> does not actually ship a <code>did_gals</code> column; the Aspirations section derives it from GALS activity participation in <code>activity_ratings.csv</code>, which reproduces the expected ~60% rate.</li>
+          <li><code>respondents.csv</code> ships a real <code>did_gals</code> column, used directly by the Aspirations section. An earlier data drop was missing it; the build falls back to deriving it from GALS activity participation if that happens again.</li>
           <li>The scale runs 1 = No → 4 = Yes a lot, with "I do not know" tracked separately rather than as a fifth scale position. Higher is better and every average is used directly, with no inversion.</li>
           <li>Cells under 5 respondents are suppressed and visibly marked throughout, never silently dropped or averaged.</li>
           <li>Colours follow the real Deakin Dashboard Style Guide (Nov 2025); see <code>site/css/tokens.css</code> for sourcing notes.</li>
