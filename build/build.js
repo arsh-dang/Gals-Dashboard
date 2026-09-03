@@ -31,6 +31,34 @@ const ITEM_WORDING_PAIRS = [
   ['More comfortable working in teams', 'More confident in working in teams'],
 ];
 
+// --- Subject choice vs career choice: two subject_career.csv questions ask
+// essentially the same thing at different horizons, with options worded
+// differently but overlapping heavily. There's no shared key in the data to
+// match them by - this mapping is authored by reading both option lists,
+// same as ITEM_WORDING_PAIRS above. Verified once against the current data
+// drop; buildInfluenceMap() below warns at build time if a future drop
+// changes the wording again, rather than silently rendering an empty bar.
+const SUBJECT_CHOICE_QUESTION = 'What helps decide which subjects to choose';
+const CAREER_CHOICE_QUESTION = 'What helps decide future plans (school students)';
+const PROGRAMME_INFLUENCE_LABEL = 'STEM activities and programmes';
+
+const SHARED_INFLUENCES = [
+  { canonical: 'Enjoyment or interest in the subject', subject: 'Subjects I enjoy', career: 'My own interest in STEM' },
+  { canonical: 'Own ability, being good at it', subject: 'Subjects I am good at', career: 'My ability in STEM' },
+  { canonical: 'Family', subject: 'Advise from my family', career: 'My family' },
+  { canonical: 'Teachers', subject: 'Advise from teachers', career: 'My teachers' },
+  { canonical: 'Friends', subject: 'What my friends are choosing', career: 'My friends' },
+  { canonical: 'Career advisers', subject: 'Advise from career advisors', career: 'Career advisers' },
+  { canonical: 'Role models in STEM', subject: 'Role models or people I know in STEM', career: 'Role models (e.g. a STEM person I know)' },
+  { canonical: PROGRAMME_INFLUENCE_LABEL, subject: 'STEM activities/ programs as mentioned in previous questions', career: 'STEM activities and programs mentioned in previous questions' },
+];
+const SUBJECT_ONLY_INFLUENCES = ['Subjects I need for a future job', 'Other (please specfiy)'];
+const CAREER_ONLY_INFLUENCES = ['Jobs available in my local area', 'Money or job security', 'Social media, TV, YouTube or online content'];
+
+const SUBJECT_INTEREST_QUESTION = 'Subjects interested in studying in Year 11 or 12';
+const SUBJECT_PERCEPTION_QUESTION = 'Reasons for wanting to choose STEM subjects (current students)';
+const JOBS_IMAGINED_QUESTION = 'What kind of jobs do you imagine you might do in the future?';
+
 function parseCsv(text) {
   const rows = [];
   let row = [];
@@ -249,6 +277,34 @@ function main() {
     };
   });
 
+  // Sanity-check the hand-authored mapping above against the actual data,
+  // rather than assuming the wording holds forever - warn loudly at build
+  // time if it doesn't, instead of shipping a silently-empty bar.
+  const subjectItemsSeen = new Set(subjectCareer.filter((r) => r.question === SUBJECT_CHOICE_QUESTION).map((r) => r.item));
+  const careerItemsSeen = new Set(subjectCareer.filter((r) => r.question === CAREER_CHOICE_QUESTION).map((r) => r.item));
+  SHARED_INFLUENCES.forEach(({ canonical, subject, career }) => {
+    if (!subjectItemsSeen.has(subject)) console.warn(`WARNING: influence mapping for "${canonical}" expects subject-choice item "${subject}", not found in this data drop.`);
+    if (!careerItemsSeen.has(career)) console.warn(`WARNING: influence mapping for "${canonical}" expects career-choice item "${career}", not found in this data drop.`);
+  });
+  SUBJECT_ONLY_INFLUENCES.forEach((item) => {
+    if (!subjectItemsSeen.has(item)) console.warn(`WARNING: subject-only influence "${item}" not found in this data drop.`);
+  });
+  CAREER_ONLY_INFLUENCES.forEach((item) => {
+    if (!careerItemsSeen.has(item)) console.warn(`WARNING: career-only influence "${item}" not found in this data drop.`);
+  });
+
+  const subjectChoice = {
+    subjectQuestion: SUBJECT_CHOICE_QUESTION,
+    careerQuestion: CAREER_CHOICE_QUESTION,
+    sharedInfluences: SHARED_INFLUENCES,
+    subjectOnlyInfluences: SUBJECT_ONLY_INFLUENCES,
+    careerOnlyInfluences: CAREER_ONLY_INFLUENCES,
+    programmeInfluenceLabel: PROGRAMME_INFLUENCE_LABEL,
+    subjectInterestQuestion: SUBJECT_INTEREST_QUESTION,
+    subjectPerceptionQuestion: SUBJECT_PERCEPTION_QUESTION,
+    jobsImaginedQuestion: JOBS_IMAGINED_QUESTION,
+  };
+
   // --- open_text.csv: optional. Not present in every data drop (branching
   // means most respondents never saw a free-text question), and the reshape
   // script that would produce it isn't in this drop either, so this reads it
@@ -385,6 +441,7 @@ function main() {
     didGalsCounts,
     aspirationItems,
     subjectCareerQuestions,
+    subjectChoice,
     smallCellThreshold: SMALL_CELL_THRESHOLD,
     generalActivityType: GENERAL_ACTIVITY_TYPE,
     excludedActivityTypes: [...EXCLUDED_ACTIVITY_TYPES],

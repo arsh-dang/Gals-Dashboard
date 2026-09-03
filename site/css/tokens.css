@@ -69,6 +69,12 @@
   --ramp-4: #1F8475;
   --ramp-5: #0B7161;
 
+  /* Lightest two steps of Deakin's pink Gradient ramp - used as a tint,
+     not a series colour, to mark a panel as visually distinct (e.g. the
+     self-perception panel in Aspirations) without inventing a new hue. */
+  --tint-pink-1: #F5DAE8;
+  --tint-pink-2: #F9B0D5;
+
   /* --- Diverging ramp (for Likert distributions) ------------------------
      Positive (Yes) through to negative (No), using the guide's teal and
      orange values - not the red/green Indicator pair, which would fail

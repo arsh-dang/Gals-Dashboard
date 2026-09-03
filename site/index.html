@@ -262,23 +262,82 @@
 
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title">Subject selection and career aspirations</h3>
-          <div class="view-toggle" role="group" aria-label="Question group">
-            <button type="button" data-question-group="Subject selection" aria-pressed="true">Subject selection</button>
-            <button type="button" data-question-group="Career aspirations" aria-pressed="false">Career aspirations</button>
-          </div>
+          <h3 class="card__title">What influences subject choice, and what influences career choice?</h3>
           <p class="card__subtitle">
-            Multi-select (two questions are single-choice): percentage of respondents choosing each option, grouped
-            by question and split by GALS participation where the numbers allow.
+            Two survey questions ask essentially the same thing at different horizons: "what helps you decide what
+            subjects to choose" and "what helps you decide what you might do in the future". Their answer options
+            overlap heavily but are worded slightly differently; matched here so the same underlying influence reads
+            as one row rather than two unrelated bars.
           </p>
         </div>
         <div class="card__body">
-          <div id="chart-subject-career"></div>
+          <div class="chart-scroll" id="chart-influence-comparison"></div>
           <p class="card__note">
-            Some questions are worded for a specific pathway (for example "(current students)" or "(looking back)")
-            and are answered only by that group; others are asked of everyone. Each distinct question is shown as
-            its own panel either way, so a pathway-specific wording is never pooled with a general one.
+            Percentage of respondents selecting each option (multi-select, so these don't sum to 100%), out of
+            everyone who answered that question. Cells with fewer than <span id="threshold-label-5"></span>
+            respondents show "suppressed" instead of a bar.
           </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__header">
+          <h3 class="card__title">Do the STEM activities and programmes themselves shape these decisions?</h3>
+          <p class="card__subtitle">
+            Both questions above include "the STEM activities and programmes" as an option - the closest thing in
+            the survey to a direct measure of programme influence, so it gets its own panel instead of sitting as
+            one row among ten. Split by GALS participation.
+          </p>
+        </div>
+        <div class="card__body">
+          <div class="chart-scroll" id="chart-programme-influence"></div>
+          <p class="card__note">
+            Same suppression rule as elsewhere: a group under <span id="threshold-label-6"></span> respondents for a
+            given question shows "suppressed" rather than a percentage.
+          </p>
+        </div>
+      </div>
+
+      <div class="cards-row">
+        <div class="card">
+          <div class="card__header">
+            <h3 class="card__title">Which subjects are students interested in for Year 11 or 12?</h3>
+            <p class="card__subtitle">Percentage of respondents interested in each subject area.</p>
+          </div>
+          <div class="card__body">
+            <div id="chart-subject-interest"></div>
+          </div>
+        </div>
+
+        <div class="card card--self-perception">
+          <div class="card__header">
+            <h3 class="card__title">Why choose STEM subjects? (belonging and confidence)</h3>
+            <p class="card__subtitle">
+              These options are about how students see themselves, not what influences their decision - "I feel
+              these subjects are for people like me", "I feel I am good enough at these subjects". Shown with a
+              different accent for that reason: it's a different question than the influence charts above, not a
+              lighter version of the same one.
+            </p>
+          </div>
+          <div class="card__body">
+            <div id="chart-self-perception"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__header">
+          <h3 class="card__title">What kind of jobs do students imagine doing in the future?</h3>
+          <p class="card__subtitle">
+            Free-text responses, browsable below - not charted. <span id="jobs-imagined-status"></span>
+          </p>
+        </div>
+        <div class="card__body">
+          <p class="card__note" style="margin-top:0; padding-top:0; border-top:none;">
+            <strong>Needs theme coding before it can be summarised.</strong> Whether and how to code these into
+            themes is still open with the team; showing the raw responses rather than pre-judging that decision.
+          </p>
+          <div id="jobs-imagined-list"></div>
         </div>
       </div>
     </section>
@@ -313,6 +372,7 @@
 <script src="data/selections.js"></script>
 <script src="data/aspirations.js"></script>
 <script src="data/subjectCareer.js"></script>
+<script src="data/openText.js"></script>
 <script src="data/meta.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/charts/participation.js"></script>
@@ -320,7 +380,7 @@
 <script src="js/charts/skills.js"></script>
 <script src="js/charts/regional.js"></script>
 <script src="js/charts/aspirations.js"></script>
-<script src="js/charts/subjectCareer.js"></script>
+<script src="js/charts/influences.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

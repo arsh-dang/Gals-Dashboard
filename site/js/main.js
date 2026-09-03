@@ -9,15 +9,17 @@
   const activityColorScale = U.buildActivityColorScale(meta.activityTypes.map((a) => a.key));
   const regionColorScale = window.SIT.charts.regional.buildRegionColorScale(meta.regions.map((r) => r.key));
   const didGalsColors = { gals: U.cssVar('--brand-primary'), nonGals: U.cssVar('--series-6') };
+  const choiceColors = { subject: U.cssVar('--series-3'), career: U.cssVar('--series-4') };
+  const perceptionColor = U.cssVar('--series-2');
+  const interestColor = U.cssVar('--series-6');
 
-  const { aspirations, subjectCareer } = window.SIT_DATA;
+  const { aspirations, subjectCareer, openText } = window.SIT_DATA;
 
   const state = {
     region: '',
     schoolLevel: '',
     outcomesMode: 'average',
     battery: 'skills',
-    questionGroup: 'Subject selection',
   };
 
   U.renderFooterDate('data-refreshed');
@@ -60,7 +62,7 @@
     schoolLevelSelect.appendChild(opt);
   });
 
-  document.querySelectorAll('#threshold-label-1, #threshold-label-2, #threshold-label-3, #threshold-label-4').forEach((el) => {
+  document.querySelectorAll('#threshold-label-1, #threshold-label-2, #threshold-label-3, #threshold-label-4, #threshold-label-5, #threshold-label-6').forEach((el) => {
     el.textContent = meta.smallCellThreshold;
   });
 
@@ -98,14 +100,6 @@
     });
   });
 
-  document.querySelectorAll('[data-question-group]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      state.questionGroup = btn.dataset.questionGroup;
-      document.querySelectorAll('[data-question-group]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-      renderSubjectCareer();
-    });
-  });
-
   // --- Filtered data accessors ------------------------------------------
   function filters() {
     return { region: state.region, schoolLevel: state.schoolLevel };
@@ -115,6 +109,7 @@
   function filteredRespondents() { return U.applyFilters(respondents, filters()); }
   function filteredAspirations() { return U.applyFilters(aspirations, filters()); }
   function filteredSubjectCareer() { return U.applyFilters(subjectCareer, filters()); }
+  function filteredOpenText() { return U.applyFilters(openText, filters()); }
 
   function updateFilterStatus() {
     const n = U.countDistinctIds(filteredRespondents());
@@ -335,13 +330,64 @@
     });
   }
 
-  function renderSubjectCareer() {
-    window.SIT.charts.subjectCareer.render(document.getElementById('chart-subject-career'), {
-      rows: filteredSubjectCareer(),
+  function questionRows(question) {
+    return filteredSubjectCareer().filter((r) => r.question === question);
+  }
+
+  function renderInfluenceComparison() {
+    const { subjectQuestion, careerQuestion } = meta.subjectChoice;
+    window.SIT.charts.influences.renderComparison(document.getElementById('chart-influence-comparison'), {
+      subjectRows: questionRows(subjectQuestion),
+      careerRows: questionRows(careerQuestion),
       meta,
-      questionGroup: state.questionGroup,
-      colors: didGalsColors,
+      colors: choiceColors,
     });
+  }
+
+  function renderProgrammeInfluence() {
+    const { subjectQuestion, careerQuestion } = meta.subjectChoice;
+    window.SIT.charts.influences.renderProgrammeInfluence(document.getElementById('chart-programme-influence'), {
+      subjectRows: questionRows(subjectQuestion),
+      careerRows: questionRows(careerQuestion),
+      meta,
+      subjectColors: choiceColors,
+      didGalsColors,
+    });
+  }
+
+  function renderSubjectInterest() {
+    window.SIT.charts.influences.renderSingleQuestion(document.getElementById('chart-subject-interest'), {
+      rows: questionRows(meta.subjectChoice.subjectInterestQuestion),
+      color: interestColor,
+    });
+  }
+
+  function renderSelfPerception() {
+    window.SIT.charts.influences.renderSingleQuestion(document.getElementById('chart-self-perception'), {
+      rows: questionRows(meta.subjectChoice.subjectPerceptionQuestion),
+      color: perceptionColor,
+    });
+  }
+
+  function renderJobsImagined() {
+    const rows = filteredOpenText().filter((r) => r.question === meta.subjectChoice.jobsImaginedQuestion);
+    const container = document.getElementById('jobs-imagined-list');
+    container.innerHTML = '';
+    document.getElementById('jobs-imagined-status').textContent = `${rows.length} response${rows.length === 1 ? '' : 's'}`;
+    U.renderDataTable(container, {
+      columns: [
+        { label: 'Response', value: (d) => d.response },
+        { label: 'Region', value: (d) => d.region || 'N/A' },
+        { label: 'School year', value: (d) => d.schoolLevel || 'N/A' },
+      ],
+      rows,
+    });
+    const details = container.querySelector('details');
+    if (details) {
+      details.open = true;
+      const summary = details.querySelector('summary');
+      if (summary) summary.style.display = 'none';
+    }
   }
 
   function renderAll() {
@@ -352,7 +398,11 @@
     renderSkills();
     renderRegional();
     renderAspirations();
-    renderSubjectCareer();
+    renderInfluenceComparison();
+    renderProgrammeInfluence();
+    renderSubjectInterest();
+    renderSelfPerception();
+    renderJobsImagined();
   }
 
   let resizeTimer = null;
