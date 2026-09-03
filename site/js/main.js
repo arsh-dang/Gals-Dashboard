@@ -20,7 +20,9 @@
     schoolLevel: '',
     outcomesMode: 'average',
     battery: 'skills',
+    jobsExpanded: false,
   };
+  const JOBS_PREVIEW_COUNT = 6;
 
   U.renderFooterDate('data-refreshed');
 
@@ -98,6 +100,11 @@
       document.querySelectorAll('[data-battery]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
       renderSkills();
     });
+  });
+
+  document.getElementById('jobs-imagined-toggle').addEventListener('click', () => {
+    state.jobsExpanded = !state.jobsExpanded;
+    renderJobsImagined();
   });
 
   // --- Filtered data accessors ------------------------------------------
@@ -374,19 +381,38 @@
     const container = document.getElementById('jobs-imagined-list');
     container.innerHTML = '';
     document.getElementById('jobs-imagined-status').textContent = `${rows.length} response${rows.length === 1 ? '' : 's'}`;
+
+    // Restricted view by default - 146 rows dumped into one page is not
+    // browsable, it's a wall of text. Expand/collapse instead of the usual
+    // "Show data table" disclosure, since this list IS the card's content,
+    // not optional detail behind a chart.
+    const expanded = state.jobsExpanded || rows.length <= JOBS_PREVIEW_COUNT;
+    const visibleRows = expanded ? rows : rows.slice(0, JOBS_PREVIEW_COUNT);
+
     U.renderDataTable(container, {
       columns: [
         { label: 'Response', value: (d) => d.response },
         { label: 'Region', value: (d) => d.region || 'N/A' },
         { label: 'School year', value: (d) => d.schoolLevel || 'N/A' },
       ],
-      rows,
+      rows: visibleRows,
     });
     const details = container.querySelector('details');
     if (details) {
       details.open = true;
       const summary = details.querySelector('summary');
       if (summary) summary.style.display = 'none';
+    }
+
+    const more = document.getElementById('jobs-imagined-more');
+    const toggle = document.getElementById('jobs-imagined-toggle');
+    if (rows.length <= JOBS_PREVIEW_COUNT) {
+      more.style.display = 'none';
+    } else {
+      more.style.display = '';
+      toggle.textContent = state.jobsExpanded
+        ? 'Show fewer'
+        : `Show all ${rows.length} responses`;
     }
   }
 

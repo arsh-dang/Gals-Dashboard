@@ -529,6 +529,11 @@ svg text { font-family: var(--font-body); fill: var(--text-primary); }
 }
 
 /* --- Influences: unique-to-one-side options, below the main comparison --- */
+.jobs-imagined-more {
+  margin-top: var(--space-3);
+  text-align: center;
+}
+
 .influences-divider {
   border-top: 1px solid var(--border-subtle);
   padding-top: var(--space-3);
