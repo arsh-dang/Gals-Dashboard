@@ -52,10 +52,20 @@
       }
 
       const activitySelections = selections.filter((s) => s.activityType === activityType && s.battery === battery);
+      // The facet-level denom clearing the threshold does not guarantee any
+      // one item does - a filter can leave, say, 16 participants overall but
+      // only 1 of them ticked a given item. Suppress per item too, same rule
+      // as every other cell in the dashboard, so a single respondent's pick
+      // is never shown as an identifiable bar/percentage.
       const bars = items.map((item) => {
         const n = U.countDistinctIds(activitySelections.filter((s) => s.item === item));
-        return { item, n, pct: denom ? n / denom : 0 };
-      }).sort((a, b) => b.pct - a.pct);
+        return { item, n, pct: denom ? n / denom : 0, suppressed: U.isSuppressed(n) };
+      }).sort((a, b) => {
+        if (a.suppressed && b.suppressed) return 0;
+        if (a.suppressed) return 1;
+        if (b.suppressed) return -1;
+        return b.pct - a.pct;
+      });
 
       const width = 320;
       const rowH = 24;
@@ -81,8 +91,11 @@
         .text((d) => truncate(d.item, 24))
         .append('title').text((d) => d.item);
 
+      const shown = bars.filter((d) => !d.suppressed);
+      const hidden = bars.filter((d) => d.suppressed);
+
       svg.selectAll('rect.bar')
-        .data(bars)
+        .data(shown)
         .join('rect')
         .attr('x', margin.left)
         .attr('y', (d) => y(d.item))
@@ -95,13 +108,27 @@
         .on('mouseleave blur', () => tip.hide());
 
       svg.selectAll('text.value')
-        .data(bars)
+        .data(shown)
         .join('text')
         .attr('class', 'bar-label')
         .attr('x', (d) => x(d.pct) + 6)
         .attr('y', (d) => y(d.item) + y.bandwidth() / 2)
         .attr('dy', '0.32em')
         .text((d) => U.formatPct(d.pct));
+
+      svg.selectAll('text.suppressed-note')
+        .data(hidden)
+        .join('text')
+        .attr('x', margin.left + 6)
+        .attr('y', (d) => y(d.item) + y.bandwidth() / 2)
+        .attr('dy', '0.32em')
+        .style('font-size', '0.62rem')
+        .attr('fill', U.cssVar('--text-muted'))
+        .text(`suppressed (n<${U.SMALL_CELL_THRESHOLD})`)
+        .attr('tabindex', 0)
+        .on('mouseenter focus', (evt, d) => tip.show(`<strong>${d.item}</strong>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${d.n})`, evt))
+        .on('mousemove', (evt) => tip.move(evt))
+        .on('mouseleave blur', () => tip.hide());
     });
   }
 
