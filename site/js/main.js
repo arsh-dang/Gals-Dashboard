@@ -10,8 +10,7 @@
   const regionColorScale = window.SIT.charts.regional.buildRegionColorScale(meta.regions.map((r) => r.key));
   const didGalsColors = { gals: U.cssVar('--brand-primary'), nonGals: U.cssVar('--series-6') };
   const choiceColors = { subject: U.cssVar('--series-3'), career: U.cssVar('--series-4') };
-  const perceptionColor = U.cssVar('--series-2');
-  const interestColor = U.cssVar('--series-6');
+  const genderColors = { female: U.cssVar('--series-2'), male: U.cssVar('--series-7') };
 
   const { aspirations, subjectCareer, openText } = window.SIT_DATA;
 
@@ -64,7 +63,7 @@
     schoolLevelSelect.appendChild(opt);
   });
 
-  document.querySelectorAll('#threshold-label-1, #threshold-label-2, #threshold-label-3, #threshold-label-4, #threshold-label-5, #threshold-label-6').forEach((el) => {
+  document.querySelectorAll('#threshold-label-1, #threshold-label-2, #threshold-label-3, #threshold-label-4, #threshold-label-5, #threshold-label-6, #threshold-label-7').forEach((el) => {
     el.textContent = meta.smallCellThreshold;
   });
 
@@ -341,13 +340,17 @@
     return filteredSubjectCareer().filter((r) => r.question === question);
   }
 
-  function renderInfluenceComparison() {
-    const { subjectQuestion, careerQuestion } = meta.subjectChoice;
-    window.SIT.charts.influences.renderComparison(document.getElementById('chart-influence-comparison'), {
-      subjectRows: questionRows(subjectQuestion),
-      careerRows: questionRows(careerQuestion),
-      meta,
-      colors: choiceColors,
+  function renderSubjectChoiceInfluence() {
+    window.SIT.charts.influences.renderByGender(document.getElementById('chart-subject-choice-influence'), {
+      rows: questionRows(meta.subjectChoice.subjectQuestion),
+      colors: genderColors,
+    });
+  }
+
+  function renderCareerChoiceInfluence() {
+    window.SIT.charts.influences.renderByGender(document.getElementById('chart-career-choice-influence'), {
+      rows: questionRows(meta.subjectChoice.careerQuestion),
+      colors: genderColors,
     });
   }
 
@@ -363,16 +366,16 @@
   }
 
   function renderSubjectInterest() {
-    window.SIT.charts.influences.renderSingleQuestion(document.getElementById('chart-subject-interest'), {
+    window.SIT.charts.influences.renderByGender(document.getElementById('chart-subject-interest'), {
       rows: questionRows(meta.subjectChoice.subjectInterestQuestion),
-      color: interestColor,
+      colors: genderColors,
     });
   }
 
   function renderSelfPerception() {
-    window.SIT.charts.influences.renderSingleQuestion(document.getElementById('chart-self-perception'), {
+    window.SIT.charts.influences.renderByGender(document.getElementById('chart-self-perception'), {
       rows: questionRows(meta.subjectChoice.subjectPerceptionQuestion),
-      color: perceptionColor,
+      colors: genderColors,
     });
   }
 
@@ -424,7 +427,8 @@
     renderSkills();
     renderRegional();
     renderAspirations();
-    renderInfluenceComparison();
+    renderSubjectChoiceInfluence();
+    renderCareerChoiceInfluence();
     renderProgrammeInfluence();
     renderSubjectInterest();
     renderSelfPerception();

@@ -1,20 +1,21 @@
-// View 5, restructured: what influences subject choice and career choice.
-// Two subject_career.csv questions ask essentially the same thing at
-// different horizons ("what helps you choose subjects" / "what helps you
-// choose your future") with overlapping but differently-worded options.
-// meta.subjectChoice (built in build/build.js) supplies the hand-authored
-// mapping between them - there's no shared key in the data to match on.
+// View 5: subject choice and career choice influences, plus the smaller
+// subject-interest and self-perception panels. All four are now split by
+// gender rather than GALS participation (the programme-influence panel
+// below keeps its GALS split - that one wasn't part of the change).
 //
-// Denominator for every percentage here is the distinct respondent count
-// for the relevant QUESTION (not per-item), since a multi-select
-// respondent who ticked nothing would otherwise silently vanish from the
-// denominator. Suppression is evaluated per question (and per did_gals
-// subgroup for the programme panel), independently for subject vs career,
-// since one side can have enough respondents while the other doesn't.
+// Denominator for every percentage is the distinct respondent count for
+// the relevant question (not per-item), since a multi-select respondent
+// who ticked nothing would otherwise silently vanish from the
+// denominator. The female/male comparison is the one asked for; non-binary
+// and prefer-not-to-say groups are still computed and shown with the same
+// suppression marker as any small group when they exist in the data,
+// rather than being quietly filtered out before anyone sees the count.
 (function () {
   'use strict';
 
   const U = window.SIT.utils;
+
+  const SMALL_GENDER_GROUPS = ['Non-binary / third gender', 'Prefer not to say'];
 
   function truncate(text, max) {
     return text.length > max ? `${text.slice(0, max - 1)}…` : text;
@@ -26,45 +27,69 @@
     return { n, pct: n / denomIds.size };
   }
 
-  // --- Chart 1: shared influences, subject choice vs career choice --------
-  function renderComparison(container, { subjectRows, careerRows, meta, colors }) {
+  // --- Chart: a single multi-select question, split female vs male -------
+  // Used for subject-choice influences, career-choice influences, subject
+  // interest, and the self-perception items - same mechanics, different
+  // data and accent colour per caller.
+  function renderByGender(container, { rows, colors }) {
     container.innerHTML = '';
-    const { sharedInfluences, subjectOnlyInfluences, careerOnlyInfluences } = meta.subjectChoice;
 
-    const subjectIds = new Set(subjectRows.map((r) => r.id));
-    const careerIds = new Set(careerRows.map((r) => r.id));
-    const subjectSuppressed = U.isSuppressed(subjectIds.size);
-    const careerSuppressed = U.isSuppressed(careerIds.size);
+    const femaleIds = new Set(rows.filter((r) => r.gender === 'Female').map((r) => r.id));
+    const maleIds = new Set(rows.filter((r) => r.gender === 'Male').map((r) => r.id));
+    const femaleSuppressed = U.isSuppressed(femaleIds.size);
+    const maleSuppressed = U.isSuppressed(maleIds.size);
 
     const legend = document.createElement('div');
     legend.className = 'legend';
     legend.innerHTML = `
-      <span class="legend__item"><span class="legend__swatch" style="background:${colors.subject}"></span>Shapes subject choice (n=${subjectIds.size})</span>
-      <span class="legend__item"><span class="legend__swatch" style="background:${colors.career}"></span>Shapes career choice (n=${careerIds.size})</span>
+      <span class="legend__item"><span class="legend__swatch" style="background:${colors.female}"></span>Female (n=${femaleIds.size})</span>
+      <span class="legend__item"><span class="legend__swatch" style="background:${colors.male}"></span>Male (n=${maleIds.size})</span>
     `;
     container.appendChild(legend);
 
-    const rows = sharedInfluences.map((inf) => ({
-      canonical: inf.canonical,
-      subject: pctOf(subjectRows, inf.subject, subjectIds),
-      career: pctOf(careerRows, inf.career, careerIds),
-    })).sort((a, b) => (b.subject.pct + b.career.pct) - (a.subject.pct + a.career.pct));
+    // Small groups still exist in the data and are still asked about here -
+    // shown once per chart with the standard suppression badge, not
+    // silently dropped from the respondent pool before anyone sees them.
+    const smallGroupNotes = SMALL_GENDER_GROUPS.map((g) => {
+      const n = new Set(rows.filter((r) => r.gender === g).map((r) => r.id)).size;
+      return { group: g, n };
+    }).filter((d) => d.n > 0);
+    if (smallGroupNotes.length) {
+      const note = document.createElement('p');
+      note.className = 'card__note';
+      note.style.marginTop = 'var(--space-2)';
+      note.innerHTML = `<span class="badge-suppressed">Suppressed</span> ${smallGroupNotes.map((d) => `${d.group} (n=${d.n})`).join(', ')}: too few respondents to break down, not excluded from the survey.`;
+      container.appendChild(note);
+    }
 
-    const width = Math.max(container.clientWidth || 640, 640);
-    const rowHeight = 40;
+    // pctOf's numerator is scoped by whatever rows it's given, so each
+    // call must be pre-filtered to the matching gender - passing the full
+    // `rows` for both and relying only on the denominator to differ would
+    // count every gender's picks against a single gender's total.
+    const femaleRows = rows.filter((r) => r.gender === 'Female');
+    const maleRows = rows.filter((r) => r.gender === 'Male');
+    const items = [...new Set(rows.map((r) => r.item))];
+    const bars = items.map((item) => ({
+      item,
+      female: pctOf(femaleRows, item, femaleIds),
+      male: pctOf(maleRows, item, maleIds),
+    })).sort((a, b) => (b.female.pct + b.male.pct) - (a.female.pct + a.male.pct));
+
+    const width = Math.max(container.clientWidth || 520, 480);
+    const rowHeight = 36;
     const margin = {
-      top: 8, right: 50, bottom: 4, left: 230,
+      top: 4, right: 46, bottom: 4, left: 220,
     };
-    const height = margin.top + margin.bottom + rows.length * rowHeight;
+    const height = margin.top + margin.bottom + bars.length * rowHeight;
 
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('role', 'img')
-      .attr('aria-label', 'Grouped bar chart comparing what influences subject choice against what influences career choice');
+      .attr('aria-label', 'Percentage of respondents selecting each option, female compared to male');
 
     const x = d3.scaleLinear().domain([0, 1]).range([margin.left, width - margin.right]);
-    const y = d3.scaleBand().domain(rows.map((r) => r.canonical)).range([margin.top, height - margin.bottom]).padding(0.3);
-    const sub = d3.scaleBand().domain(['subject', 'career']).range([0, y.bandwidth()]).padding(0.15);
+    const y = d3.scaleBand().domain(bars.map((d) => d.item)).range([margin.top, height - margin.bottom]).padding(0.3);
+    const sub = d3.scaleBand().domain(['female', 'male']).range([0, y.bandwidth()]).padding(0.15);
 
     svg.selectAll('line.gridline')
       .data([0, 0.25, 0.5, 0.75, 1])
@@ -75,21 +100,22 @@
 
     const tip = U.tooltip();
 
-    rows.forEach((r) => {
+    bars.forEach((d) => {
       svg.append('text')
         .attr('class', 'item-row-label')
-        .attr('x', margin.left - 12).attr('y', y(r.canonical) + y.bandwidth() / 2)
+        .style('font-size', '0.72rem')
+        .attr('x', margin.left - 10).attr('y', y(d.item) + y.bandwidth() / 2)
         .attr('text-anchor', 'end').attr('dy', '0.32em')
-        .text(truncate(r.canonical, 34))
-        .append('title').text(r.canonical);
+        .text(truncate(d.item, 34))
+        .append('title').text(d.item);
 
-      [['subject', r.subject, subjectSuppressed, colors.subject, 'Subject choice'], ['career', r.career, careerSuppressed, colors.career, 'Career choice']].forEach(([key, val, suppressed, color, label]) => {
-        const barY = y(r.canonical) + sub(key);
+      [['female', d.female, femaleSuppressed, colors.female, 'Female'], ['male', d.male, maleSuppressed, colors.male, 'Male']].forEach(([key, val, suppressed, color, label]) => {
+        const barY = y(d.item) + sub(key);
         if (suppressed) {
           svg.append('text')
             .attr('x', margin.left + 8).attr('y', barY + sub.bandwidth() / 2)
             .attr('dy', '0.32em')
-            .style('font-size', '0.65rem')
+            .style('font-size', '0.62rem')
             .attr('fill', U.cssVar('--text-muted'))
             .text(`suppressed (n<${U.SMALL_CELL_THRESHOLD})`);
           return;
@@ -99,62 +125,24 @@
           .attr('y', barY).attr('height', sub.bandwidth())
           .attr('fill', color)
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${label}</strong>${r.canonical}<br>${U.formatPct(val.pct)} (n=${val.n})`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`<strong>${label}</strong>${truncate(d.item, 60)}<br>${U.formatPct(val.pct)} (n=${val.n})`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
         svg.append('text')
           .attr('class', 'bar-label')
           .attr('x', x(val.pct) + 6).attr('y', barY + sub.bandwidth() / 2)
           .attr('dy', '0.32em')
+          .style('font-size', '0.68rem')
           .text(U.formatPct(val.pct));
       });
     });
 
-    container.querySelector('svg').style.minWidth = '560px';
-
-    // --- Separated group: options with no equivalent on the other side.
-    // Shown below the comparison, not folded in, so nothing is silently
-    // dropped and the shared-axis comparison above stays honest (every row
-    // in it is a real like-for-like match).
-    const divider = document.createElement('div');
-    divider.className = 'influences-divider';
-    divider.innerHTML = '<p class="card__note" style="margin-top:0;">Options that exist for only one of the two questions - not part of the comparison above, since there is nothing to compare them against.</p>';
-    container.appendChild(divider);
-
-    const uniqueGrid = document.createElement('div');
-    uniqueGrid.className = 'influences-unique-grid';
-    container.appendChild(uniqueGrid);
-
-    function renderUniqueList(title, items, rowsData, ids, suppressed, color) {
-      const box = document.createElement('div');
-      box.className = 'influences-unique-box';
-      const h = document.createElement('h4');
-      h.textContent = title;
-      box.appendChild(h);
-      if (suppressed) {
-        const badge = document.createElement('span');
-        badge.className = 'badge-suppressed';
-        badge.textContent = `Suppressed: n<${U.SMALL_CELL_THRESHOLD}`;
-        box.appendChild(badge);
-        uniqueGrid.appendChild(box);
-        return;
-      }
-      const list = items.map((item) => ({ item, ...pctOf(rowsData, item, ids) }))
-        .sort((a, b) => b.pct - a.pct);
-      list.forEach((d) => {
-        const line = document.createElement('div');
-        line.className = 'influences-unique-line';
-        line.innerHTML = `<span class="influences-unique-label">${d.item}</span><span class="influences-unique-bar-track"><span class="influences-unique-bar" style="width:${(d.pct * 100).toFixed(1)}%;background:${color}"></span></span><span class="influences-unique-pct">${U.formatPct(d.pct)}</span>`;
-        box.appendChild(line);
-      });
-      uniqueGrid.appendChild(box);
-    }
-
-    renderUniqueList('Subject choice only', subjectOnlyInfluences, subjectRows, subjectIds, subjectSuppressed, colors.subject);
-    renderUniqueList('Career choice only', careerOnlyInfluences, careerRows, careerIds, careerSuppressed, colors.career);
+    container.querySelector('svg').style.minWidth = '520px';
   }
 
-  // --- Chart 2: programme influence, called out on its own, by did_gals --
+  // --- Programme influence, called out on its own, by did_gals ------------
+  // Unchanged split - the team asked to change the other four charts to
+  // gender, not this one.
   function renderProgrammeInfluence(container, { subjectRows, careerRows, meta, subjectColors, didGalsColors }) {
     container.innerHTML = '';
     const { programmeInfluenceLabel, sharedInfluences } = meta.subjectChoice;
@@ -189,7 +177,6 @@
     let rowIndex = 0;
 
     groups.forEach((g) => {
-      const ids = new Set(g.rows.map((r) => r.id));
       const galsIds = new Set(g.rows.filter((r) => r.didGals).map((r) => r.id));
       const nonGalsIds = new Set(g.rows.filter((r) => !r.didGals).map((r) => r.id));
 
@@ -234,69 +221,6 @@
     container.querySelector('svg').style.minWidth = '420px';
   }
 
-  // --- Chart 3 (both panels): a single multi-select question, no GALS
-  // split, sorted frequency bars - reused for subject interest and for the
-  // belonging/confidence items, styled by the caller to stay visually
-  // distinct from the influence-comparison charts above.
-  function renderSingleQuestion(container, { rows, color }) {
-    container.innerHTML = '';
-    const ids = new Set(rows.map((r) => r.id));
-    const suppressed = U.isSuppressed(ids.size);
-
-    if (suppressed) {
-      const badge = document.createElement('span');
-      badge.className = 'badge-suppressed';
-      badge.textContent = `Suppressed: n<${U.SMALL_CELL_THRESHOLD}`;
-      container.appendChild(badge);
-      return;
-    }
-
-    const items = [...new Set(rows.map((r) => r.item))];
-    const bars = items.map((item) => pctOf(rows, item, ids)).map((d, i) => ({ ...d, item: items[i] }))
-      .sort((a, b) => b.pct - a.pct);
-
-    const width = Math.max(container.clientWidth || 480, 420);
-    const rowHeight = 26;
-    const margin = {
-      top: 4, right: 46, bottom: 4, left: 190,
-    };
-    const height = margin.top + margin.bottom + bars.length * rowHeight;
-
-    const svg = d3.select(container).append('svg')
-      .attr('viewBox', `0 0 ${width} ${height}`)
-      .attr('role', 'img')
-      .attr('aria-label', 'Percentage of respondents selecting each option');
-
-    const x = d3.scaleLinear().domain([0, 1]).range([margin.left, width - margin.right]);
-    const y = d3.scaleBand().domain(bars.map((d) => d.item)).range([margin.top, height - margin.bottom]).padding(0.28);
-
-    const tip = U.tooltip();
-
-    bars.forEach((d) => {
-      svg.append('text')
-        .attr('class', 'item-row-label')
-        .style('font-size', '0.72rem')
-        .attr('x', margin.left - 10).attr('y', y(d.item) + y.bandwidth() / 2)
-        .attr('text-anchor', 'end').attr('dy', '0.32em')
-        .text(truncate(d.item, 34))
-        .append('title').text(d.item);
-
-      svg.append('rect')
-        .attr('x', margin.left).attr('width', Math.max(0, x(d.pct) - margin.left))
-        .attr('y', y(d.item)).attr('height', y.bandwidth())
-        .attr('fill', color)
-        .attr('tabindex', 0)
-        .on('mouseenter focus', (evt) => tip.show(`${truncate(d.item, 60)}<br>${U.formatPct(d.pct)} (n=${d.n} of ${ids.size})`, evt))
-        .on('mousemove', (evt) => tip.move(evt))
-        .on('mouseleave blur', () => tip.hide());
-      svg.append('text')
-        .attr('class', 'bar-label')
-        .attr('x', x(d.pct) + 6).attr('y', y(d.item) + y.bandwidth() / 2)
-        .attr('dy', '0.32em')
-        .text(U.formatPct(d.pct));
-    });
-  }
-
   window.SIT.charts = window.SIT.charts || {};
-  window.SIT.charts.influences = { renderComparison, renderProgrammeInfluence, renderSingleQuestion };
+  window.SIT.charts.influences = { renderByGender, renderProgrammeInfluence };
 })();

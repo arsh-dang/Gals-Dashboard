@@ -528,63 +528,9 @@ svg text { font-family: var(--font-body); fill: var(--text-primary); }
   font-weight: 400;
 }
 
-/* --- Influences: unique-to-one-side options, below the main comparison --- */
 .jobs-imagined-more {
   margin-top: var(--space-3);
   text-align: center;
-}
-
-.influences-divider {
-  border-top: 1px solid var(--border-subtle);
-  padding-top: var(--space-3);
-  margin-top: var(--space-4);
-}
-
-.influences-unique-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-5);
-}
-
-.influences-unique-box h4 {
-  font-size: var(--text-small);
-  font-weight: 600;
-  margin: 0 0 var(--space-2);
-}
-
-.influences-unique-line {
-  display: grid;
-  grid-template-columns: minmax(120px, 1fr) minmax(80px, 2fr) 3.5ch;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--text-caption);
-  margin-bottom: var(--space-2);
-}
-
-.influences-unique-label {
-  color: var(--text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.influences-unique-bar-track {
-  background: var(--surface-sunken);
-  border-radius: var(--radius-sm);
-  height: 0.85rem;
-  overflow: hidden;
-}
-
-.influences-unique-bar {
-  display: block;
-  height: 100%;
-  border-radius: var(--radius-sm);
-}
-
-.influences-unique-pct {
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-  text-align: right;
 }
 
 /* --- Self-perception panel: visually distinct from the influence charts,

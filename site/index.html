@@ -262,22 +262,43 @@
 
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title">What influences subject choice, and what influences career choice?</h3>
+          <h3 class="card__title">What helps students decide which subjects to choose?</h3>
           <p class="card__subtitle">
-            Two survey questions ask essentially the same thing at different horizons: "what helps you decide what
-            subjects to choose" and "what helps you decide what you might do in the future". Their answer options
-            overlap heavily but are worded slightly differently; matched here so the same underlying influence reads
-            as one row rather than two unrelated bars.
+            Percentage of respondents selecting each option (multi-select, so these don't sum to 100%), female
+            compared to male.
           </p>
         </div>
         <div class="card__body">
-          <div class="chart-scroll" id="chart-influence-comparison"></div>
+          <div class="chart-scroll" id="chart-subject-choice-influence"></div>
           <p class="card__note">
-            Percentage of respondents selecting each option (multi-select, so these don't sum to 100%), out of
-            everyone who answered that question. Cells with fewer than <span id="threshold-label-5"></span>
-            respondents show "suppressed" instead of a bar. The ranking here (enjoyment and ability at the top,
-            friends at the bottom) is invented by the mock data generator, not a finding; it exists so this chart
-            type can be judged on whether it communicates, not on what it currently shows.
+            The differences shown here are built into the mock data deliberately; they are not results. Female
+            respondents include all GALS participants, since GALS is a girls' programme, so a gender gap across the
+            whole sample partly reflects who took part in the programme rather than gender alone. That won't go away
+            with real data either: any gender comparison here should be read alongside programme participation, not
+            instead of it. Cells with fewer than <span id="threshold-label-5"></span> respondents show "suppressed"
+            instead of a bar.
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__header">
+          <h3 class="card__title">What helps students decide what they might do in the future?</h3>
+          <p class="card__subtitle">
+            Percentage of respondents selecting each option (multi-select), female compared to male. A separate
+            question from subject choice above, not merged with it - the comparison here is between genders within
+            this one question, not between subject choice and career choice.
+          </p>
+        </div>
+        <div class="card__body">
+          <div class="chart-scroll" id="chart-career-choice-influence"></div>
+          <p class="card__note">
+            The differences shown here are built into the mock data deliberately; they are not results. Female
+            respondents include all GALS participants, since GALS is a girls' programme, so a gender gap across the
+            whole sample partly reflects who took part in the programme rather than gender alone. That won't go away
+            with real data either: any gender comparison here should be read alongside programme participation, not
+            instead of it. Cells with fewer than <span id="threshold-label-7"></span> respondents show "suppressed"
+            instead of a bar.
           </p>
         </div>
       </div>
@@ -306,10 +327,14 @@
         <div class="card">
           <div class="card__header">
             <h3 class="card__title">Which subjects are students interested in for Year 11 or 12?</h3>
-            <p class="card__subtitle">Percentage of respondents interested in each subject area.</p>
+            <p class="card__subtitle">Percentage of respondents interested in each subject area, female compared to male.</p>
           </div>
           <div class="card__body">
             <div id="chart-subject-interest"></div>
+            <p class="card__note">
+              Built into the mock data deliberately, not a result. Female respondents include all GALS participants,
+              so a gender gap here partly reflects programme participation rather than gender alone.
+            </p>
           </div>
         </div>
 
@@ -320,11 +345,15 @@
               These options are about how students see themselves, not what influences their decision - "I feel
               these subjects are for people like me", "I feel I am good enough at these subjects". Shown with a
               different accent for that reason: it's a different question than the influence charts above, not a
-              lighter version of the same one.
+              lighter version of the same one. Female compared to male.
             </p>
           </div>
           <div class="card__body">
             <div id="chart-self-perception"></div>
+            <p class="card__note">
+              Built into the mock data deliberately, not a result. Female respondents include all GALS participants,
+              so a gender gap here partly reflects programme participation rather than gender alone.
+            </p>
           </div>
         </div>
       </div>

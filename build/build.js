@@ -274,6 +274,7 @@ function main() {
       schoolLevel: resp ? resp.schoolLevel : null,
       pathway: resp ? resp.pathway : null,
       didGals: resp ? resp.didGals : false,
+      gender: resp ? resp.gender : null,
     };
   });
 
@@ -435,10 +436,23 @@ function main() {
     nonGals: respondents.filter((r) => !r.didGals).length,
   };
 
+  // GALS is a girls' programme, so every GALS participant is female - a
+  // gender split on the whole sample partly reflects programme
+  // participation, not just gender. femaleNonGals is the group gender can
+  // actually be compared against Male within, without that confound.
+  const genderCountsMap = new Map();
+  respondents.forEach((r) => genderCountsMap.set(r.gender, (genderCountsMap.get(r.gender) || 0) + 1));
+  const genderCounts = [...genderCountsMap.entries()].map(([key, count]) => ({ key, count }));
+  const femaleGalsCount = respondents.filter((r) => r.gender === 'Female' && r.didGals).length;
+  const femaleNonGalsCount = respondents.filter((r) => r.gender === 'Female' && !r.didGals).length;
+
   const meta = {
     generatedAt: new Date().toISOString(),
     totalRespondents: respondents.length,
     didGalsCounts,
+    genderCounts,
+    femaleGalsCount,
+    femaleNonGalsCount,
     aspirationItems,
     subjectCareerQuestions,
     subjectChoice,
