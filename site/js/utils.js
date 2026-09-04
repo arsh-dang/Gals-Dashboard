@@ -22,9 +22,13 @@
     return cssVar(SERIES_VARS[index % SERIES_VARS.length]);
   }
 
-  // Ordered so GALS (always present, always dominant) gets a fixed neutral
-  // slot rather than the first "most distinguishable" colour - it isn't the
-  // comparison of interest, the other programmes are.
+  // GALS always gets --series-7, the same colour it uses in the GALS-split
+  // charts elsewhere on the page, rather than whatever the sort order would
+  // otherwise assign it. Callers must pass only activity types that will
+  // actually be shown (i.e. already filtered against
+  // meta.excludedActivityTypes) - an unfiltered list still consumes a
+  // colour slot for an activity nothing ever renders, which can push a
+  // real activity into the same series-7 slot GALS is hardcoded to.
   function buildActivityColorScale(activityKeys) {
     const ordered = [...activityKeys].sort((a, b) => {
       if (a === 'Girls as Leaders in STEM program') return 1;

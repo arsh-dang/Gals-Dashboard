@@ -57,8 +57,8 @@
   --series-3:  #007D9B;   /* Primary 3 - blue */
   --series-4:  #FF9300;   /* Primary 4 - orange */
   --series-5:  #FFD923;   /* Primary 5 - yellow */
-  --series-6:  #363635;   /* Primary 6 - near-black, used for GALS */
-  --series-7:  #006D88;   /* Highlight Teal - deep blue-teal */
+  --series-6:  #363635;   /* Primary 6 - near-black, used for "not GALS" */
+  --series-7:  #006D88;   /* Highlight Teal - deep blue-teal, used for GALS everywhere it appears */
   --series-8:  #AD4206;   /* Highlight Orange - deep burnt orange */
 
   /* --- Sequential ramp (for a single measure, low to high) --------------

@@ -143,14 +143,14 @@
   // --- Programme influence, called out on its own, by did_gals ------------
   // Unchanged split - the team asked to change the other four charts to
   // gender, not this one.
-  function renderProgrammeInfluence(container, { subjectRows, careerRows, meta, subjectColors, didGalsColors }) {
+  function renderProgrammeInfluence(container, { subjectRows, careerRows, meta, didGalsColors }) {
     container.innerHTML = '';
     const { programmeInfluenceLabel, sharedInfluences } = meta.subjectChoice;
     const programmePair = sharedInfluences.find((i) => i.canonical === programmeInfluenceLabel);
 
     const groups = [
-      { label: 'Subject choice', rows: subjectRows, item: programmePair.subject, color: subjectColors.subject },
-      { label: 'Career choice', rows: careerRows, item: programmePair.career, color: subjectColors.career },
+      { label: 'Subject choice', rows: subjectRows, item: programmePair.subject },
+      { label: 'Career choice', rows: careerRows, item: programmePair.career },
     ];
 
     const width = Math.max(container.clientWidth || 520, 480);

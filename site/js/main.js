@@ -6,11 +6,23 @@
 
   const YEAR_ORDER = ['Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11', 'Year 12'];
 
-  const activityColorScale = U.buildActivityColorScale(meta.activityTypes.map((a) => a.key));
+  // Excluded types (General STEM outcomes) must not be passed in here: they
+  // still consumed a colour slot even though no chart ever displays them,
+  // which pushed a real activity (University programs) into the same
+  // series-7 slot reserved for GALS - both rendered identically everywhere
+  // this scale was used, indistinguishable in the legend and every chart.
+  const activityColorScale = U.buildActivityColorScale(
+    meta.activityTypes.filter((a) => !meta.excludedActivityTypes.includes(a.key)).map((a) => a.key),
+  );
   const regionColorScale = window.SIT.charts.regional.buildRegionColorScale(meta.regions.map((r) => r.key));
-  const didGalsColors = { gals: U.cssVar('--brand-primary'), nonGals: U.cssVar('--series-6') };
-  const choiceColors = { subject: U.cssVar('--series-3'), career: U.cssVar('--series-4') };
-  const genderColors = { female: U.cssVar('--series-2'), male: U.cssVar('--series-7') };
+  // GALS is --series-7 everywhere it appears (activity charts via
+  // buildActivityColorScale, and here) - it was brand-primary in the
+  // GALS-split charts only, which meant the same category read as two
+  // different colours depending which chart you were looking at.
+  const didGalsColors = { gals: U.cssVar('--series-7'), nonGals: U.cssVar('--series-6') };
+  // --series-3, not --series-7, so "Male" doesn't collide with the GALS
+  // colour directly above it in this same section.
+  const genderColors = { female: U.cssVar('--series-2'), male: U.cssVar('--series-3') };
 
   const { aspirations, subjectCareer, openText } = window.SIT_DATA;
 
@@ -360,7 +372,6 @@
       subjectRows: questionRows(subjectQuestion),
       careerRows: questionRows(careerQuestion),
       meta,
-      subjectColors: choiceColors,
       didGalsColors,
     });
   }
