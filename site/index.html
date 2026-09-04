@@ -239,8 +239,9 @@
         <div class="card__header">
           <h3 class="card__title">Does taking part in GALS shift how girls see their future in STEM?</h3>
           <p class="card__subtitle">
-            Average score per item, GALS participants against everyone else, same 1–4 scale as outcomes above (4 =
-            Yes a lot is best). Not tied to any activity, so grouped by GALS participation rather than activity type.
+            Compares GALS participants to everyone else, item by item. Average score on the same 1–4 scale as the
+            outcomes above (4 = Yes a lot is best); not tied to any one activity, so grouped by GALS participation
+            rather than activity type.
           </p>
         </div>
         <div class="card__body">
@@ -264,8 +265,10 @@
         <div class="card__header">
           <h3 class="card__title">What helps students decide which subjects to choose?</h3>
           <p class="card__subtitle">
-            Percentage of respondents selecting each option (multi-select, so these don't sum to 100%), female
-            compared to male.
+            Compares which influences matter more to female students, and which matter more to male students. Each
+            bar is one option, split into a female segment and a male segment placed side by side: segment length is
+            that gender's own percentage, not a shared total, so read the number on each segment. Respondents could
+            select more than one option, so percentages don't sum to 100% down the list.
           </p>
         </div>
         <div class="card__body">
@@ -275,8 +278,8 @@
             respondents include all GALS participants, since GALS is a girls' programme, so a gender gap across the
             whole sample partly reflects who took part in the programme rather than gender alone. That won't go away
             with real data either: any gender comparison here should be read alongside programme participation, not
-            instead of it. Cells with fewer than <span id="threshold-label-5"></span> respondents show "suppressed"
-            instead of a bar.
+            instead of it. A segment for a gender with fewer than <span id="threshold-label-5"></span> respondents in
+            the current filter shows "suppressed" instead of a length.
           </p>
         </div>
       </div>
@@ -285,9 +288,12 @@
         <div class="card__header">
           <h3 class="card__title">What helps students decide what they might do in the future?</h3>
           <p class="card__subtitle">
-            Percentage of respondents selecting each option (multi-select), female compared to male. A separate
-            question from subject choice above, not merged with it - the comparison here is between genders within
-            this one question, not between subject choice and career choice.
+            Compares which influences on future plans matter more to female students, and which matter more to male
+            students. Each bar is one option, split into a female segment and a male segment placed side by side:
+            segment length is that gender's own percentage, not a shared total, so read the number on each segment.
+            This is a separate question from subject choice above, not merged with it - the comparison here is
+            between genders within this one question, not between subject choice and career choice. Respondents
+            could select more than one option, so percentages don't sum to 100% down the list.
           </p>
         </div>
         <div class="card__body">
@@ -297,8 +303,8 @@
             respondents include all GALS participants, since GALS is a girls' programme, so a gender gap across the
             whole sample partly reflects who took part in the programme rather than gender alone. That won't go away
             with real data either: any gender comparison here should be read alongside programme participation, not
-            instead of it. Cells with fewer than <span id="threshold-label-7"></span> respondents show "suppressed"
-            instead of a bar.
+            instead of it. A segment for a gender with fewer than <span id="threshold-label-7"></span> respondents in
+            the current filter shows "suppressed" instead of a length.
           </p>
         </div>
       </div>
@@ -307,9 +313,10 @@
         <div class="card__header">
           <h3 class="card__title">Do the STEM activities and programmes themselves shape these decisions?</h3>
           <p class="card__subtitle">
-            Both questions above include "the STEM activities and programmes" as an option - the closest thing in
-            the survey to a direct measure of programme influence, so it gets its own panel instead of sitting as
-            one row among ten. Split by GALS participation.
+            How often "STEM activities and programmes" itself was picked as an influence on subject choice and on
+            future plans, comparing GALS participants to everyone else. This option appears in both questions above;
+            it gets its own panel here, since it's the closest thing in the survey to a direct measure of the
+            programmes' own influence, rather than sitting as one row among ten.
           </p>
         </div>
         <div class="card__body">
@@ -327,7 +334,12 @@
         <div class="card">
           <div class="card__header">
             <h3 class="card__title">Which subjects are students interested in for Year 11 or 12?</h3>
-            <p class="card__subtitle">Percentage of respondents interested in each subject area, female compared to male.</p>
+            <p class="card__subtitle">
+              Compares which subjects female students are interested in against which male students are interested
+              in. Each bar is one subject, split into a female segment and a male segment placed side by side:
+              segment length is that gender's own percentage, so read the number on each segment. Respondents could
+              pick more than one subject, so percentages don't sum to 100% down the list.
+            </p>
           </div>
           <div class="card__body">
             <div id="chart-subject-interest"></div>
@@ -342,10 +354,12 @@
           <div class="card__header">
             <h3 class="card__title">Why choose STEM subjects? (belonging and confidence)</h3>
             <p class="card__subtitle">
-              These options are about how students see themselves, not what influences their decision - "I feel
-              these subjects are for people like me", "I feel I am good enough at these subjects". Shown with a
-              different accent for that reason: it's a different question than the influence charts above, not a
-              lighter version of the same one. Female compared to male.
+              Compares how female and male students see themselves in relation to STEM subjects - for example "I feel
+              these subjects are for people like me", "I feel I am good enough at these subjects". Each bar is one
+              statement, split into a female segment and a male segment placed side by side: segment length is that
+              gender's own percentage, so read the number on each segment. This is about self-image, not what
+              influences a decision, which is why the card has a different background tint from the influence
+              charts above: a different question, not a lighter version of the same one.
             </p>
           </div>
           <div class="card__body">
@@ -395,6 +409,7 @@
           <li>The scale runs 1 = No → 4 = Yes a lot, with "I do not know" tracked separately rather than as a fifth scale position. Higher is better and every average is used directly, with no inversion.</li>
           <li>Cells under 5 respondents are suppressed and visibly marked throughout, never silently dropped or averaged.</li>
           <li>Colours follow the real Deakin Dashboard Style Guide (Nov 2025); see <code>site/css/tokens.css</code> for sourcing notes.</li>
+          <li>The option "Subjects I need for a future job" is shown on this page as "Knowing which subjects I need for a future job": a display-only change from the raw survey wording, made at the team's request so it reads as being about knowing the requirement rather than the subjects themselves. The underlying data is unchanged.</li>
         </ul>
       </div>
     </div>

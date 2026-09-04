@@ -42,6 +42,21 @@
     return (key) => map.get(key) || cssVar('--text-muted');
   }
 
+  // Deliberate display-only overrides of raw survey wording, requested by
+  // the team for clarity (e.g. forum attendees misreading an option as
+  // being about the subjects themselves rather than knowing which are
+  // required). The join/sort/lookup key everywhere else in the pipeline
+  // stays the raw survey text - only what's shown to a reader changes here.
+  // Add future label overrides to this map, not at the point of display.
+  // Each override belongs in the Data notes list in index.html too.
+  const LABEL_OVERRIDES = {
+    'Subjects I need for a future job': 'Knowing which subjects I need for a future job',
+  };
+
+  function displayLabel(text) {
+    return LABEL_OVERRIDES[text] || text;
+  }
+
   const SMALL_CELL_THRESHOLD = window.SIT_DATA.meta.smallCellThreshold;
 
   function isSuppressed(n) {
@@ -236,6 +251,7 @@
   window.SIT.utils = {
     cssVar,
     buildActivityColorScale,
+    displayLabel,
     isSuppressed,
     summarizeScores,
     toDisplayScore,
