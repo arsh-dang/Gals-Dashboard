@@ -58,6 +58,79 @@ trackers are included, intentionally; see `data/` notes below.
   exists. Columns `ResponseId,question,theme` populate the theme column
   on the open-text list once coding is done.
 
+## Notes moved off the dashboard footer
+
+The on-page "Data notes" section is trimmed to the three things a principal or
+teacher reading cold actually needs: it's synthetic data, groups under five are
+suppressed, and the scale runs 1 = No to 4 = Yes a lot (higher is better). The
+detail below is for whoever maintains this, so it's here instead:
+
+- "General STEM outcomes (not activity-specific)" is a real question block
+  asked of everyone, shown on its own in the Outcomes section. It is not a
+  real 8th activity, so it's excluded from every activity and region
+  comparison elsewhere on the page.
+- Colours follow the real Deakin Dashboard Style Guide (Nov 2025); see
+  `site/css/tokens.css` for sourcing notes on where each value comes from.
+- The option "Subjects I need for a future job" displays on the page as
+  "Knowing which subjects I need for a future job": a display-only override
+  of the raw survey wording, requested by the team so it reads as being about
+  knowing the requirement rather than the subjects themselves. The mapping
+  lives in `site/js/utils.js` (`LABEL_OVERRIDES` / `U.displayLabel`) so future
+  label overrides go in one place rather than being hardcoded at each point
+  of display. The underlying survey text is unchanged and is still the
+  join/sort key everywhere else in the pipeline.
+- Source CSVs: `respondents.csv`, `activity_ratings.csv`,
+  `battery_selections.csv`, `aspirations.csv`, `subject_career.csv` and
+  `open_text.csv` from the reshaped Qualtrics export. If a future data drop
+  removes any of these, the affected view shows an explicit empty state
+  rather than stale or invented data.
+
+## Caption reasoning (trimmed from the page)
+
+The on-page captions were cut to one or two sentences each for the Friday
+forum audience (teachers and principals reading cold, on their own devices,
+with about ten seconds per chart). Where a sentence was cut rather than just
+shortened, the fuller version is kept here rather than lost:
+
+- **Participation by activity**: GALS is narrowly the largest single
+  activity, but participation across all seven is broadly comparable now -
+  worth noting because early data drops had GALS dominating the chart
+  outright, which read as a headline finding it wasn't (a sampling artifact
+  of who was easiest to recruit early on, not a program effect).
+- **Outcomes by activity**: the "≈" wording-variant tag exists because three
+  outcome statements appear twice with near-identical phrasing - a survey
+  artifact (one activity's question block used slightly different wording
+  than the rest), not missing or duplicated data. Shown as separate adjacent
+  rows so the pattern is visible instead of looking like a gap.
+- **Regional comparison**: most regions outside Geelong show several
+  suppressed cells. That's the honest state of this sample (thin regional
+  recruitment), not a rendering gap - worth saying plainly if someone asks
+  why a whole region looks empty.
+- **Aspirations (GALS vs everyone else)**: the "Diff" column's confidence
+  intervals usually overlap. That overlap is the honest signal that this
+  sample size cannot support a claim of significance either way - read the
+  difference alongside the interval, not instead of it. The mock generator
+  has no built-in assumption that GALS improves aspirations, so the small,
+  mixed-direction gap (roughly ±0.2) is expected, not a rendering issue.
+- **Subject-choice / career-choice / subject-interest / self-perception
+  (all four gender-split charts)**: female respondents include every GALS
+  participant, since GALS is a girls' programme. Any gender gap across the
+  whole sample therefore partly reflects who took part in the programme
+  rather than gender alone - and that confound doesn't go away with real
+  data either, so any gender comparison here should always be read alongside
+  programme participation, not instead of it.
+- **Programme influence panel**: gets its own panel because "the STEM
+  activities and programmes" option appears in both the subject-choice and
+  career-choice questions, and is the closest thing in the survey to a
+  direct measure of the programmes' own influence - otherwise it would sit
+  as one row among ten and be easy to miss. The gap shown is built into the
+  mock data so the panel has something to show; real data may show a smaller
+  gap, no gap, or a gap in the other direction.
+- **Self-perception card tint**: shown on a pink-tinted card, not the same
+  white as the influence charts above it, because it's a different kind of
+  question (self-image, not what influences a decision) - the tint is a
+  glance-level signal of that, not a lighter version of the same chart.
+
 ## Icons and link-preview image
 
 `site/favicon.svg` is the hand-authored source for every icon. The PNGs

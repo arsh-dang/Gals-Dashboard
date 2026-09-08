@@ -267,16 +267,21 @@
   color: var(--text-secondary);
 }
 
-/* --- Section / view grid ---------------------------------------------------- */
+/* --- Section / view grid -----------------------------------------------
+   Tightened from gap-dashboard/space-3 (20px/12px): sections were reading
+   as more separated from each other than the numbered heading + card
+   borders already make them, at the cost of screen real estate on a
+   laptop. Kept enough to still read as distinct groups, not compressed
+   into one continuous block. */
 .view-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--gap-dashboard);
+  gap: var(--space-5);
 }
 
 .view-section {
   display: grid;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .view-section__heading {
@@ -309,7 +314,7 @@
 .cards-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-  gap: var(--gap-dashboard);
+  gap: var(--space-4);
   align-items: start;
 }
 

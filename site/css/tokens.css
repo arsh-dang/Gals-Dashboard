@@ -174,14 +174,19 @@ h3 { font-size: var(--text-h3); font-weight: 600; }
   overflow: hidden;
 }
 
+/* Header/body padding kept tight on purpose: the title/subtitle sit right
+   above the chart's border and the chart sits right below it, so the
+   caption reads as belonging to the chart rather than floating between two
+   full-size gaps. Was space-4/space-5 (16/20px) on both sides - trimmed to
+   space-3/space-4 (12/16px) for a forum audience scrolling on a laptop. */
 .card__header {
   background: var(--surface-sunken);
-  padding: var(--space-4) var(--space-5);
+  padding: var(--space-3) var(--space-5);
   border-bottom: 1px solid var(--border-strong);
 }
 
 .card__body {
-  padding: var(--space-5);
+  padding: var(--space-4) var(--space-5);
 }
 
 .card__title {
@@ -201,8 +206,8 @@ h3 { font-size: var(--text-h3); font-weight: 600; }
 .card__note {
   font-size: var(--text-caption);
   color: var(--text-muted);
-  margin-top: var(--space-3);
-  padding-top: var(--space-3);
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
   border-top: 1px solid var(--border-subtle);
 }
 
