@@ -15,3 +15,14 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "no-referrer"
+
+# data/*.js filenames don't change across deploys (no content hash), so a
+# browser that cached one before a data regeneration has no reason to ask
+# for a fresh copy on a later visit - it'll keep serving stale respondent
+# counts indefinitely. must-revalidate forces a check (a cheap 304 if
+# nothing changed, a fresh fetch if it did) on every load instead of
+# trusting a local copy of indeterminate age.
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

@@ -44,6 +44,14 @@ Re-run `node build/build.js` any time the CSVs in `./data/` change.
 No environment variables or secrets are needed. No analytics or third-party
 trackers are included, intentionally; see `data/` notes below.
 
+`site/data/*.js` filenames don't change between deploys (no content hash), so
+`netlify.toml` sets `Cache-Control: must-revalidate` on `/data/*` - otherwise a
+browser that cached one before a data regeneration has no reason to fetch a
+fresh copy later, and silently keeps showing an old respondent count with no
+error. If a live-site bug report shows numbers that don't match the current
+CSVs, check the "Data snapshot" date in the page footer against the last
+commit to `site/data/` before assuming the counting logic is wrong.
+
 ## Data
 
 - `data/respondents.csv`, `data/activity_ratings.csv`, `data/aspirations.csv`,
