@@ -181,6 +181,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  /* Without these two, a flex item won't shrink below its content's
+     natural width (the flexbox "min-width: auto" default) - fine for a
+     short region name, but the open-text question filter's longest
+     option is a full sentence, which blew the select out to ~780px and
+     forced the whole page to scroll sideways on a phone. flex-basis gives
+     it a sane width to grow from in a wide filter bar; min-width: 0 lets
+     it shrink past that on a narrow one instead of refusing to. */
+  flex: 1 1 12rem;
+  min-width: 0;
 }
 
 .filter-field label {
@@ -199,7 +208,13 @@
   border: 1px solid var(--border-strong);
   background: var(--surface-page);
   color: var(--text-primary);
-  min-width: 12rem;
+  /* width: 100% (not min-width alone) is what stops a long option's text
+     dictating the box's width - the closed select now sizes to its
+     .filter-field parent and ellipsis-truncates the selected value
+     instead. The dropdown list itself still shows full option text when
+     opened; only the closed box is width-constrained. */
+  width: 100%;
+  min-width: 0;
   transition: border-color 0.15s ease;
 }
 
@@ -517,6 +532,13 @@ svg text { font-family: var(--font-body); fill: var(--text-primary); }
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: var(--space-3);
+  /* Each facet's SVG holds a 320px-minimum floor (see the chart modules)
+     so its text stays legible instead of shrinking on a narrow phone.
+     On a single-column mobile layout the cell itself can be narrower than
+     that, so it needs its own scroll boundary - same tradeoff .chart-scroll
+     makes for a full-width chart, just scoped to one mini-chart at a time
+     instead of the whole grid. */
+  overflow-x: auto;
 }
 
 .facet-grid__title {

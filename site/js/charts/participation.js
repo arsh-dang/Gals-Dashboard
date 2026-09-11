@@ -91,6 +91,13 @@
       .attr('y', (d) => y(d.key) + y.bandwidth() / 2)
       .attr('dy', '0.32em')
       .text((d) => d.n);
+
+    // Without this, the SVG (no width attr of its own, just a viewBox)
+    // shrinks to fit a narrow phone's card width instead of keeping this
+    // chart's designed width and letting .chart-scroll handle the overflow
+    // - every other single-chart renderer in this dashboard sets the same
+    // floor on its own SVG for that reason; this one had been missed.
+    container.querySelector('svg').style.minWidth = '480px';
   }
 
   const YEAR_ORDER = ['Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11', 'Year 12'];

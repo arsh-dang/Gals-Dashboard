@@ -197,10 +197,16 @@
       cell.appendChild(title);
       grid.appendChild(cell);
 
+      // Each facet's SVG has no width attribute of its own (just a
+      // viewBox), so without a floor it shrinks below its designed 320
+      // units to fit a narrow phone's single-column facet-grid cell -
+      // .facet-grid__cell scrolls horizontally to absorb the overflow
+      // instead (see styles.css), same tradeoff as every full-width chart.
       const svg = d3.select(cell).append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
         .attr('role', 'img')
-        .attr('aria-label', `Average outcome scores for ${activityType}`);
+        .attr('aria-label', `Average outcome scores for ${activityType}`)
+        .style('min-width', '320px');
 
       svg.selectAll('line.gridline')
         .data([1, 2, 3, 4])
@@ -318,7 +324,8 @@
       const svg = d3.select(cell).append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
         .attr('role', 'img')
-        .attr('aria-label', `Response distribution for "${item.item}" by activity type, diverging around Maybe / Yes a little`);
+        .attr('aria-label', `Response distribution for "${item.item}" by activity type, diverging around Maybe / Yes a little`)
+        .style('min-width', '320px');
 
       // Fixed -100%..100% domain on every facet - not auto-scaled to each
       // item's own max, so bar length means the same thing everywhere.

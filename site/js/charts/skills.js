@@ -74,7 +74,8 @@
       const svg = d3.select(cell).append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
         .attr('role', 'img')
-        .attr('aria-label', `${battery === 'skills' ? 'Skills' : 'Identity'} selected by ${activityType} participants`);
+        .attr('aria-label', `${battery === 'skills' ? 'Skills' : 'Identity'} selected by ${activityType} participants`)
+        .style('min-width', '320px');
 
       const x = d3.scaleLinear().domain([0, 1]).range([margin.left, width - margin.right]);
       const y = d3.scaleBand().domain(bars.map((d) => d.item)).range([margin.top, height - margin.bottom]).padding(0.25);
