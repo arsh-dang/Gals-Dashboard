@@ -372,7 +372,11 @@
   overflow-y: hidden;
 }
 
-svg text { font-family: var(--font-body); fill: var(--text-primary); }
+/* No fill here: a stylesheet rule outranks an SVG fill attribute, so a
+   blanket fill on every chart label overrode each muted fill set in JS -
+   suppressed "×" markers and "suppressed (n<5)" notes rendered solid black
+   instead of receding. SVG text already defaults to black (= text-primary). */
+svg text { font-family: var(--font-body); }
 
 .axis-label {
   font-size: var(--text-caption);
@@ -478,8 +482,11 @@ svg text { font-family: var(--font-body); fill: var(--text-primary); }
 }
 
 /* --- Suppression grid (participation by region x school level) ------------ */
+/* Region column, then one column per year level; --level-count is set from
+   JS. Narrowed on phones (see the max-width: 640px block). */
 .suppression-grid {
   display: grid;
+  grid-template-columns: 10rem repeat(var(--level-count, 8), minmax(0, 1fr));
   gap: 2px;
   background: var(--border-subtle);
   border: 1px solid var(--border-subtle);
@@ -532,13 +539,14 @@ svg text { font-family: var(--font-body); fill: var(--text-primary); }
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: var(--space-3);
-  /* Each facet's SVG holds a 320px-minimum floor (see the chart modules)
-     so its text stays legible instead of shrinking on a narrow phone.
-     On a single-column mobile layout the cell itself can be narrower than
-     that, so it needs its own scroll boundary - same tradeoff .chart-scroll
-     makes for a full-width chart, just scoped to one mini-chart at a time
-     instead of the whole grid. */
-  overflow-x: auto;
+}
+
+/* Each panel is drawn at its cell's measured content width (see the chart
+   modules), so this renders it 1:1 - no scaling, no sideways scroll. */
+.facet-grid__cell svg {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .facet-grid__title {
@@ -701,4 +709,92 @@ svg text { font-family: var(--font-body); fill: var(--text-primary); }
 @media (max-width: 720px) {
   .cards-row { grid-template-columns: 1fr; }
   .filter-status { margin-left: 0; }
+}
+
+/* --- Data tables (chart text alternatives, open-text list) ----------------- */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-2);
+  font-size: var(--text-small);
+}
+
+.data-table th,
+.data-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--space-2);
+}
+
+.data-table th { border-bottom: 1px solid var(--border-strong); }
+.data-table td { border-bottom: 1px solid var(--border-subtle); }
+.data-table [data-align='right'] { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* --- Phones ---------------------------------------------------------------
+   The charts switch to their own compact layouts in JS below each chart's
+   designed width (label above each row, drawn at the card's real width -
+   see U.rowGeometry). This block frees up the width they draw into and
+   restacks the pieces that are plain HTML. */
+@media (max-width: 640px) {
+  .page { padding: var(--space-4) var(--space-3) var(--space-6); }
+  .card__header { padding: var(--space-3); }
+  .card__body { padding: var(--space-3); }
+  .filter-bar { padding: var(--space-3); gap: var(--space-3); }
+  .kpi-row { gap: var(--space-3); }
+  .kpi-tile { padding: var(--space-3); }
+  .view-section__heading h2 { font-size: var(--text-h2); }
+  .view-toggle { display: flex; width: 100%; }
+  .view-toggle button { flex: 1 1 0; padding: var(--space-2) var(--space-1); }
+  .legend { gap: var(--space-1) var(--space-3); font-size: var(--text-caption); }
+  .facet-grid__cell { padding: var(--space-2); }
+
+  /* Eight year columns fit a phone once the region column narrows and the
+     "Yr" prefix goes - no sideways scroll inside the card. */
+  .suppression-grid {
+    grid-template-columns: 5.25rem repeat(var(--level-count, 8), minmax(0, 1fr));
+    font-size: var(--text-caption);
+  }
+  .suppression-grid__cell { padding: 2px; min-height: 2.25rem; }
+  .suppression-grid__cell--header { font-size: 0.625rem; }
+  .suppression-grid__year-prefix { display: none; }
+  .suppression-grid .badge-suppressed { padding: 1px 2px; font-size: 0.625rem; }
+
+  /* Tables restack as one card per row: the header row is hidden visually
+     but kept for screen readers, and each cell carries its column name as
+     a label. The first column (the response, or the thing being counted)
+     reads as the card's headline, unlabelled. */
+  .data-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .data-table,
+  .data-table tbody,
+  .data-table tr,
+  .data-table td { display: block; width: 100%; }
+  .data-table tr { padding: var(--space-2) 0; border-bottom: 1px solid var(--border-subtle); }
+  .data-table td {
+    display: flex;
+    gap: var(--space-3);
+    border: 0;
+    padding: 2px 0;
+    text-align: left;
+  }
+  .data-table td::before {
+    content: attr(data-label);
+    flex: 0 0 38%;
+    color: var(--text-muted);
+    font-size: var(--text-caption);
+    font-weight: 600;
+  }
+  .data-table td:first-child {
+    display: block;
+    padding-bottom: var(--space-1);
+    color: var(--text-primary);
+  }
+  .data-table td:first-child::before { content: none; }
+  .data-table [data-align='right'] { text-align: left; }
 }

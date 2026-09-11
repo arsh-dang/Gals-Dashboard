@@ -6,7 +6,12 @@
 
   const YEAR_ORDER = ['Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11', 'Year 12'];
 
-  const activityColorScale = U.buildActivityColorScale(meta.activityTypes.map((a) => a.key));
+  // Excluded types (general outcomes) must not take a colour slot - same
+  // fix as main.js: unfiltered, University programs lands on the colour
+  // reserved for GALS and the two become indistinguishable.
+  const activityColorScale = U.buildActivityColorScale(
+    meta.activityTypes.filter((a) => !meta.excludedActivityTypes.includes(a.key)).map((a) => a.key),
+  );
   U.renderFooterDate('data-refreshed');
 
   const state = { region: '', school: '', schoolLevel: '', battery: 'skills' };

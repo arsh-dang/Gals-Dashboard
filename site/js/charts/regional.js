@@ -8,6 +8,9 @@
 
   const U = window.SIT.utils;
 
+  const WIDE_MIN_WIDTH = 640;
+  const SCALE_TICKS = [1, 2, 3, 4];
+
   function buildRegionColorScale(regions) {
     const vars = ['--series-1', '--series-2', '--series-3', '--series-4', '--series-5', '--series-6'];
     const map = new Map(regions.map((r, i) => [r, U.cssVar(vars[i % vars.length])]));
@@ -26,10 +29,31 @@
     container.innerHTML = '';
     const regions = meta.regions.map((r) => r.key);
     const items = meta.outcomeItems;
-    const width = Math.max(container.clientWidth || 640, 640);
-    const rowHeight = 34;
-    const margin = { top: 28, right: 24, bottom: 16, left: 340 };
-    const height = margin.top + margin.bottom + items.length * rowHeight;
+    const compact = U.isCompact(container, WIDE_MIN_WIDTH);
+    const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
+    const margin = compact
+      ? {
+        top: 28, right: 30, bottom: 30, left: 18,
+      }
+      : {
+        top: 28, right: 24, bottom: 16, left: 340,
+      };
+    // Compact: each region's dot on its own line under the label, same as
+    // the outcomes dot plot.
+    const geo = U.rowGeometry({
+      compact,
+      keys: items.map((i) => i.item),
+      width,
+      margin,
+      wideRowHeight: 34,
+      widePadding: 0.15,
+      plotHeight: regions.length * 6 + 6,
+    });
+    const { height, band } = geo;
+    const bw = items.length ? band(items[0].item).height : 0;
+    const inset = compact ? 4 : 8;
+    const sub = d3.scalePoint().domain(regions).range([-bw / 2 + inset, bw / 2 - inset]);
+    const dotR = compact ? 4 : 5;
 
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
@@ -37,45 +61,51 @@
       .attr('aria-label', 'Dot plot of average outcome score by region, one row per outcome statement');
 
     const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
-    const y = d3.scaleBand().domain(items.map((i) => i.item)).range([margin.top, height - margin.bottom]).paddingInner(0.15);
-    const sub = d3.scalePoint().domain(regions).range([-y.bandwidth() / 2 + 8, y.bandwidth() / 2 - 8]);
 
     svg.append('g')
       .attr('class', 'axis')
       .attr('transform', `translate(0,${margin.top - 6})`)
-      .call(d3.axisTop(x).tickValues([1, 2, 3, 4]).tickFormat(displayTickLabel));
+      .call(d3.axisTop(x).tickValues(SCALE_TICKS).tickFormat(displayTickLabel));
 
-    svg.selectAll('line.gridline')
-      .data([1, 2, 3, 4])
-      .join('line')
-      .attr('class', 'gridline')
-      .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
-      .attr('y1', margin.top).attr('y2', height - margin.bottom);
+    if (compact) {
+      U.drawCompactScaleFrame(svg, geo, x, {
+        width, height, margin, ticks: SCALE_TICKS, tickFormat: displayTickLabel,
+      });
+    } else {
+      svg.selectAll('line.gridline')
+        .data(SCALE_TICKS)
+        .join('line')
+        .attr('class', 'gridline')
+        .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
+        .attr('y1', margin.top).attr('y2', height - margin.bottom);
 
-    items.forEach((item, i) => {
-      svg.append('text')
-        .attr('class', 'item-row-label')
-        .attr('x', margin.left - 16)
-        .attr('y', y(item.item) + y.bandwidth() / 2)
-        .attr('text-anchor', 'end')
-        .attr('dy', '0.32em')
-        .text(truncate(item.item, 48))
-        .append('title').text(item.item);
+      items.forEach((item, i) => {
+        const b = band(item.item);
+        svg.append('text')
+          .attr('class', 'item-row-label')
+          .attr('x', margin.left - 16)
+          .attr('y', b.top + b.height / 2)
+          .attr('text-anchor', 'end')
+          .attr('dy', '0.32em')
+          .text(truncate(item.item, 48))
+          .append('title').text(item.item);
 
-      svg.append('rect')
-        .attr('x', margin.left).attr('width', width - margin.left - margin.right)
-        .attr('y', y(item.item)).attr('height', y.bandwidth())
-        .attr('fill', i % 2 ? U.cssVar('--surface-sunken') : 'transparent')
-        .attr('opacity', 0.5);
-    });
+        svg.append('rect')
+          .attr('x', margin.left).attr('width', width - margin.left - margin.right)
+          .attr('y', b.top).attr('height', b.height)
+          .attr('fill', i % 2 ? U.cssVar('--surface-sunken') : 'transparent')
+          .attr('opacity', 0.5);
+      });
+    }
 
     const tip = U.tooltip();
 
     items.forEach((item) => {
+      const b = band(item.item);
       regions.forEach((region) => {
         const rows = ratings.filter((r) => r.item === item.item && r.region === region);
         const summary = U.summarizeScores(rows);
-        const cy = y(item.item) + y.bandwidth() / 2 + sub(region);
+        const cy = b.top + b.height / 2 + sub(region);
         const suppressed = U.isSuppressed(rows.length);
 
         if (suppressed) {
@@ -110,7 +140,7 @@
         }
 
         svg.append('circle')
-          .attr('cx', x(display)).attr('cy', cy).attr('r', 5)
+          .attr('cx', x(display)).attr('cy', cy).attr('r', dotR)
           .attr('fill', regionColorScale(region))
           .attr('tabindex', 0)
           .attr('role', 'img')
@@ -121,7 +151,7 @@
       });
     });
 
-    container.querySelector('svg').style.minWidth = '640px';
+    if (!compact) container.querySelector('svg').style.minWidth = `${WIDE_MIN_WIDTH}px`;
   }
 
   window.SIT.charts = window.SIT.charts || {};

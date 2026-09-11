@@ -172,10 +172,12 @@
     });
   }
 
+  // These replace the card subtitle in index.html on every render, so they
+  // follow the same one-sentence, point-first caption style.
   const OUTCOMES_SUBTITLES = {
-    average: 'Average score per activity, on the survey\'s 1–4 scale. 4 = Yes a lot is the best answer; "I do not know" is excluded from every average.',
-    smallMultiples: 'Average score per outcome, one panel per activity. Every panel lists outcomes in the same order, so a row lines up across panels. Same 1–4 scale, 4 = Yes a lot is best.',
-    distribution: '% of respondents choosing each answer, per activity, split around the Maybe / Yes a little midpoint. "I do not know" is shown separately, not folded into the 100%.',
+    average: 'Average score per activity on the survey\'s 1–4 scale (4 = Yes a lot is best; "I do not know" excluded).',
+    smallMultiples: 'Average score per outcome, one panel per activity, with outcomes in the same order in every panel.',
+    distribution: 'Share of respondents giving each answer, per activity; "I do not know" is shown separately, outside the 100%.',
   };
 
   function renderOutcomes() {

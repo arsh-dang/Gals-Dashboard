@@ -8,22 +8,41 @@
 
   const U = window.SIT.utils;
 
+  // Narrower than this, activity names move above their bars instead of
+  // taking a 210px gutter (see U.rowGeometry).
+  const WIDE_MIN_WIDTH = 480;
+
   // Sorted horizontal bars, generously spaced - full activity names fit
   // without truncation or rotation, and with participation now roughly
   // comparable across activities (no single one dominating), sorting by
   // count is what makes the ordering itself informative.
   function renderActivityBars(container, ratings, meta, colorScale) {
     container.innerHTML = '';
-    const width = Math.max(container.clientWidth || 640, 480);
-    const margin = { top: 12, right: 40, bottom: 32, left: 210 };
-
     const counts = meta.activityTypes
       .filter((a) => !meta.excludedActivityTypes.includes(a.key))
       .map((a) => ({ key: a.key, n: U.countDistinctIds(ratings.filter((r) => r.activityType === a.key)) }))
       .sort((a, b) => b.n - a.n);
 
-    const rowHeight = 40;
-    const height = margin.top + margin.bottom + counts.length * rowHeight;
+    const compact = U.isCompact(container, WIDE_MIN_WIDTH);
+    const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
+    const margin = compact
+      ? {
+        top: 4, right: 36, bottom: 28, left: 4,
+      }
+      : {
+        top: 12, right: 40, bottom: 32, left: 210,
+      };
+    const geo = U.rowGeometry({
+      compact,
+      keys: counts.map((d) => d.key),
+      width,
+      margin,
+      wideRowHeight: 40,
+      widePadding: 0.35,
+      wideOuterPadding: 0.35,
+      plotHeight: 18,
+    });
+    const { height, band } = geo;
 
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
@@ -39,29 +58,34 @@
     const step = maxN <= 20 ? 5 : 10;
     const xMax = Math.max(step, Math.ceil((maxN + step * 0.5) / step) * step);
     const x = d3.scaleLinear().domain([0, xMax]).range([margin.left, width - margin.right]);
-    const y = d3.scaleBand().domain(counts.map((d) => d.key)).range([margin.top, height - margin.bottom]).padding(0.35);
+    const tickCount = compact ? 4 : 5;
 
     svg.append('g')
       .attr('class', 'axis')
       .attr('transform', `translate(0,${height - margin.bottom})`)
-      .call(d3.axisBottom(x).ticks(5));
+      .call(d3.axisBottom(x).ticks(tickCount));
 
-    svg.selectAll('line.gridline')
-      .data(x.ticks(5))
-      .join('line')
-      .attr('class', 'gridline')
-      .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
-      .attr('y1', margin.top).attr('y2', height - margin.bottom);
+    if (compact) {
+      U.drawRowGridlines(svg, geo.layout, x, x.ticks(tickCount));
+      counts.forEach((d) => U.drawStackedLabel(svg, geo.layout.rows.get(d.key), geo.layout));
+    } else {
+      svg.selectAll('line.gridline')
+        .data(x.ticks(tickCount))
+        .join('line')
+        .attr('class', 'gridline')
+        .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
+        .attr('y1', margin.top).attr('y2', height - margin.bottom);
 
-    svg.selectAll('text.row-label')
-      .data(counts)
-      .join('text')
-      .attr('class', 'item-row-label')
-      .attr('x', margin.left - 12)
-      .attr('y', (d) => y(d.key) + y.bandwidth() / 2)
-      .attr('text-anchor', 'end')
-      .attr('dy', '0.32em')
-      .text((d) => d.key);
+      svg.selectAll('text.row-label')
+        .data(counts)
+        .join('text')
+        .attr('class', 'item-row-label')
+        .attr('x', margin.left - 12)
+        .attr('y', (d) => band(d.key).top + band(d.key).height / 2)
+        .attr('text-anchor', 'end')
+        .attr('dy', '0.32em')
+        .text((d) => d.key);
+    }
 
     const tip = U.tooltip();
 
@@ -70,8 +94,8 @@
       .join('rect')
       .attr('class', 'bar')
       .attr('x', margin.left)
-      .attr('y', (d) => y(d.key))
-      .attr('height', y.bandwidth())
+      .attr('y', (d) => band(d.key).top)
+      .attr('height', (d) => band(d.key).height)
       .attr('width', (d) => x(d.n) - margin.left)
       .attr('fill', (d) => colorScale(d.key))
       .attr('tabindex', 0)
@@ -88,16 +112,14 @@
       .join('text')
       .attr('class', 'bar-label')
       .attr('x', (d) => x(d.n) + 8)
-      .attr('y', (d) => y(d.key) + y.bandwidth() / 2)
+      .attr('y', (d) => band(d.key).top + band(d.key).height / 2)
       .attr('dy', '0.32em')
       .text((d) => d.n);
 
-    // Without this, the SVG (no width attr of its own, just a viewBox)
-    // shrinks to fit a narrow phone's card width instead of keeping this
-    // chart's designed width and letting .chart-scroll handle the overflow
-    // - every other single-chart renderer in this dashboard sets the same
-    // floor on its own SVG for that reason; this one had been missed.
-    container.querySelector('svg').style.minWidth = '480px';
+    // Wide layout only: holds its designed width and lets .chart-scroll
+    // absorb any overflow. The compact layout is drawn at the container's
+    // own width, so it never needs to scroll.
+    if (!compact) container.querySelector('svg').style.minWidth = `${WIDE_MIN_WIDTH}px`;
   }
 
   const YEAR_ORDER = ['Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11', 'Year 12'];
@@ -114,7 +136,9 @@
 
     const grid = document.createElement('div');
     grid.className = 'suppression-grid';
-    grid.style.gridTemplateColumns = `10rem repeat(${levels.length}, 1fr)`;
+    // The column template lives in styles.css (it narrows on phones); only
+    // the number of year columns comes from here.
+    grid.style.setProperty('--level-count', String(levels.length));
     grid.setAttribute('role', 'table');
     grid.setAttribute('aria-label', 'Respondent count by region and school year, school students only');
 
@@ -125,7 +149,9 @@
     levels.forEach((lvl) => {
       const h = document.createElement('div');
       h.className = 'suppression-grid__cell suppression-grid__cell--header';
-      h.textContent = lvl.replace('Year ', 'Yr ');
+      // The "Yr" prefix is hidden on a phone, where eight columns only leave
+      // room for the number; the corner cell already says these are years.
+      h.innerHTML = `<span class="suppression-grid__year-prefix">Yr </span>${lvl.replace('Year ', '')}`;
       grid.appendChild(h);
     });
 

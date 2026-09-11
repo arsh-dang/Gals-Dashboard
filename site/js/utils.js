@@ -172,8 +172,15 @@
         this.move(evt);
       },
       move(evt) {
-        const x = evt.clientX;
-        const y = evt.clientY;
+        // Focus events (keyboard, and a tap on a touch screen) carry no
+        // pointer position - anchor to the element itself instead.
+        let x = evt.clientX;
+        let y = evt.clientY;
+        if (typeof x !== 'number' && evt.target && evt.target.getBoundingClientRect) {
+          const r = evt.target.getBoundingClientRect();
+          x = r.left + r.width / 2;
+          y = r.top + r.height / 2;
+        }
         const w = tooltipEl.offsetWidth;
         const h = tooltipEl.offsetHeight;
         const vw = window.innerWidth;
@@ -193,8 +200,187 @@
     return ro;
   }
 
+  // --- Narrow-screen chart layout -----------------------------------------
+  // Row charts put each label in a left gutter on a wide card. On a phone
+  // that gutter alone is most of the screen, so below a chart's designed
+  // minimum width the label moves onto its own line(s) above the row and
+  // the plot gets the full width. The chart grows taller, which a phone
+  // scrolls well, instead of scrolling sideways inside a card with its
+  // labels out of view.
+  function isCompact(container, wideMinWidth) {
+    const w = container.clientWidth;
+    return w > 0 && w < wideMinWidth;
+  }
+
+  // Content-box width of a padded container (a facet cell). An SVG drawn at
+  // exactly this width renders 1:1, so its text stays at the size it was set
+  // to rather than being scaled down to fit.
+  function contentWidth(el, fallback) {
+    const cs = getComputedStyle(el);
+    const w = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    return w > 0 ? Math.floor(w) : fallback;
+  }
+
+  // Rough character budget for a pixel width (Open Sans averages a little
+  // over half an em per character).
+  function charsFor(px, fontPx) {
+    return Math.max(4, Math.floor(px / (fontPx * 0.56)));
+  }
+
+  function truncateText(text, max) {
+    return text.length > max ? `${text.slice(0, max - 1)}…` : text;
+  }
+
+  // Greedy word wrap into at most maxLines lines; the last line gets an
+  // ellipsis if words are left over.
+  function wrapLines(text, maxChars, maxLines) {
+    const words = String(text).split(/\s+/).filter(Boolean);
+    const lines = [];
+    let line = '';
+    let i = 0;
+    while (i < words.length && lines.length < maxLines) {
+      const next = line ? `${line} ${words[i]}` : words[i];
+      if (next.length <= maxChars) {
+        line = next;
+        i += 1;
+      } else if (line) {
+        lines.push(line);
+        line = '';
+      } else {
+        lines.push(truncateText(words[i], maxChars));
+        i += 1;
+      }
+    }
+    if (line) lines.push(line);
+    const last = lines[lines.length - 1];
+    if (i < words.length && last && !last.endsWith('…')) {
+      lines[lines.length - 1] = last.length < maxChars ? `${last}…` : `${last.slice(0, maxChars - 1)}…`;
+    }
+    return lines;
+  }
+
+  // Stacked layout: each row is its label line(s), an optional smaller note
+  // line (the "≈ wording variant" tag), then a plot band of plotHeight.
+  function stackedRows(keys, labelFor, {
+    top, width, plotHeight, gap = 10, fontPx = 12, noteFor = null,
+  }) {
+    const lineH = Math.round(fontPx * 1.3);
+    const maxChars = charsFor(width, fontPx);
+    const rows = new Map();
+    let y = top;
+    keys.forEach((key) => {
+      const lines = wrapLines(labelFor(key), maxChars, 2);
+      const note = noteFor ? noteFor(key) : null;
+      const labelHeight = (lines.length + (note ? 1 : 0)) * lineH;
+      const plotTop = y + labelHeight + 2;
+      rows.set(key, {
+        lines, note, rowTop: y, plotTop, plotHeight, rowBottom: plotTop + plotHeight,
+      });
+      y = plotTop + plotHeight + gap;
+    });
+    return {
+      rows, bottom: y - gap, lineH, fontPx,
+    };
+  }
+
+  // Row geometry for either layout. `band(key)` is the plot band - where the
+  // marks go - so a chart draws its marks the same way in both; only the
+  // labels and gridlines differ. Wide mode reproduces the charts' original
+  // scaleBand rows exactly.
+  function rowGeometry({
+    compact, keys, labelFor = (key) => key, width, margin, wideRowHeight,
+    widePadding = 0, wideOuterPadding = 0, plotHeight, gap = 10, noteFor = null,
+  }) {
+    if (compact) {
+      const layout = stackedRows(keys, labelFor, {
+        top: margin.top, width, plotHeight, gap, noteFor,
+      });
+      return {
+        layout,
+        height: layout.bottom + margin.bottom,
+        band: (key) => {
+          const row = layout.rows.get(key);
+          return { top: row.plotTop, height: row.plotHeight };
+        },
+      };
+    }
+    const height = margin.top + margin.bottom + keys.length * wideRowHeight;
+    const y = d3.scaleBand().domain(keys).range([margin.top, height - margin.bottom])
+      .paddingInner(widePadding)
+      .paddingOuter(wideOuterPadding);
+    return { layout: null, height, band: (key) => ({ top: y(key), height: y.bandwidth() }) };
+  }
+
+  function drawStackedLabel(svg, row, layout, { x = 0, title = null } = {}) {
+    const text = svg.append('text')
+      .attr('class', 'item-row-label')
+      .style('font-size', `${layout.fontPx}px`)
+      .attr('x', x)
+      .attr('y', row.rowTop);
+    row.lines.forEach((line, i) => {
+      text.append('tspan')
+        .attr('x', x)
+        .attr('dy', i === 0 ? layout.fontPx : layout.lineH)
+        .text(line);
+    });
+    if (title) text.append('title').text(title);
+    if (row.note) {
+      svg.append('text')
+        .attr('class', 'pair-tag')
+        .attr('x', x)
+        .attr('y', row.rowTop + layout.fontPx + row.lines.length * layout.lineH - 1)
+        .text(row.note);
+    }
+  }
+
+  // Gridlines inside each row's plot band only - full-height ones would run
+  // through every label line in the stacked layout.
+  function drawRowGridlines(svg, layout, xScale, ticks) {
+    layout.rows.forEach((row) => {
+      ticks.forEach((t) => {
+        svg.append('line')
+          .attr('class', 'gridline')
+          .attr('x1', xScale(t)).attr('x2', xScale(t))
+          .attr('y1', row.plotTop).attr('y2', row.rowBottom);
+      });
+    });
+  }
+
+  // Alternate-row tint spanning label and plot together, so a label reads as
+  // belonging to the marks under it rather than the row above.
+  function drawRowShading(svg, layout, width) {
+    let i = 0;
+    layout.rows.forEach((row) => {
+      if (i % 2 === 1) {
+        svg.append('rect')
+          .attr('x', 0).attr('width', width)
+          .attr('y', row.rowTop - 4).attr('height', row.rowBottom - row.rowTop + 8)
+          .attr('fill', cssVar('--surface-sunken'))
+          .attr('opacity', 0.5);
+      }
+      i += 1;
+    });
+  }
+
+  // Compact frame for a 1-4 scale row chart: the axis repeated at the bottom
+  // (a 12-row stacked chart is too tall to keep the top one in view), row
+  // tint, per-row gridlines, stacked labels.
+  function drawCompactScaleFrame(svg, geo, x, {
+    width, height, margin, ticks, tickFormat,
+  }) {
+    svg.append('g')
+      .attr('class', 'axis')
+      .attr('transform', `translate(0,${height - margin.bottom + 6})`)
+      .call(d3.axisBottom(x).tickValues(ticks).tickFormat(tickFormat));
+    drawRowShading(svg, geo.layout, width);
+    drawRowGridlines(svg, geo.layout, x, ticks);
+    geo.layout.rows.forEach((row, key) => drawStackedLabel(svg, row, geo.layout, { title: key }));
+  }
+
   // Text/table alternative to a chart, behind a <details> disclosure, per
-  // the accessibility rule that every chart needs one.
+  // the accessibility rule that every chart needs one. Styled by .data-table
+  // in styles.css rather than inline, so a phone can restack each row as a
+  // labelled card (data-label feeds each cell's label there).
   function renderDataTable(container, { columns, rows }) {
     const details = document.createElement('details');
     const summary = document.createElement('summary');
@@ -202,19 +388,15 @@
     details.appendChild(summary);
 
     const table = document.createElement('table');
-    table.style.width = '100%';
-    table.style.borderCollapse = 'collapse';
-    table.style.marginTop = 'var(--space-2)';
-    table.style.fontSize = 'var(--text-small)';
+    table.className = 'data-table';
 
     const thead = document.createElement('thead');
     const headRow = document.createElement('tr');
     columns.forEach((c) => {
       const th = document.createElement('th');
       th.textContent = c.label;
-      th.style.textAlign = c.align || 'left';
-      th.style.padding = 'var(--space-2)';
-      th.style.borderBottom = '1px solid var(--border-strong)';
+      th.scope = 'col';
+      if (c.align) th.dataset.align = c.align;
       headRow.appendChild(th);
     });
     thead.appendChild(headRow);
@@ -226,9 +408,8 @@
       columns.forEach((c) => {
         const td = document.createElement('td');
         td.textContent = c.value(row);
-        td.style.textAlign = c.align || 'left';
-        td.style.padding = 'var(--space-2)';
-        td.style.borderBottom = '1px solid var(--border-subtle)';
+        td.dataset.label = c.label;
+        if (c.align) td.dataset.align = c.align;
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
@@ -264,6 +445,15 @@
     formatScore,
     tooltip,
     onResize,
+    isCompact,
+    contentWidth,
+    charsFor,
+    wrapLines,
+    rowGeometry,
+    drawStackedLabel,
+    drawRowGridlines,
+    drawRowShading,
+    drawCompactScaleFrame,
     renderDataTable,
     renderFooterDate,
     SMALL_CELL_THRESHOLD,

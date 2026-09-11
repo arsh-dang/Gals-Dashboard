@@ -12,10 +12,21 @@
 // All three exclude "I do not know" from every average, fix their axis
 // bounds instead of auto-scaling, and suppress any item x activity cell
 // under the small-cell threshold rather than plotting a handful of answers.
+//
+// Narrow screens: the dot plot and general lollipop switch to a stacked
+// layout (label above each row, see U.rowGeometry) below WIDE_MIN_WIDTH;
+// the two facet views draw every panel at its grid cell's real width.
 (function () {
   'use strict';
 
   const U = window.SIT.utils;
+
+  const WIDE_MIN_WIDTH = 640;
+  const COMPACT_MARGIN = {
+    top: 28, right: 30, bottom: 30, left: 18,
+  };
+  const SCALE_TICKS = [1, 2, 3, 4];
+  const FACET_LABEL_FONT = 11;
 
   function activityKeysOrdered(meta) {
     return meta.activityTypes
@@ -53,10 +64,29 @@
     container.innerHTML = '';
     const activities = activityKeysOrdered(meta);
     const items = meta.outcomeItems;
-    const width = Math.max(container.clientWidth || 640, 640);
-    const rowHeight = 34;
-    const margin = { top: 28, right: 24, bottom: 36, left: 340 };
-    const height = margin.top + margin.bottom + items.length * rowHeight;
+    const compact = U.isCompact(container, WIDE_MIN_WIDTH);
+    const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
+    const margin = compact ? COMPACT_MARGIN : {
+      top: 28, right: 24, bottom: 36, left: 340,
+    };
+    // Compact: each activity's dot sits on its own line (legend order) in a
+    // band under the label, so seven dots stay separable on a narrow plot
+    // even when their averages tie.
+    const geo = U.rowGeometry({
+      compact,
+      keys: items.map((i) => i.item),
+      width,
+      margin,
+      wideRowHeight: 34,
+      widePadding: 0.15,
+      plotHeight: activities.length * 6 + 6,
+      noteFor: (key) => (items.find((i) => i.item === key).pairId !== null ? '≈ wording variant of another row' : null),
+    });
+    const { height, band } = geo;
+    const bw = items.length ? band(items[0].item).height : 0;
+    const inset = compact ? 4 : 8;
+    const sub = d3.scalePoint().domain(activities).range([-bw / 2 + inset, bw / 2 - inset]);
+    const dotR = compact ? 4 : 5;
 
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
@@ -64,59 +94,65 @@
       .attr('aria-label', 'Dot plot of average outcome score by activity type, one row per outcome statement');
 
     const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
-    const y = d3.scaleBand().domain(items.map((i) => i.item)).range([margin.top, height - margin.bottom]).paddingInner(0.15);
-    const sub = d3.scalePoint().domain(activities).range([-y.bandwidth() / 2 + 8, y.bandwidth() / 2 - 8]);
 
     // Fixed axis, explicit direction - not auto-scaled, since the activity
     // types sit within a fraction of a point of each other.
     svg.append('g')
       .attr('class', 'axis')
       .attr('transform', `translate(0,${margin.top - 6})`)
-      .call(d3.axisTop(x).tickValues([1, 2, 3, 4]).tickFormat(displayTickLabel));
+      .call(d3.axisTop(x).tickValues(SCALE_TICKS).tickFormat(displayTickLabel));
 
-    svg.selectAll('line.gridline')
-      .data([1, 2, 3, 4])
-      .join('line')
-      .attr('class', 'gridline')
-      .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
-      .attr('y1', margin.top).attr('y2', height - margin.bottom);
+    if (compact) {
+      U.drawCompactScaleFrame(svg, geo, x, {
+        width, height, margin, ticks: SCALE_TICKS, tickFormat: displayTickLabel,
+      });
+    } else {
+      svg.selectAll('line.gridline')
+        .data(SCALE_TICKS)
+        .join('line')
+        .attr('class', 'gridline')
+        .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
+        .attr('y1', margin.top).attr('y2', height - margin.bottom);
 
-    const rowLabels = svg.append('g');
-    items.forEach((item) => {
-      const g = rowLabels.append('g').attr('transform', `translate(0,${y(item.item) + y.bandwidth() / 2})`);
-      g.append('text')
-        .attr('class', 'item-row-label')
-        .attr('x', margin.left - 16)
-        .attr('text-anchor', 'end')
-        .attr('dy', '0.32em')
-        .text(truncate(item.item, 48))
-        .append('title').text(item.item);
-      if (item.pairId !== null) {
+      const rowLabels = svg.append('g');
+      items.forEach((item) => {
+        const b = band(item.item);
+        const g = rowLabels.append('g').attr('transform', `translate(0,${b.top + b.height / 2})`);
         g.append('text')
-          .attr('class', 'pair-tag')
+          .attr('class', 'item-row-label')
           .attr('x', margin.left - 16)
-          .attr('dy', '1.3em')
           .attr('text-anchor', 'end')
-          .text('≈ wording variant of another row');
-      }
-    });
+          .attr('dy', '0.32em')
+          .text(truncate(item.item, 48))
+          .append('title').text(item.item);
+        if (item.pairId !== null) {
+          g.append('text')
+            .attr('class', 'pair-tag')
+            .attr('x', margin.left - 16)
+            .attr('dy', '1.3em')
+            .attr('text-anchor', 'end')
+            .text('≈ wording variant of another row');
+        }
+      });
 
-    svg.selectAll('rect.row-band')
-      .data(items)
-      .join('rect')
-      .attr('class', 'row-band')
-      .attr('x', margin.left).attr('width', width - margin.left - margin.right)
-      .attr('y', (d) => y(d.item))
-      .attr('height', y.bandwidth())
-      .attr('fill', (_d, i) => (i % 2 ? U.cssVar('--surface-sunken') : 'transparent'))
-      .attr('opacity', 0.5);
+      svg.selectAll('rect.row-band')
+        .data(items)
+        .join('rect')
+        .attr('class', 'row-band')
+        .attr('x', margin.left).attr('width', width - margin.left - margin.right)
+        .attr('y', (d) => band(d.item).top)
+        .attr('height', bw)
+        .attr('fill', (_d, i) => (i % 2 ? U.cssVar('--surface-sunken') : 'transparent'))
+        .attr('opacity', 0.5);
+    }
 
     const tip = U.tooltip();
     const cellData = items.flatMap((item) => cellsForItem(ratings, item, activities));
 
     const dotG = svg.append('g');
     cellData.forEach((cell) => {
-      const cy = y(cell.item) + y.bandwidth() / 2 + sub(cell.activityType);
+      const b = band(cell.item);
+      const cy = b.top + b.height / 2 + sub(cell.activityType);
       if (cell.suppressed) {
         dotG.append('text')
           .attr('x', x(2.5)).attr('y', cy)
@@ -149,7 +185,7 @@
       dotG.append('circle')
         .attr('cx', x(cell.display))
         .attr('cy', cy)
-        .attr('r', 5)
+        .attr('r', dotR)
         .attr('fill', colorScale(cell.activityType))
         .attr('tabindex', 0)
         .attr('role', 'img')
@@ -159,7 +195,7 @@
         .on('mouseleave blur', () => tip.hide());
     });
 
-    container.querySelector('svg').style.minWidth = '640px';
+    if (!compact) container.querySelector('svg').style.minWidth = `${WIDE_MIN_WIDTH}px`;
   }
 
   // --- Average: small multiples ------------------------------------------
@@ -171,23 +207,21 @@
     const activities = activityKeysOrdered(meta);
     const items = meta.outcomeItems;
 
+    // Endpoints only: at a panel's plot width the two middle scale labels
+    // run into their neighbours. The gridlines still mark all four points.
     const ruler = document.createElement('div');
     ruler.className = 'small-multiples-ruler';
-    ruler.innerHTML = `<span>${window.SIT_DATA.meta.scale.labels[1]}</span><span>${window.SIT_DATA.meta.scale.labels[2]}</span><span>${window.SIT_DATA.meta.scale.labels[3]}</span><span>${window.SIT_DATA.meta.scale.labels[4]}</span>`;
+    ruler.innerHTML = `<span>${meta.scale.labels[1]}</span><span>${meta.scale.labels[4]}</span>`;
     container.appendChild(ruler);
 
     const grid = document.createElement('div');
     grid.className = 'facet-grid';
     container.appendChild(grid);
 
-    const tip = U.tooltip();
-    const rowHeight = 20;
-    const margin = { top: 4, right: 10, bottom: 4, left: 150 };
-    const width = 320;
-    const height = margin.top + margin.bottom + items.length * rowHeight;
-    const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
-
-    activities.forEach((activityType) => {
+    // Every cell goes in first so the grid settles its column width; each
+    // panel is then drawn at that real width (1:1, no scaling) rather than a
+    // fixed 320 units shrunk or overflowing to fit.
+    const facets = activities.map((activityType) => {
       const cell = document.createElement('div');
       cell.className = 'facet-grid__cell';
       const denom = U.countDistinctIds(ratings.filter((r) => r.activityType === activityType));
@@ -196,20 +230,35 @@
       title.innerHTML = `<span>${activityType}</span><span class="facet-grid__n">n=${denom}</span>`;
       cell.appendChild(title);
       grid.appendChild(cell);
+      return { activityType, cell };
+    });
+    if (!facets.length) return;
 
-      // Each facet's SVG has no width attribute of its own (just a
-      // viewBox), so without a floor it shrinks below its designed 320
-      // units to fit a narrow phone's single-column facet-grid cell -
-      // .facet-grid__cell scrolls horizontally to absorb the overflow
-      // instead (see styles.css), same tradeoff as every full-width chart.
+    const tip = U.tooltip();
+    const width = U.contentWidth(facets[0].cell, 320);
+    const rowHeight = 20;
+    // Labels get just over half the panel: the plot only needs room for four
+    // scale positions, and item wording is what tells two rows apart.
+    const margin = {
+      top: 4, right: 10, bottom: 4, left: Math.round(width * 0.52),
+    };
+    const labelChars = U.charsFor(margin.left - 8, FACET_LABEL_FONT);
+    const height = margin.top + margin.bottom + items.length * rowHeight;
+    const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
+
+    // Line the shared ruler up with the first panel's actual plot area.
+    const cellStyle = getComputedStyle(facets[0].cell);
+    ruler.style.marginLeft = `${parseFloat(cellStyle.paddingLeft) + parseFloat(cellStyle.borderLeftWidth) + margin.left}px`;
+    ruler.style.maxWidth = `${width - margin.left - margin.right}px`;
+
+    facets.forEach(({ activityType, cell }) => {
       const svg = d3.select(cell).append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
         .attr('role', 'img')
-        .attr('aria-label', `Average outcome scores for ${activityType}`)
-        .style('min-width', '320px');
+        .attr('aria-label', `Average outcome scores for ${activityType}`);
 
       svg.selectAll('line.gridline')
-        .data([1, 2, 3, 4])
+        .data(SCALE_TICKS)
         .join('line')
         .attr('class', 'gridline')
         .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
@@ -219,10 +268,10 @@
         const cy = margin.top + i * rowHeight + rowHeight / 2;
         svg.append('text')
           .attr('class', 'item-row-label')
-          .style('font-size', '0.68rem')
+          .style('font-size', `${FACET_LABEL_FONT}px`)
           .attr('x', margin.left - 8).attr('y', cy)
           .attr('text-anchor', 'end').attr('dy', '0.32em')
-          .text(truncate(item.item, 26))
+          .text(truncate(item.item, labelChars))
           .append('title').text(item.item);
 
         const rows = ratings.filter((r) => r.item === item.item && r.activityType === activityType);
@@ -274,7 +323,7 @@
   // from centre, Yes a little and Yes a lot stack rightward. "I do not know"
   // sits outside the diverging axis as a separate marker, same as before -
   // it's a non-answer, not a fifth scale position.
-  function renderDistribution(container, ratings, meta, colorScale) {
+  function renderDistribution(container, ratings, meta) {
     container.innerHTML = '';
     const activities = activityKeysOrdered(meta);
     const items = meta.outcomeItems;
@@ -302,34 +351,45 @@
     };
     const tip = U.tooltip();
 
-    items.forEach((item) => {
+    // Cells first, then draw at the settled cell width - same reasoning as
+    // the small multiples above. The panel title is the full item wording
+    // and wraps, rather than being cut at a fixed character count.
+    const facets = items.map((item) => {
       const cell = document.createElement('div');
       cell.className = 'facet-grid__cell';
       const title = document.createElement('div');
       title.className = 'facet-grid__title';
-      title.innerHTML = `<span>${truncate(item.item, 42)}${item.pairId !== null ? ' <span class="pair-tag">≈ variant</span>' : ''}</span>`;
+      title.innerHTML = `<span>${item.item}${item.pairId !== null ? ' <span class="pair-tag">≈ variant</span>' : ''}</span>`;
       cell.appendChild(title);
       grid.appendChild(cell);
+      return { item, cell };
+    });
+    if (!facets.length) return;
 
+    const width = U.contentWidth(facets[0].cell, 320);
+    const rowH = 22;
+    const margin = {
+      top: 4, right: 8, bottom: 4, left: Math.min(118, Math.round(width * 0.38)),
+    };
+    const labelChars = U.charsFor(margin.left - 8, FACET_LABEL_FONT);
+    // Fixed -100%..100% domain on every facet - not auto-scaled to each
+    // item's own max, so bar length means the same thing everywhere.
+    const x = d3.scaleLinear().domain([-1, 1]).range([margin.left, width - margin.right]);
+
+    facets.forEach(({ item, cell }) => {
       const rowsData = activities.map((activityType) => {
         const rows = ratings.filter((r) => r.item === item.item && r.activityType === activityType);
         const counts = U.distributionCounts(rows);
-        return { activityType, counts, total: rows.length, suppressed: U.isSuppressed(rows.length) };
+        return {
+          activityType, counts, total: rows.length, suppressed: U.isSuppressed(rows.length),
+        };
       });
 
-      const width = 320;
-      const rowH = 22;
-      const margin = { top: 4, right: 8, bottom: 4, left: 118 };
       const height = margin.top + margin.bottom + rowsData.length * rowH;
       const svg = d3.select(cell).append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
         .attr('role', 'img')
-        .attr('aria-label', `Response distribution for "${item.item}" by activity type, diverging around Maybe / Yes a little`)
-        .style('min-width', '320px');
-
-      // Fixed -100%..100% domain on every facet - not auto-scaled to each
-      // item's own max, so bar length means the same thing everywhere.
-      const x = d3.scaleLinear().domain([-1, 1]).range([margin.left, width - margin.right]);
+        .attr('aria-label', `Response distribution for "${item.item}" by activity type, diverging around Maybe / Yes a little`);
 
       svg.append('line')
         .attr('class', 'gridline')
@@ -345,8 +405,9 @@
           .attr('x', margin.left - 8).attr('y', rowY + yScale.bandwidth() / 2)
           .attr('text-anchor', 'end').attr('dy', '0.32em')
           .attr('class', 'item-row-label')
-          .style('font-size', '0.68rem')
-          .text(truncate(d.activityType.replace(' program', '').replace(' or lunchtime activity', ''), 20));
+          .style('font-size', `${FACET_LABEL_FONT}px`)
+          .text(truncate(d.activityType.replace(' program', '').replace(' or lunchtime activity', ''), labelChars))
+          .append('title').text(d.activityType);
 
         if (d.suppressed) {
           svg.append('rect')
@@ -393,7 +454,7 @@
             .attr('tabindex', 0);
           rect.on('mouseenter focus', (evt) => {
             const pct = p(seg.key);
-            tip.show(`<strong>${d.activityType}</strong>${window.SIT_DATA.meta.scale.labels[seg.key]}: ${U.formatPct(pct)} (n=${d.counts[seg.key]} of ${known})`, evt);
+            tip.show(`<strong>${d.activityType}</strong>${meta.scale.labels[seg.key]}: ${U.formatPct(pct)} (n=${d.counts[seg.key]} of ${known})`, evt);
           }).on('mousemove', (evt) => tip.move(evt)).on('mouseleave blur', () => tip.hide());
         });
 
@@ -431,7 +492,9 @@
     const rows = meta.outcomeItems.map((item) => {
       const itemRows = ratings.filter((r) => r.item === item.item);
       const summary = U.summarizeScores(itemRows);
-      return { item: item.item, pairId: item.pairId, n: itemRows.length, suppressed: U.isSuppressed(itemRows.length), ...summary };
+      return {
+        item: item.item, pairId: item.pairId, n: itemRows.length, suppressed: U.isSuppressed(itemRows.length), ...summary,
+      };
     }).sort((a, b) => {
       if (a.suppressed && b.suppressed) return 0;
       if (a.suppressed) return 1;
@@ -439,10 +502,22 @@
       return b.mean - a.mean;
     });
 
-    const width = Math.max(container.clientWidth || 640, 640);
-    const rowHeight = 30;
-    const margin = { top: 28, right: 24, bottom: 8, left: 340 };
-    const height = margin.top + margin.bottom + rows.length * rowHeight;
+    const compact = U.isCompact(container, WIDE_MIN_WIDTH);
+    const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
+    const margin = compact ? COMPACT_MARGIN : {
+      top: 28, right: 24, bottom: 8, left: 340,
+    };
+    const geo = U.rowGeometry({
+      compact,
+      keys: rows.map((r) => r.item),
+      width,
+      margin,
+      wideRowHeight: 30,
+      widePadding: 0.25,
+      plotHeight: 14,
+      gap: 8,
+    });
+    const { height, band } = geo;
 
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
@@ -450,31 +525,39 @@
       .attr('aria-label', 'Lollipop chart of average score for the general STEM outcomes question, sorted best to worst');
 
     const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
-    const y = d3.scaleBand().domain(rows.map((r) => r.item)).range([margin.top, height - margin.bottom]).paddingInner(0.25);
     const color = U.cssVar('--brand-accent');
 
     svg.append('g')
       .attr('class', 'axis')
       .attr('transform', `translate(0,${margin.top - 6})`)
-      .call(d3.axisTop(x).tickValues([1, 2, 3, 4]).tickFormat(displayTickLabel));
+      .call(d3.axisTop(x).tickValues(SCALE_TICKS).tickFormat(displayTickLabel));
 
-    svg.selectAll('line.gridline')
-      .data([1, 2, 3, 4])
-      .join('line')
-      .attr('class', 'gridline')
-      .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
-      .attr('y1', margin.top).attr('y2', height - margin.bottom);
+    if (compact) {
+      U.drawCompactScaleFrame(svg, geo, x, {
+        width, height, margin, ticks: SCALE_TICKS, tickFormat: displayTickLabel,
+      });
+    } else {
+      svg.selectAll('line.gridline')
+        .data(SCALE_TICKS)
+        .join('line')
+        .attr('class', 'gridline')
+        .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
+        .attr('y1', margin.top).attr('y2', height - margin.bottom);
+    }
 
     const tip = U.tooltip();
 
     rows.forEach((r) => {
-      const cy = y(r.item) + y.bandwidth() / 2;
-      svg.append('text')
-        .attr('class', 'item-row-label')
-        .attr('x', margin.left - 16).attr('y', cy)
-        .attr('text-anchor', 'end').attr('dy', '0.32em')
-        .text(truncate(r.item, 48))
-        .append('title').text(r.item);
+      const b = band(r.item);
+      const cy = b.top + b.height / 2;
+      if (!compact) {
+        svg.append('text')
+          .attr('class', 'item-row-label')
+          .attr('x', margin.left - 16).attr('y', cy)
+          .attr('text-anchor', 'end').attr('dy', '0.32em')
+          .text(truncate(r.item, 48))
+          .append('title').text(r.item);
+      }
 
       if (r.suppressed) {
         svg.append('text')
@@ -518,7 +601,7 @@
         .on('mouseleave blur', () => tip.hide());
     });
 
-    container.querySelector('svg').style.minWidth = '640px';
+    if (!compact) container.querySelector('svg').style.minWidth = `${WIDE_MIN_WIDTH}px`;
   }
 
   window.SIT.charts = window.SIT.charts || {};

@@ -17,6 +17,11 @@
 
   const SMALL_GENDER_GROUPS = ['Non-binary / third gender', 'Prefer not to say'];
 
+  // Below these container widths each chart moves its labels above the
+  // bars (see U.rowGeometry) instead of keeping a 210-220px label gutter.
+  const BY_GENDER_WIDE_MIN = 520;
+  const PROGRAMME_WIDE_MIN = 480;
+
   function truncate(text, max) {
     return text.length > max ? `${text.slice(0, max - 1)}…` : text;
   }
@@ -99,12 +104,27 @@
       };
     }).sort((a, b) => (b.femaleWidth + b.maleWidth) - (a.femaleWidth + a.maleWidth));
 
-    const width = Math.max(container.clientWidth || 520, 480);
-    const rowHeight = 34;
-    const margin = {
-      top: 4, right: 16, bottom: 4, left: 220,
-    };
-    const height = margin.top + margin.bottom + bars.length * rowHeight;
+    const compact = U.isCompact(container, BY_GENDER_WIDE_MIN);
+    const width = compact ? container.clientWidth : Math.max(container.clientWidth || BY_GENDER_WIDE_MIN, BY_GENDER_WIDE_MIN);
+    const margin = compact
+      ? {
+        top: 4, right: 8, bottom: 4, left: 0,
+      }
+      : {
+        top: 4, right: 16, bottom: 4, left: 220,
+      };
+    const geo = U.rowGeometry({
+      compact,
+      keys: bars.map((d) => d.item),
+      labelFor: (key) => U.displayLabel(key),
+      width,
+      margin,
+      wideRowHeight: 34,
+      widePadding: 0.3,
+      wideOuterPadding: 0.3,
+      plotHeight: 18,
+    });
+    const { height, band } = geo;
 
     // Domain covers the widest combined segment length across all rows,
     // with headroom for labels - not [0,1], since two segments placed end
@@ -113,7 +133,6 @@
     // invite reading the bar as a stacked total, which it is not.
     const maxCombined = d3.max(bars, (d) => d.femaleWidth + d.maleWidth) || 0.1;
     const x = d3.scaleLinear().domain([0, maxCombined * 1.35]).range([margin.left, width - margin.right]);
-    const y = d3.scaleBand().domain(bars.map((d) => d.item)).range([margin.top, height - margin.bottom]).padding(0.3);
 
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
@@ -125,18 +144,23 @@
 
     bars.forEach((d) => {
       const label = U.displayLabel(d.item);
-      const rowY = y(d.item);
-      const barTop = rowY + y.bandwidth() * 0.15;
-      const barHeight = y.bandwidth() * 0.7;
-      const barMid = rowY + y.bandwidth() / 2;
+      const b = band(d.item);
+      // Wide rows keep some air above and below the bar inside each band;
+      // a compact band is already just the bar.
+      const bar = compact ? b : { top: b.top + b.height * 0.15, height: b.height * 0.7 };
+      const barMid = bar.top + bar.height / 2;
 
-      svg.append('text')
-        .attr('class', 'item-row-label')
-        .style('font-size', '0.72rem')
-        .attr('x', margin.left - 10).attr('y', barMid)
-        .attr('text-anchor', 'end').attr('dy', '0.32em')
-        .text(truncate(label, 34))
-        .append('title').text(label);
+      if (compact) {
+        U.drawStackedLabel(svg, geo.layout.rows.get(d.item), geo.layout, { title: label });
+      } else {
+        svg.append('text')
+          .attr('class', 'item-row-label')
+          .style('font-size', '0.72rem')
+          .attr('x', margin.left - 10).attr('y', barMid)
+          .attr('text-anchor', 'end').attr('dy', '0.32em')
+          .text(truncate(label, 34))
+          .append('title').text(label);
+      }
 
       if (femaleSuppressed && maleSuppressed) {
         svg.append('text')
@@ -167,14 +191,15 @@
 
         const segPx = x(segWidth) - zeroPx;
         const rectX = cursor;
+        const denomSize = genderLabel === 'Female' ? femaleIds.size : maleIds.size;
         svg.append('rect')
           .attr('x', rectX).attr('width', segPx)
-          .attr('y', barTop).attr('height', barHeight)
+          .attr('y', bar.top).attr('height', bar.height)
           .attr('fill', color)
           .attr('tabindex', 0)
           .attr('role', 'img')
-          .attr('aria-label', `${genderLabel}, ${label}: ${U.formatPct(val.pct)} (n=${val.n} of ${genderLabel === 'Female' ? femaleIds.size : maleIds.size})`)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${genderLabel}</strong>${truncate(label, 60)}<br>${U.formatPct(val.pct)} (n=${val.n} of ${genderLabel === 'Female' ? femaleIds.size : maleIds.size})`, evt))
+          .attr('aria-label', `${genderLabel}, ${label}: ${U.formatPct(val.pct)} (n=${val.n} of ${denomSize})`)
+          .on('mouseenter focus', (evt) => tip.show(`<strong>${genderLabel}</strong>${truncate(label, 60)}<br>${U.formatPct(val.pct)} (n=${val.n} of ${denomSize})`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
 
@@ -187,20 +212,25 @@
           .attr('text-anchor', fitsInside ? 'middle' : 'start')
           .style('font-size', '0.66rem')
           .style('font-weight', fitsInside ? '600' : '400')
-          .attr('fill', fitsInside ? textOn(color) : U.cssVar('--text-secondary'))
+          // style, not attr: the .bar-label class rule outranks a fill
+          // attribute, which left these dark grey on the magenta/teal
+          // segments instead of the white textOn() picks for contrast.
+          .style('fill', fitsInside ? textOn(color) : U.cssVar('--text-secondary'))
           .text(U.formatPct(val.pct));
 
         cursor += segPx;
       });
     });
 
-    container.querySelector('svg').style.minWidth = '520px';
+    if (!compact) container.querySelector('svg').style.minWidth = `${BY_GENDER_WIDE_MIN}px`;
   }
 
   // --- Programme influence, called out on its own, by did_gals ------------
   // Unchanged split - the team asked to change the other four charts to
   // gender, not this one.
-  function renderProgrammeInfluence(container, { subjectRows, careerRows, meta, didGalsColors }) {
+  function renderProgrammeInfluence(container, {
+    subjectRows, careerRows, meta, didGalsColors,
+  }) {
     container.innerHTML = '';
     const { programmeInfluenceLabel, sharedInfluences } = meta.subjectChoice;
     const programmePair = sharedInfluences.find((i) => i.canonical === programmeInfluenceLabel);
@@ -210,12 +240,43 @@
       { label: 'Career choice', rows: careerRows, item: programmePair.career },
     ];
 
-    const width = Math.max(container.clientWidth || 520, 480);
-    const rowHeight = 32;
-    const margin = {
-      top: 8, right: 50, bottom: 4, left: 210,
-    };
-    const height = margin.top + margin.bottom + groups.length * 2 * rowHeight;
+    const entries = [];
+    groups.forEach((g) => {
+      const galsIds = new Set(g.rows.filter((r) => r.didGals).map((r) => r.id));
+      const nonGalsIds = new Set(g.rows.filter((r) => !r.didGals).map((r) => r.id));
+      [['GALS', galsIds, didGalsColors.gals], ['Not GALS', nonGalsIds, didGalsColors.nonGals]].forEach(([groupLabel, subIds, color]) => {
+        const suppressed = U.isSuppressed(subIds.size);
+        const n = suppressed ? 0 : new Set(g.rows.filter((r) => r.item === g.item && subIds.has(r.id)).map((r) => r.id)).size;
+        entries.push({
+          key: `${g.label} - ${groupLabel}`,
+          suppressed,
+          n,
+          denom: subIds.size,
+          pct: suppressed || !subIds.size ? 0 : n / subIds.size,
+          color,
+        });
+      });
+    });
+
+    const compact = U.isCompact(container, PROGRAMME_WIDE_MIN);
+    const width = compact ? container.clientWidth : Math.max(container.clientWidth || PROGRAMME_WIDE_MIN, PROGRAMME_WIDE_MIN);
+    const margin = compact
+      ? {
+        top: 4, right: 44, bottom: 4, left: 0,
+      }
+      : {
+        top: 8, right: 50, bottom: 8, left: 210,
+      };
+    const geo = U.rowGeometry({
+      compact,
+      keys: entries.map((e) => e.key),
+      width,
+      margin,
+      wideRowHeight: 32,
+      widePadding: 0.4,
+      plotHeight: 16,
+    });
+    const { height, band } = geo;
 
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
@@ -223,59 +284,59 @@
       .attr('aria-label', 'Percentage of respondents citing STEM activities and programmes as an influence, split by GALS participation');
 
     const x = d3.scaleLinear().domain([0, 1]).range([margin.left, width - margin.right]);
-    svg.selectAll('line.gridline')
-      .data([0, 0.25, 0.5, 0.75, 1])
-      .join('line')
-      .attr('class', 'gridline')
-      .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
-      .attr('y1', margin.top).attr('y2', height - margin.bottom);
+    const ticks = [0, 0.25, 0.5, 0.75, 1];
 
-    const tip = U.tooltip();
-    let rowIndex = 0;
-
-    groups.forEach((g) => {
-      const galsIds = new Set(g.rows.filter((r) => r.didGals).map((r) => r.id));
-      const nonGalsIds = new Set(g.rows.filter((r) => !r.didGals).map((r) => r.id));
-
-      [['GALS', galsIds, didGalsColors.gals], ['Not GALS', nonGalsIds, didGalsColors.nonGals]].forEach(([label, subIds, color]) => {
-        const barY = margin.top + rowIndex * rowHeight;
-        const suppressed = U.isSuppressed(subIds.size);
+    if (compact) {
+      U.drawRowGridlines(svg, geo.layout, x, ticks);
+      entries.forEach((e) => U.drawStackedLabel(svg, geo.layout.rows.get(e.key), geo.layout));
+    } else {
+      svg.selectAll('line.gridline')
+        .data(ticks)
+        .join('line')
+        .attr('class', 'gridline')
+        .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
+        .attr('y1', margin.top).attr('y2', height - margin.bottom);
+      entries.forEach((e) => {
+        const b = band(e.key);
         svg.append('text')
           .attr('class', 'item-row-label')
-          .attr('x', margin.left - 12).attr('y', barY + rowHeight / 2 - 8)
+          .attr('x', margin.left - 12).attr('y', b.top + b.height / 2)
           .attr('text-anchor', 'end').attr('dy', '0.32em')
           .style('font-size', '0.7rem')
-          .text(`${g.label} - ${label}`);
-
-        if (suppressed) {
-          svg.append('text')
-            .attr('x', margin.left + 8).attr('y', barY + rowHeight / 2 - 8)
-            .attr('dy', '0.32em')
-            .style('font-size', '0.65rem')
-            .attr('fill', U.cssVar('--text-muted'))
-            .text(`suppressed (n<${U.SMALL_CELL_THRESHOLD})`);
-        } else {
-          const n = new Set(g.rows.filter((r) => r.item === g.item && subIds.has(r.id)).map((r) => r.id)).size;
-          const pct = n / subIds.size;
-          svg.append('rect')
-            .attr('x', margin.left).attr('width', Math.max(0, x(pct) - margin.left))
-            .attr('y', barY - 8).attr('height', rowHeight - 14)
-            .attr('fill', color)
-            .attr('tabindex', 0)
-            .on('mouseenter focus', (evt) => tip.show(`<strong>${g.label} - ${label}</strong>${U.formatPct(pct)} picked STEM activities/programmes as an influence (n=${n} of ${subIds.size})`, evt))
-            .on('mousemove', (evt) => tip.move(evt))
-            .on('mouseleave blur', () => tip.hide());
-          svg.append('text')
-            .attr('class', 'bar-label')
-            .attr('x', x(pct) + 6).attr('y', barY + rowHeight / 2 - 15)
-            .attr('dy', '0.32em')
-            .text(U.formatPct(pct));
-        }
-        rowIndex += 1;
+          .text(e.key);
       });
+    }
+
+    const tip = U.tooltip();
+
+    entries.forEach((e) => {
+      const b = band(e.key);
+      const mid = b.top + b.height / 2;
+      if (e.suppressed) {
+        svg.append('text')
+          .attr('x', margin.left + 8).attr('y', mid)
+          .attr('dy', '0.32em')
+          .style('font-size', '0.65rem')
+          .attr('fill', U.cssVar('--text-muted'))
+          .text(`suppressed (n<${U.SMALL_CELL_THRESHOLD})`);
+        return;
+      }
+      svg.append('rect')
+        .attr('x', margin.left).attr('width', Math.max(0, x(e.pct) - margin.left))
+        .attr('y', b.top).attr('height', b.height)
+        .attr('fill', e.color)
+        .attr('tabindex', 0)
+        .on('mouseenter focus', (evt) => tip.show(`<strong>${e.key}</strong>${U.formatPct(e.pct)} picked STEM activities/programmes as an influence (n=${e.n} of ${e.denom})`, evt))
+        .on('mousemove', (evt) => tip.move(evt))
+        .on('mouseleave blur', () => tip.hide());
+      svg.append('text')
+        .attr('class', 'bar-label')
+        .attr('x', x(e.pct) + 6).attr('y', mid)
+        .attr('dy', '0.32em')
+        .text(U.formatPct(e.pct));
     });
 
-    container.querySelector('svg').style.minWidth = '420px';
+    if (!compact) container.querySelector('svg').style.minWidth = `${PROGRAMME_WIDE_MIN}px`;
   }
 
   window.SIT.charts = window.SIT.charts || {};

@@ -8,6 +8,9 @@
 
   const U = window.SIT.utils;
 
+  const WIDE_MIN_WIDTH = 640;
+  const SCALE_TICKS = [1, 2, 3, 4];
+
   function displayTickLabel(displayValue) {
     return window.SIT_DATA.meta.scale.labels[displayValue];
   }
@@ -19,10 +22,26 @@
   function render(container, { schoolRatings, allRatings, meta }) {
     container.innerHTML = '';
     const items = meta.outcomeItems;
-    const width = Math.max(container.clientWidth || 640, 640);
-    const rowHeight = 30;
-    const margin = { top: 28, right: 24, bottom: 16, left: 340 };
-    const height = margin.top + margin.bottom + items.length * rowHeight;
+    const compact = U.isCompact(container, WIDE_MIN_WIDTH);
+    const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
+    const margin = compact
+      ? {
+        top: 28, right: 30, bottom: 30, left: 18,
+      }
+      : {
+        top: 28, right: 24, bottom: 16, left: 340,
+      };
+    const geo = U.rowGeometry({
+      compact,
+      keys: items.map((i) => i.item),
+      width,
+      margin,
+      wideRowHeight: 30,
+      widePadding: 0.2,
+      plotHeight: 16,
+      gap: 8,
+    });
+    const { height, band } = geo;
 
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
@@ -30,43 +49,50 @@
       .attr('aria-label', 'Dot plot comparing this school\'s average outcome score to the overall sample, one row per outcome statement');
 
     const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
-    const y = d3.scaleBand().domain(items.map((i) => i.item)).range([margin.top, height - margin.bottom]).paddingInner(0.2);
 
     svg.append('g')
       .attr('class', 'axis')
       .attr('transform', `translate(0,${margin.top - 6})`)
-      .call(d3.axisTop(x).tickValues([1, 2, 3, 4]).tickFormat(displayTickLabel));
+      .call(d3.axisTop(x).tickValues(SCALE_TICKS).tickFormat(displayTickLabel));
 
-    svg.selectAll('line.gridline')
-      .data([1, 2, 3, 4])
-      .join('line')
-      .attr('class', 'gridline')
-      .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
-      .attr('y1', margin.top).attr('y2', height - margin.bottom);
+    if (compact) {
+      U.drawCompactScaleFrame(svg, geo, x, {
+        width, height, margin, ticks: SCALE_TICKS, tickFormat: displayTickLabel,
+      });
+    } else {
+      svg.selectAll('line.gridline')
+        .data(SCALE_TICKS)
+        .join('line')
+        .attr('class', 'gridline')
+        .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
+        .attr('y1', margin.top).attr('y2', height - margin.bottom);
 
-    items.forEach((item, i) => {
-      svg.append('text')
-        .attr('class', 'item-row-label')
-        .attr('x', margin.left - 16)
-        .attr('y', y(item.item) + y.bandwidth() / 2)
-        .attr('text-anchor', 'end')
-        .attr('dy', '0.32em')
-        .text(truncate(item.item, 48))
-        .append('title').text(item.item);
+      items.forEach((item, i) => {
+        const b = band(item.item);
+        svg.append('text')
+          .attr('class', 'item-row-label')
+          .attr('x', margin.left - 16)
+          .attr('y', b.top + b.height / 2)
+          .attr('text-anchor', 'end')
+          .attr('dy', '0.32em')
+          .text(truncate(item.item, 48))
+          .append('title').text(item.item);
 
-      svg.append('rect')
-        .attr('x', margin.left).attr('width', width - margin.left - margin.right)
-        .attr('y', y(item.item)).attr('height', y.bandwidth())
-        .attr('fill', i % 2 ? U.cssVar('--surface-sunken') : 'transparent')
-        .attr('opacity', 0.5);
-    });
+        svg.append('rect')
+          .attr('x', margin.left).attr('width', width - margin.left - margin.right)
+          .attr('y', b.top).attr('height', b.height)
+          .attr('fill', i % 2 ? U.cssVar('--surface-sunken') : 'transparent')
+          .attr('opacity', 0.5);
+      });
+    }
 
     const tip = U.tooltip();
     const schoolColor = U.cssVar('--brand-primary');
     const benchmarkColor = U.cssVar('--text-muted');
 
     items.forEach((item) => {
-      const cy = y(item.item) + y.bandwidth() / 2;
+      const b = band(item.item);
+      const cy = b.top + b.height / 2;
       const benchRows = allRatings.filter((r) => r.item === item.item);
       const benchSummary = U.summarizeScores(benchRows);
       if (benchSummary.mean !== null) {
@@ -138,7 +164,7 @@
         .on('mouseleave blur', () => tip.hide());
     });
 
-    container.querySelector('svg').style.minWidth = '640px';
+    if (!compact) container.querySelector('svg').style.minWidth = `${WIDE_MIN_WIDTH}px`;
   }
 
   window.SIT.charts = window.SIT.charts || {};
