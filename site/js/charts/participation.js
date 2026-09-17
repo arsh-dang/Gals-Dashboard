@@ -216,7 +216,61 @@
     container.appendChild(grid);
   }
 
+  // Phone version of the same region x year data: eight columns don't fit,
+  // so each region is a row a reader opens to see its year levels, instead
+  // of trying to shrink a grid that has nowhere left to shrink to. Same
+  // suppression rule, same counts - just one region visible at a time.
+  function renderSuppressionList(container, respondents, meta) {
+    container.innerHTML = '';
+    const schoolRows = respondents.filter((r) => r.isSchoolStudent && r.schoolLevel);
+    const regions = meta.regions.map((r) => r.key);
+
+    const list = document.createElement('div');
+    list.className = 'suppression-list';
+    list.setAttribute('role', 'list');
+    list.setAttribute('aria-label', 'Respondent count by region and school year, school students only');
+
+    regions.forEach((region) => {
+      const regionRows = schoolRows.filter((r) => r.region === region);
+      const total = regionRows.length;
+      const levelsHere = YEAR_ORDER.filter((lvl) => regionRows.some((r) => r.schoolLevel === lvl));
+
+      const details = document.createElement('details');
+      details.className = 'suppression-list__region';
+      details.setAttribute('role', 'listitem');
+
+      const summary = document.createElement('summary');
+      summary.innerHTML = `<span>${region}</span><span class="suppression-list__total">${total} student${total === 1 ? '' : 's'}</span>`;
+      details.appendChild(summary);
+
+      const rows = document.createElement('div');
+      rows.className = 'suppression-list__years';
+      if (!levelsHere.length) {
+        const empty = document.createElement('p');
+        empty.className = 'suppression-list__empty';
+        empty.textContent = 'No school-year respondents recorded for this region in the current filter.';
+        rows.appendChild(empty);
+      }
+      levelsHere.forEach((lvl) => {
+        const n = regionRows.filter((r) => r.schoolLevel === lvl).length;
+        const suppressed = U.isSuppressed(n);
+        const row = document.createElement('div');
+        row.className = 'suppression-list__row';
+        const value = suppressed
+          ? `<span class="badge-suppressed">n<${U.SMALL_CELL_THRESHOLD}</span>`
+          : `<span class="suppression-list__count">${n}</span>`;
+        row.innerHTML = `<span>${lvl}</span>${value}`;
+        rows.appendChild(row);
+      });
+      details.appendChild(rows);
+      list.appendChild(details);
+    });
+
+    container.appendChild(list);
+  }
+
   window.SIT.charts = window.SIT.charts || {};
   window.SIT.charts.renderActivityBars = renderActivityBars;
   window.SIT.charts.renderSuppressionGrid = renderSuppressionGrid;
+  window.SIT.charts.renderSuppressionList = renderSuppressionList;
 })();

@@ -120,7 +120,11 @@
             <p class="card__subtitle">Respondent count by region and school year, school students only.</p>
           </div>
           <div class="card__body">
-            <div class="chart-scroll" id="chart-suppression-grid"></div>
+            <!-- Eight year columns don't fit a phone by shrinking further, so
+                 mobile gets a different representation entirely: one row per
+                 region, expandable to its year levels, instead of a grid. -->
+            <div class="chart-scroll desktop-only" id="chart-suppression-grid"></div>
+            <div class="mobile-only" id="chart-suppression-list"></div>
             <p class="card__note">
               Cells under <span id="threshold-label-1"></span> respondents are suppressed and marked, not dropped.
               Only Geelong has usable numbers across most year levels; read other regions as indicative.
@@ -134,29 +138,44 @@
     <section class="view-section" id="section-outcomes" aria-labelledby="heading-outcomes">
       <div class="view-section__heading">
         <h2 id="heading-outcomes"><span class="view-number">2</span>Outcomes by activity</h2>
-        <div class="view-toggle" role="group" aria-label="Outcomes chart type">
+        <!-- Seven overlapping series with confidence intervals doesn't
+             reflow into something a phone can read - it needs pinch-zoom
+             regardless of label size, so mobile gets a different
+             representation (one activity, sorted list) rather than a
+             squeezed version of this toggle. -->
+        <div class="view-toggle desktop-only" role="group" aria-label="Outcomes chart type">
           <button type="button" data-outcomes-mode="average" aria-pressed="true">Dot plot</button>
           <button type="button" data-outcomes-mode="smallMultiples" aria-pressed="false">Small multiples</button>
           <button type="button" data-outcomes-mode="distribution" aria-pressed="false">Distribution</button>
+        </div>
+        <div class="filter-field mobile-only">
+          <label for="outcomes-activity-select">Activity</label>
+          <select id="outcomes-activity-select"></select>
         </div>
       </div>
       <div class="card">
         <div class="card__header">
           <h3 class="card__title">Which outcomes do participants report most positively, by activity?</h3>
-          <p class="card__subtitle" id="outcomes-subtitle">
+          <p class="card__subtitle desktop-only" id="outcomes-subtitle">
             Average score per activity on the survey's 1–4 scale (4 = Yes a lot is best; "I do not know" excluded).
+          </p>
+          <p class="card__subtitle mobile-only">
+            Average score for the selected activity, on the survey's 1–4 scale, sorted best to worst.
           </p>
         </div>
         <div class="card__body">
-          <div class="chart-scroll" id="chart-outcomes"></div>
-          <div class="legend" id="outcomes-activity-legend"></div>
-          <!-- Full reasoning for the "≈" wording-variant tag and the sample-size point: README.md, "Caption reasoning". -->
-          <p class="card__note" id="outcomes-note">
-            Faint lines are 95% confidence intervals: activities sit close together, so read a gap alongside its
-            interval, not instead of it. "≈" flags an item that appears twice with near-identical wording; "×" marks
-            a cell suppressed for fewer than <span id="threshold-label-2"></span> respondents.
-          </p>
-          <div id="table-outcomes"></div>
+          <div class="desktop-only">
+            <div class="chart-scroll" id="chart-outcomes"></div>
+            <div class="legend" id="outcomes-activity-legend"></div>
+            <!-- Full reasoning for the "≈" wording-variant tag and the sample-size point: README.md, "Caption reasoning". -->
+            <p class="card__note" id="outcomes-note">
+              Faint lines are 95% confidence intervals: activities sit close together, so read a gap alongside its
+              interval, not instead of it. "≈" flags an item that appears twice with near-identical wording; "×"
+              marks a cell suppressed for fewer than <span id="threshold-label-2"></span> respondents.
+            </p>
+            <div id="table-outcomes"></div>
+          </div>
+          <div class="mobile-only" id="chart-outcomes-mobile"></div>
         </div>
       </div>
 

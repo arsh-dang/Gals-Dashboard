@@ -32,13 +32,12 @@
     return { n, pct: n / denomIds.size };
   }
 
-  function luminance(hex) {
-    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    if (!m) return 1;
-    const [r, g, b] = [m[1], m[2], m[3]].map((h) => parseInt(h, 16) / 255);
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  }
-  const textOn = (bg) => (luminance(bg) < 0.55 ? '#fff' : '#000');
+  // Fixed pixel gap reserved between the two segments (and after the last
+  // one) for that segment's own label - forum feedback moved these outside
+  // the bar entirely, since a value sitting on top of a fairly saturated
+  // magenta/teal fill read fine to us but not to teachers glancing at it on
+  // a phone. Wide enough for "100%" at the label's font size.
+  const SEGMENT_LABEL_GAP = 30;
 
   // --- Chart: a single multi-select question, split female vs male -------
   // Used for subject-choice influences, career-choice influences, subject
@@ -106,12 +105,15 @@
 
     const compact = U.isCompact(container, BY_GENDER_WIDE_MIN);
     const width = compact ? container.clientWidth : Math.max(container.clientWidth || BY_GENDER_WIDE_MIN, BY_GENDER_WIDE_MIN);
+    // Right margin holds the trailing (male) segment's label, now that
+    // every value sits outside its segment rather than inside whichever
+    // ones were wide enough.
     const margin = compact
       ? {
-        top: 4, right: 8, bottom: 4, left: 0,
+        top: 4, right: 38, bottom: 4, left: 0,
       }
       : {
-        top: 4, right: 16, bottom: 4, left: 220,
+        top: 4, right: 42, bottom: 4, left: 220,
       };
     const geo = U.rowGeometry({
       compact,
@@ -203,22 +205,21 @@
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
 
-        const fitsInside = segPx >= 34;
+        // Outside the segment, not inside it, regardless of how wide the
+        // segment is - a value sitting on the fill read fine on a desktop
+        // screen but not on a phone, so every label lives in the same
+        // SEGMENT_LABEL_GAP reserved after its own segment now.
         svg.append('text')
           .attr('class', 'bar-label')
-          .attr('x', fitsInside ? rectX + segPx / 2 : rectX + segPx + 4)
+          .attr('x', rectX + segPx + 4)
           .attr('y', barMid)
           .attr('dy', '0.32em')
-          .attr('text-anchor', fitsInside ? 'middle' : 'start')
+          .attr('text-anchor', 'start')
           .style('font-size', '0.66rem')
-          .style('font-weight', fitsInside ? '600' : '400')
-          // style, not attr: the .bar-label class rule outranks a fill
-          // attribute, which left these dark grey on the magenta/teal
-          // segments instead of the white textOn() picks for contrast.
-          .style('fill', fitsInside ? textOn(color) : U.cssVar('--text-secondary'))
+          .style('fill', U.cssVar('--text-secondary'))
           .text(U.formatPct(val.pct));
 
-        cursor += segPx;
+        cursor += segPx + SEGMENT_LABEL_GAP;
       });
     });
 

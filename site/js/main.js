@@ -30,6 +30,7 @@
     region: '',
     schoolLevel: '',
     outcomesMode: 'average',
+    mobileActivity: '',
     battery: 'skills',
     jobsExpanded: false,
   };
@@ -73,6 +74,24 @@
     opt.value = lvl;
     opt.textContent = lvl;
     schoolLevelSelect.appendChild(opt);
+  });
+
+  // Mobile fallback for Outcomes by activity: seven overlapping series with
+  // confidence intervals doesn't reflow into something a phone can read, so
+  // instead of squeezing that chart, mobile picks one activity at a time
+  // and shows a sorted list for it (see renderOutcomesMobile below).
+  const outcomesActivitySelect = document.getElementById('outcomes-activity-select');
+  const mobileActivities = window.SIT.charts.outcomes.activityKeysOrdered(meta);
+  mobileActivities.forEach((key) => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = key;
+    outcomesActivitySelect.appendChild(opt);
+  });
+  state.mobileActivity = mobileActivities[0] || '';
+  outcomesActivitySelect.addEventListener('change', () => {
+    state.mobileActivity = outcomesActivitySelect.value;
+    renderOutcomesMobile();
   });
 
   document.querySelectorAll('#threshold-label-1, #threshold-label-2, #threshold-label-3, #threshold-label-4, #threshold-label-5, #threshold-label-6, #threshold-label-7').forEach((el) => {
@@ -172,6 +191,7 @@
     });
 
     window.SIT.charts.renderSuppressionGrid(document.getElementById('chart-suppression-grid'), filteredRespondents(), meta);
+    window.SIT.charts.renderSuppressionList(document.getElementById('chart-suppression-list'), filteredRespondents(), meta);
   }
 
   // --- View 2: Outcomes ---------------------------------------------------
@@ -193,11 +213,22 @@
     distribution: 'Share of respondents giving each answer, per activity; "I do not know" is shown separately, outside the 100%.',
   };
 
+  // Mobile fallback: one activity at a time, sorted best to worst, same
+  // single-colour lollipop as the general-outcomes chart below (no new
+  // chart code needed - it already IS "a sorted list with a value and a
+  // small inline bar", just fed one activity's rows instead of the
+  // general-outcomes block's).
+  function renderOutcomesMobile() {
+    const rr = excludeGeneral(filteredRatings()).filter((r) => r.activityType === state.mobileActivity);
+    window.SIT.charts.outcomes.renderGeneral(document.getElementById('chart-outcomes-mobile'), rr, meta);
+  }
+
   function renderOutcomes() {
     const rr = excludeGeneral(filteredRatings());
     const activities = window.SIT.charts.outcomes.activityKeysOrdered(meta);
     const chartEl = document.getElementById('chart-outcomes');
     document.getElementById('outcomes-subtitle').textContent = OUTCOMES_SUBTITLES[state.outcomesMode];
+    renderOutcomesMobile();
 
     const legendEl = document.getElementById('outcomes-activity-legend');
     const noteEl = document.getElementById('outcomes-note');

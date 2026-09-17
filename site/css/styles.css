@@ -561,6 +561,68 @@ svg text { font-family: var(--font-body); }
   color: var(--brand-primary);
 }
 
+/* --- Suppression list: the phone version of the grid above, one region per
+   row, expandable to its year levels (U.renderSuppressionList). The summary
+   is the tap target - 44px minimum, per the forum's thumb-not-cursor note. */
+.suppression-list__region {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-2);
+  overflow: hidden;
+}
+
+.suppression-list__region summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-sunken);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+.suppression-list__region summary::-webkit-details-marker { display: none; }
+.suppression-list__region summary::after {
+  content: '▸';
+  color: var(--text-muted);
+  transition: transform 0.15s ease;
+}
+.suppression-list__region[open] summary::after { transform: rotate(90deg); }
+
+.suppression-list__total {
+  font-weight: 400;
+  color: var(--text-secondary);
+  font-size: var(--text-small);
+}
+
+.suppression-list__years { padding: var(--space-2) var(--space-4) var(--space-3); }
+
+.suppression-list__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-variant-numeric: tabular-nums;
+}
+.suppression-list__row:last-child { border-bottom: none; }
+
+.suppression-list__count { font-weight: 700; color: var(--brand-primary); }
+.suppression-list__empty { color: var(--text-muted); font-size: var(--text-small); padding: var(--space-2) 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .suppression-list__region summary::after { transition: none; }
+}
+
+/* --- Outcomes mobile fallback: one activity, sorted list -------------------
+   Reuses the general-outcomes lollipop renderer (outcomes.renderGeneral)
+   filtered to the selected activity, so this needs no chart code of its
+   own - just a wrapper wide enough for its compact layout. */
+#chart-outcomes-mobile { width: 100%; }
+
 /* --- Facet grid (skills & identity, small multiples) ----------------------- */
 .facet-grid {
   display: grid;
@@ -763,6 +825,28 @@ svg text { font-family: var(--font-body); }
 .data-table td { border-bottom: 1px solid var(--border-subtle); }
 .data-table [data-align='right'] { text-align: right; font-variant-numeric: tabular-nums; }
 
+/* --- Desktop/mobile swaps ---------------------------------------------
+   A few charts genuinely don't reflow into something a 390px screen can
+   read (seven overlapping series with confidence intervals; an eight-
+   column grid) - forum feedback was explicit that these need a different
+   representation below the breakpoint, not a squeezed version of the same
+   one. Both versions render into the page always; this pair of classes
+   picks which one is visible. .filter-field.mobile-only is a specific
+   override so a shown mobile field still gets .filter-field's flex column
+   layout, not the generic block value below. */
+.mobile-only { display: none; }
+
+@media (max-width: 640px) {
+  .desktop-only { display: none; }
+  .mobile-only { display: block; }
+  .filter-field.mobile-only { display: flex; }
+  /* Same tie as .filter-field.mobile-only above, the other direction: the
+     .view-toggle{display:flex} rule below is equal specificity to
+     .desktop-only and comes later in the cascade, so it would otherwise
+     win and undo the hide. */
+  .view-toggle.desktop-only { display: none; }
+}
+
 /* --- Phones ---------------------------------------------------------------
    The charts switch to their own compact layouts in JS below each chart's
    designed width (label above each row, drawn at the card's real width -
@@ -772,25 +856,46 @@ svg text { font-family: var(--font-body); }
   .page { padding: var(--space-4) var(--space-3) var(--space-6); }
   .card__header { padding: var(--space-3); }
   .card__body { padding: var(--space-3); }
-  .filter-bar { padding: var(--space-3); gap: var(--space-3); }
   .kpi-row { gap: var(--space-3); }
   .kpi-tile { padding: var(--space-3); }
   .view-section__heading h2 { font-size: var(--text-h2); }
   .view-toggle { display: flex; width: 100%; }
-  .view-toggle button { flex: 1 1 0; padding: var(--space-2) var(--space-1); }
+  .view-toggle button { flex: 1 1 0; padding: var(--space-3) var(--space-1); min-height: 44px; }
   .legend { gap: var(--space-1) var(--space-3); font-size: var(--text-caption); }
   .facet-grid__cell { padding: var(--space-2); }
 
-  /* Eight year columns fit a phone once the region column narrows and the
-     "Yr" prefix goes - no sideways scroll inside the card. */
-  .suppression-grid {
-    grid-template-columns: 5.25rem repeat(var(--level-count, 8), minmax(0, 1fr));
-    font-size: var(--text-caption);
+  /* The filter bar is the most-used control here, and a teacher scrolling
+     a long chart shouldn't have to scroll back to the top to reach it -
+     it sticks under the (non-sticky) banner/nav above once they scroll
+     past it. Same treatment for the teacher page's compact signed-in bar,
+     which is that page's equivalent of a filter bar. */
+  .filter-bar,
+  .teacher-gate--active {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding: var(--space-3);
+    gap: var(--space-3);
+    box-shadow: var(--shadow-raised);
   }
-  .suppression-grid__cell { padding: 2px; min-height: 2.25rem; }
-  .suppression-grid__cell--header { font-size: 0.625rem; }
-  .suppression-grid__year-prefix { display: none; }
-  .suppression-grid .badge-suppressed { padding: 1px 2px; font-size: 0.625rem; }
+
+  /* Thumb-sized tap targets throughout, not just mouse-sized ones. */
+  .filter-reset,
+  .pager__button {
+    min-height: 44px;
+    padding: var(--space-2) var(--space-4);
+  }
+  .site-nav a {
+    min-height: 44px;
+    padding: var(--space-2) var(--space-3);
+  }
+  .deakin-banner__icon { width: 44px; height: 44px; }
+  summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: var(--space-2) 0;
+  }
 
   /* Tables restack as one card per row: the header row is hidden visually
      but kept for screen readers, and each cell carries its column name as
