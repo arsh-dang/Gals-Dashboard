@@ -127,6 +127,22 @@
     });
   }
 
+  function renderTeacherSummary() {
+    const { sentences } = window.SIT.summary.buildTeacherSummary({
+      allRatings: excludeGeneral(ratings),
+      meta,
+      school: state.school,
+      schoolLevel: state.schoolLevel,
+    });
+    const list = document.getElementById('teacher-summary-list');
+    list.innerHTML = '';
+    sentences.forEach((s) => {
+      const li = document.createElement('li');
+      li.textContent = s;
+      list.appendChild(li);
+    });
+  }
+
   function render() {
     const gate = document.getElementById('teacher-gate');
     const gateTitle = document.getElementById('gate-title');
@@ -167,6 +183,8 @@
     content.style.display = '';
 
     document.getElementById('snapshot-title').textContent = `How many of your ${n} students took part in each activity?`;
+
+    renderTeacherSummary();
 
     window.SIT.charts.outcomes.renderDistribution(document.getElementById('chart-teacher-outcomes'), schoolRatings, meta, activityColorScale);
 

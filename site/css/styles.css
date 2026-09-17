@@ -13,6 +13,39 @@
 
 .banner-mock strong { color: var(--status-warn); }
 
+/* --- Summary layer: the plain-language answer, above the charts that back
+   it up. Brand-accent border (not the mock-data warning's orange, and not
+   a plain white card like every chart below it) so it reads as the
+   headline, not one more panel in the list. */
+.card--summary {
+  border-left: 4px solid var(--brand-primary);
+  margin-bottom: var(--gap-dashboard);
+}
+
+.card--summary__eyebrow {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--brand-primary);
+}
+
+.card--summary__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.card--summary__list li {
+  font-size: var(--text-h3);
+  line-height: var(--leading-body);
+  color: var(--text-primary);
+}
+
 .page-lede {
   color: var(--text-secondary);
   font-size: var(--text-body);

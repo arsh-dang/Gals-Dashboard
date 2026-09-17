@@ -111,6 +111,27 @@
     };
   }
 
+  // Unclamped 95% CI, for statistical comparisons (the summary-sentence
+  // layer). ciDisplayBounds above clamps to [1,4] for drawing a whisker on
+  // the chart's axis; clamping first would narrow an interval and could
+  // turn a real overlap into a false "distinguishable", so comparisons use
+  // this instead. Null if the summary has no computable margin (n<2).
+  function rawCiBounds(summary) {
+    if (summary.ciMargin === null || summary.mean === null) return null;
+    return { low: summary.mean - summary.ciMargin, high: summary.mean + summary.ciMargin };
+  }
+
+  // Two summaries "overlap" - the data cannot distinguish them - whenever
+  // either has no computable interval (too few responses to say anything)
+  // or the intervals share any range. Only a real, non-overlapping gap
+  // counts as a difference the data supports.
+  function ciOverlap(a, b) {
+    const boundsA = rawCiBounds(a);
+    const boundsB = rawCiBounds(b);
+    if (!boundsA || !boundsB) return true;
+    return !(boundsA.high < boundsB.low || boundsB.high < boundsA.low);
+  }
+
   function distributionCounts(rows) {
     const counts = { 1: 0, 2: 0, 3: 0, 4: 0, dontKnow: 0 };
     rows.forEach((r) => {
@@ -437,6 +458,8 @@
     summarizeScores,
     toDisplayScore,
     ciDisplayBounds,
+    rawCiBounds,
+    ciOverlap,
     distributionCounts,
     applyFilters,
     uniqueBy,

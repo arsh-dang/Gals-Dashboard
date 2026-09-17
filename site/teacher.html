@@ -106,6 +106,18 @@
 
   <main class="view-grid" id="teacher-content" style="display:none;">
 
+    <!-- The answer, before the charts that back it up: two or three plain
+         sentences comparing this cohort to a baseline (see js/summary.js).
+         Never shown for a suppressed cohort - the gate above already
+         replaces this whole area with the suppression message in that
+         case, so nothing about a small cohort reaches this far. -->
+    <div class="card card--summary" id="teacher-summary">
+      <div class="card__body">
+        <p class="card--summary__eyebrow">What this shows</p>
+        <ul class="card--summary__list" id="teacher-summary-list"></ul>
+      </div>
+    </div>
+
     <section class="view-section" aria-labelledby="heading-detail">
       <div class="view-section__heading">
         <h2 id="heading-detail"><span class="view-number">1</span>Response detail</h2>
@@ -217,6 +229,7 @@
 <script src="data/selections.js"></script>
 <script src="data/meta.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/summary.js"></script>
 <script src="js/charts/participation.js"></script>
 <script src="js/charts/outcomes.js"></script>
 <script src="js/charts/skills.js"></script>

@@ -139,6 +139,19 @@
     }
   }
 
+  // --- Summary layer: plain sentences above the charts --------------------
+  function renderProviderSummary() {
+    const rr = excludeGeneral(filteredRatings());
+    const { sentences } = window.SIT.summary.buildProviderSummary({ ratings: rr, meta });
+    const list = document.getElementById('provider-summary-list');
+    list.innerHTML = '';
+    sentences.forEach((s) => {
+      const li = document.createElement('li');
+      li.textContent = s;
+      list.appendChild(li);
+    });
+  }
+
   // --- View 1: Participation ---------------------------------------------
   function renderParticipation() {
     const rr = filteredRatings();
@@ -434,6 +447,7 @@
 
   function renderAll() {
     updateFilterStatus();
+    renderProviderSummary();
     renderParticipation();
     renderOutcomes();
     renderGeneralOutcomes();

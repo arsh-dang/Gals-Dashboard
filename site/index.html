@@ -81,6 +81,16 @@
     <span class="filter-status" id="filter-status" role="status"></span>
   </form>
 
+  <!-- What the data means, before the charts that show it: a plain-language
+       reading of the same numbers below, not a separate finding. Derived
+       from the data (see js/summary.js), never phrased by a language model. -->
+  <div class="card card--summary" id="provider-summary">
+    <div class="card__body">
+      <p class="card--summary__eyebrow">What this shows</p>
+      <ul class="card--summary__list" id="provider-summary-list"></ul>
+    </div>
+  </div>
+
   <main class="view-grid">
 
     <!-- View 1: Participation overview -->
@@ -394,6 +404,7 @@
 <script src="data/openText.js"></script>
 <script src="data/meta.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/summary.js"></script>
 <script src="js/charts/participation.js"></script>
 <script src="js/charts/outcomes.js"></script>
 <script src="js/charts/skills.js"></script>
