@@ -6,6 +6,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const OUT_DIR = path.join(__dirname, '..', 'site', 'data');
@@ -507,4 +508,27 @@ function main() {
   }
 }
 
+// Static hosts (GitHub Pages: max-age=600) let a browser keep an old
+// main.js for minutes after a deploy while it fetches the new index.html,
+// and the two disagree about element ids - the page loads and draws
+// nothing. Stamping every local asset URL with a hash of its contents means
+// a changed file always has a new URL, so HTML and scripts can't get out of
+// step. The hash is of content, not time, so re-running the build with no
+// changes leaves the HTML untouched.
+function stampAssetUrls() {
+  const siteDir = path.join(__dirname, '..', 'site');
+  fs.readdirSync(siteDir).filter((f) => f.endsWith('.html')).forEach((file) => {
+    const htmlPath = path.join(siteDir, file);
+    const html = fs.readFileSync(htmlPath, 'utf8');
+    const stamped = html.replace(/(<(?:script|link)\b[^>]*?\b(?:src|href)=")((?:css|js|data|vendor)\/[^"?]+)(?:\?v=[0-9a-f]+)?"/g, (m, head, url) => {
+      const assetPath = path.join(siteDir, url);
+      if (!fs.existsSync(assetPath)) return m;
+      const hash = crypto.createHash('sha1').update(fs.readFileSync(assetPath)).digest('hex').slice(0, 10);
+      return `${head}${url}?v=${hash}"`;
+    });
+    if (stamped !== html) fs.writeFileSync(htmlPath, stamped);
+  });
+}
+
 main();
+stampAssetUrls();
