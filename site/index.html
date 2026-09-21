@@ -138,33 +138,24 @@
     <section class="view-section" id="section-outcomes" aria-labelledby="heading-outcomes">
       <div class="view-section__heading">
         <h2 id="heading-outcomes"><span class="view-number">2</span>Outcomes by activity</h2>
-        <!-- Seven overlapping series with confidence intervals doesn't
-             reflow into something a phone can read - it needs pinch-zoom
-             regardless of label size, so mobile gets a different
-             representation (one activity, sorted list) rather than a
-             squeezed version of this toggle. -->
-        <div class="view-toggle desktop-only" role="group" aria-label="Outcomes chart type">
+        <div class="view-toggle" role="group" aria-label="Outcomes chart type">
           <button type="button" data-outcomes-mode="average" aria-pressed="true">Dot plot</button>
           <button type="button" data-outcomes-mode="smallMultiples" aria-pressed="false">Small multiples</button>
           <button type="button" data-outcomes-mode="distribution" aria-pressed="false">Distribution</button>
-        </div>
-        <div class="filter-field mobile-only">
-          <label for="outcomes-activity-select">Activity</label>
-          <select id="outcomes-activity-select"></select>
+          <!-- Phones only: one activity at a time as a sorted list, for when
+               seven overlapping dots per row is more than the reader wants. -->
+          <button type="button" class="mobile-only" data-outcomes-mode="single" aria-pressed="false">One activity</button>
         </div>
       </div>
       <div class="card">
         <div class="card__header">
           <h3 class="card__title">Which outcomes do participants report most positively, by activity?</h3>
-          <p class="card__subtitle desktop-only" id="outcomes-subtitle">
+          <p class="card__subtitle" id="outcomes-subtitle">
             Average score per activity on the survey's 1–4 scale (4 = Yes a lot is best; "I do not know" excluded).
-          </p>
-          <p class="card__subtitle mobile-only">
-            Average score for the selected activity, on the survey's 1–4 scale, sorted best to worst.
           </p>
         </div>
         <div class="card__body">
-          <div class="desktop-only">
+          <div id="outcomes-multi">
             <div class="chart-scroll" id="chart-outcomes"></div>
             <div class="legend" id="outcomes-activity-legend"></div>
             <!-- Full reasoning for the "≈" wording-variant tag and the sample-size point: README.md, "Caption reasoning". -->
@@ -175,7 +166,13 @@
             </p>
             <div id="table-outcomes"></div>
           </div>
-          <div class="mobile-only" id="chart-outcomes-mobile"></div>
+          <div id="outcomes-single" style="display:none">
+            <div class="filter-field">
+              <label for="outcomes-activity-select">Activity</label>
+              <select id="outcomes-activity-select"></select>
+            </div>
+            <div id="chart-outcomes-mobile"></div>
+          </div>
         </div>
       </div>
 

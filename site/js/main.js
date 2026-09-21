@@ -210,6 +210,7 @@
   const OUTCOMES_SUBTITLES = {
     average: 'Average score per activity on the survey\'s 1–4 scale (4 = Yes a lot is best; "I do not know" excluded).',
     smallMultiples: 'Average score per outcome, one panel per activity, with outcomes in the same order in every panel.',
+    single: 'Average score for the selected activity, on the survey\'s 1–4 scale, sorted best to worst.',
     distribution: 'Share of respondents giving each answer, per activity; "I do not know" is shown separately, outside the 100%.',
   };
 
@@ -228,7 +229,13 @@
     const activities = window.SIT.charts.outcomes.activityKeysOrdered(meta);
     const chartEl = document.getElementById('chart-outcomes');
     document.getElementById('outcomes-subtitle').textContent = OUTCOMES_SUBTITLES[state.outcomesMode];
-    renderOutcomesMobile();
+    const single = state.outcomesMode === 'single';
+    document.getElementById('outcomes-multi').style.display = single ? 'none' : '';
+    document.getElementById('outcomes-single').style.display = single ? '' : 'none';
+    if (single) {
+      renderOutcomesMobile();
+      return;
+    }
 
     const legendEl = document.getElementById('outcomes-activity-legend');
     const noteEl = document.getElementById('outcomes-note');

@@ -236,7 +236,10 @@
 
     const tip = U.tooltip();
     const width = U.contentWidth(facets[0].cell, 320);
-    const rowHeight = 20;
+    // Phone-width panels wrap each label onto two lines instead of cutting it
+    // off - truncated, several outcome wordings are indistinguishable.
+    const narrow = width < 420;
+    const rowHeight = narrow ? 28 : 20;
     // Labels get just over half the panel: the plot only needs room for four
     // scale positions, and item wording is what tells two rows apart.
     const margin = {
@@ -266,13 +269,23 @@
 
       items.forEach((item, i) => {
         const cy = margin.top + i * rowHeight + rowHeight / 2;
-        svg.append('text')
+        const label = svg.append('text')
           .attr('class', 'item-row-label')
           .style('font-size', `${FACET_LABEL_FONT}px`)
           .attr('x', margin.left - 8).attr('y', cy)
-          .attr('text-anchor', 'end').attr('dy', '0.32em')
-          .text(truncate(item.item, labelChars))
-          .append('title').text(item.item);
+          .attr('text-anchor', 'end');
+        if (narrow) {
+          const lines = U.wrapLines(item.item, labelChars, 2);
+          lines.forEach((line, li) => {
+            label.append('tspan')
+              .attr('x', margin.left - 8)
+              .attr('dy', li === 0 ? `${-(lines.length - 1) * 0.5 + 0.32}em` : '1em')
+              .text(line);
+          });
+        } else {
+          label.attr('dy', '0.32em').text(truncate(item.item, labelChars));
+        }
+        label.append('title').text(item.item);
 
         const rows = ratings.filter((r) => r.item === item.item && r.activityType === activityType);
         const summary = U.summarizeScores(rows);
