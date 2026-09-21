@@ -1,19 +1,21 @@
 // View 3: Skills and identity. Multi-select batteries have no meaningful
-// average - each facet shows % of that activity's participants who
-// selected each item. Denominator is the activity's actual respondent
-// count (from ratings, which every participant appears in), not the
-// selection rows themselves, since a multi-select respondent who ticked
-// nothing would otherwise vanish from the denominator too.
+// average - shows % of that activity's participants who selected each
+// item. Used to draw one small panel per activity (up to seven at once);
+// now one activity at a time (the same selector as Outcomes by activity),
+// sorted bars, top 5 with "show all" - the same "one chart, one
+// comparison" simplification applied everywhere else. Denominator is the
+// activity's actual respondent count (from ratings, which every
+// participant appears in), not the selection rows themselves, since a
+// multi-select respondent who ticked nothing would otherwise vanish from
+// the denominator too.
 (function () {
   'use strict';
 
   const U = window.SIT.utils;
 
-  const LABEL_FONT = 11;
-
-  function truncate(text, max) {
-    return text.length > max ? `${text.slice(0, max - 1)}…` : text;
-  }
+  const MARGIN = {
+    top: 4, right: 44, bottom: 4, left: 0,
+  };
 
   function activitiesWithBattery(meta) {
     return meta.activityTypesWithBattery.slice().sort((a, b) => {
@@ -24,129 +26,85 @@
   }
 
   function render(container, {
-    selections, ratings, meta, battery, colorScale,
+    selections, ratings, meta, battery, activityType, colorScale, expanded, onToggle,
   }) {
     container.innerHTML = '';
-    const activities = activitiesWithBattery(meta);
-    const items = [...new Set(selections.filter((s) => s.battery === battery).map((s) => s.item))].sort();
+    const denom = U.countDistinctIds(ratings.filter((r) => r.activityType === activityType));
 
-    const grid = document.createElement('div');
-    grid.className = 'facet-grid';
-    container.appendChild(grid);
+    if (U.isSuppressed(denom)) {
+      const badge = document.createElement('span');
+      badge.className = 'badge-suppressed';
+      badge.textContent = denom === 0 ? 'No respondents in current filter' : `Suppressed: n<${U.SMALL_CELL_THRESHOLD}`;
+      container.appendChild(badge);
+      return;
+    }
+
+    const items = [...new Set(selections.filter((s) => s.battery === battery).map((s) => s.item))];
+    const activitySelections = selections.filter((s) => s.activityType === activityType && s.battery === battery);
+    // The activity's own n clearing the threshold doesn't guarantee any one
+    // item does - suppress per item too, same rule as every other cell in
+    // the dashboard, so a single respondent's pick is never shown as an
+    // identifiable bar.
+    const bars = items.map((item) => {
+      const n = U.countDistinctIds(activitySelections.filter((s) => s.item === item));
+      return {
+        item, n, pct: denom ? n / denom : 0, suppressed: U.isSuppressed(n),
+      };
+    }).sort((a, b) => {
+      if (a.suppressed && b.suppressed) return 0;
+      if (a.suppressed) return 1;
+      if (b.suppressed) return -1;
+      return b.pct - a.pct;
+    });
+    const shownBars = expanded ? bars : bars.slice(0, 5);
+
+    const width = Math.max(container.clientWidth || 320, 280);
+    const margin = { ...MARGIN };
+    const geo = U.rowLayout(shownBars.map((d) => d.item), (key) => U.displayLabel(key), {
+      width, margin, plotHeight: 20,
+    });
+    const { height, band } = geo;
+
+    const x = d3.scaleLinear().domain([0, 1]).range([margin.left, width - margin.right]);
+    const svg = d3.select(container).append('svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('role', 'img')
+      .attr('aria-label', `${battery === 'skills' ? 'Skills' : 'Identity'} selected by ${activityType} participants, sorted highest to lowest`);
 
     const tip = U.tooltip();
 
-    // Every cell goes in first so the grid settles its column width; each
-    // panel is then drawn at that real width (1:1, no scaling) rather than a
-    // fixed 320 units that was shrunk on a phone and overflowed its cell on
-    // a four-column desktop grid.
-    const facets = activities.map((activityType) => {
-      const denom = U.countDistinctIds(ratings.filter((r) => r.activityType === activityType));
-      const cell = document.createElement('div');
-      cell.className = 'facet-grid__cell';
-      grid.appendChild(cell);
-
-      const title = document.createElement('div');
-      title.className = 'facet-grid__title';
-      title.innerHTML = `<span>${activityType}</span><span class="facet-grid__n">n=${denom}</span>`;
-      cell.appendChild(title);
-      return { activityType, denom, cell };
-    });
-    if (!facets.length) return;
-
-    const width = U.contentWidth(facets[0].cell, 320);
-    const rowH = 24;
-    const margin = {
-      top: 4, right: 44, bottom: 4, left: Math.min(148, Math.round(width * 0.46)),
-    };
-    const labelChars = U.charsFor(margin.left - 8, LABEL_FONT);
-    const x = d3.scaleLinear().domain([0, 1]).range([margin.left, width - margin.right]);
-
-    facets.forEach(({ activityType, denom, cell }) => {
-      if (U.isSuppressed(denom)) {
-        const badge = document.createElement('span');
-        badge.className = 'badge-suppressed';
-        badge.textContent = denom === 0 ? 'No respondents in current filter' : `Suppressed: n<${U.SMALL_CELL_THRESHOLD}`;
-        cell.appendChild(badge);
+    shownBars.forEach((d) => {
+      const b = band(d.item);
+      const label = U.displayLabel(d.item);
+      U.drawStackedLabel(svg, geo.layout.rows.get(d.item), geo.layout, { title: label });
+      if (d.suppressed) {
+        svg.append('text')
+          .attr('x', margin.left).attr('y', b.top + b.height / 2)
+          .attr('dy', '0.32em')
+          .style('font-size', '0.62rem')
+          .attr('fill', U.cssVar('--text-muted'))
+          .text(`suppressed (n<${U.SMALL_CELL_THRESHOLD})`);
         return;
       }
-
-      const activitySelections = selections.filter((s) => s.activityType === activityType && s.battery === battery);
-      // The facet-level denom clearing the threshold does not guarantee any
-      // one item does - a filter can leave, say, 16 participants overall but
-      // only 1 of them ticked a given item. Suppress per item too, same rule
-      // as every other cell in the dashboard, so a single respondent's pick
-      // is never shown as an identifiable bar/percentage.
-      const bars = items.map((item) => {
-        const n = U.countDistinctIds(activitySelections.filter((s) => s.item === item));
-        return {
-          item, n, pct: denom ? n / denom : 0, suppressed: U.isSuppressed(n),
-        };
-      }).sort((a, b) => {
-        if (a.suppressed && b.suppressed) return 0;
-        if (a.suppressed) return 1;
-        if (b.suppressed) return -1;
-        return b.pct - a.pct;
-      });
-
-      const height = margin.top + margin.bottom + bars.length * rowH;
-      const svg = d3.select(cell).append('svg')
-        .attr('viewBox', `0 0 ${width} ${height}`)
-        .attr('role', 'img')
-        .attr('aria-label', `${battery === 'skills' ? 'Skills' : 'Identity'} selected by ${activityType} participants`);
-
-      const y = d3.scaleBand().domain(bars.map((d) => d.item)).range([margin.top, height - margin.bottom]).padding(0.25);
-
-      svg.selectAll('text.label')
-        .data(bars)
-        .join('text')
-        .attr('class', 'item-row-label')
-        .style('font-size', `${LABEL_FONT}px`)
-        .attr('x', margin.left - 8)
-        .attr('y', (d) => y(d.item) + y.bandwidth() / 2)
-        .attr('dy', '0.32em')
-        .attr('text-anchor', 'end')
-        .text((d) => truncate(d.item, labelChars))
-        .append('title').text((d) => d.item);
-
-      const shown = bars.filter((d) => !d.suppressed);
-      const hidden = bars.filter((d) => d.suppressed);
-
-      svg.selectAll('rect.bar')
-        .data(shown)
-        .join('rect')
-        .attr('x', margin.left)
-        .attr('y', (d) => y(d.item))
-        .attr('height', y.bandwidth())
-        .attr('width', (d) => x(d.pct) - margin.left)
+      svg.append('rect')
+        .attr('x', margin.left).attr('width', x(d.pct) - margin.left)
+        .attr('y', b.top).attr('height', b.height)
         .attr('fill', colorScale(activityType))
         .attr('tabindex', 0)
-        .on('mouseenter focus', (evt, d) => tip.show(`<strong>${d.item}</strong>${U.formatPct(d.pct)} of ${activityType} participants (n=${d.n} of ${denom})`, evt))
+        .attr('role', 'img')
+        .attr('aria-label', `${label}: ${U.formatPct(d.pct)} of ${activityType} participants, n=${d.n} of ${denom}`)
+        .on('mouseenter focus', (evt) => tip.show(`<strong>${label}</strong>${U.formatPct(d.pct)} of ${activityType} participants (n=${d.n} of ${denom})`, evt))
         .on('mousemove', (evt) => tip.move(evt))
         .on('mouseleave blur', () => tip.hide());
-
-      svg.selectAll('text.value')
-        .data(shown)
-        .join('text')
+      svg.append('text')
         .attr('class', 'bar-label')
-        .attr('x', (d) => x(d.pct) + 6)
-        .attr('y', (d) => y(d.item) + y.bandwidth() / 2)
+        .attr('x', x(d.pct) + 6).attr('y', b.top + b.height / 2)
         .attr('dy', '0.32em')
-        .text((d) => U.formatPct(d.pct));
+        .text(U.formatPct(d.pct));
+    });
 
-      svg.selectAll('text.suppressed-note')
-        .data(hidden)
-        .join('text')
-        .attr('x', margin.left + 6)
-        .attr('y', (d) => y(d.item) + y.bandwidth() / 2)
-        .attr('dy', '0.32em')
-        .style('font-size', '0.62rem')
-        .attr('fill', U.cssVar('--text-muted'))
-        .text(`suppressed (n<${U.SMALL_CELL_THRESHOLD})`)
-        .attr('tabindex', 0)
-        .on('mouseenter focus', (evt, d) => tip.show(`<strong>${d.item}</strong>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${d.n})`, evt))
-        .on('mousemove', (evt) => tip.move(evt))
-        .on('mouseleave blur', () => tip.hide());
+    U.appendShowAllToggle(container, {
+      totalCount: bars.length, shownCount: 5, expanded, onToggle,
     });
   }
 

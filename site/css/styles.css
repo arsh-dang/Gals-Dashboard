@@ -368,6 +368,26 @@
 
 .cards-row--wide { grid-template-columns: 1fr; }
 
+/* --- Chart controls (activity / compare / outcome-item selectors) ---------
+   The selector(s) a chart needs to pick its one comparison, sitting in the
+   card header next to the subtitle they narrow down. */
+.chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-4);
+  margin-top: var(--space-3);
+  max-width: 32rem;
+}
+
+.chart-controls .filter-field { flex: 1 1 12rem; }
+
+/* Every list-style chart defaults to its top 5 with this to reveal the
+   rest - same look as the filter-bar's reset button, so it doesn't read as
+   a new kind of control. */
+.show-all-toggle {
+  margin-top: var(--space-2);
+}
+
 /* --- View toggle (avg / distribution) --------------------------------------- */
 .view-toggle {
   display: inline-flex;
@@ -479,17 +499,6 @@ svg text { font-family: var(--font-body); }
   border: 1px solid var(--border-strong);
 }
 
-/* --- Small multiples shared axis ruler ------------------------------------- */
-.small-multiples-ruler {
-  display: flex;
-  justify-content: space-between;
-  max-width: 320px;
-  margin: 0 0 var(--space-2) 150px;
-  font-size: var(--text-caption);
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
 /* --- Tooltip ------------------------------------------------------------- */
 .viz-tooltip {
   position: fixed;
@@ -514,56 +523,11 @@ svg text { font-family: var(--font-body); }
   .viz-tooltip { transition: none; }
 }
 
-/* --- Suppression grid (participation by region x school level) ------------ */
-/* Region column, then one column per year level; --level-count is set from
-   JS. Narrowed on phones (see the max-width: 640px block). */
-.suppression-grid {
-  display: grid;
-  grid-template-columns: 10rem repeat(var(--level-count, 8), minmax(0, 1fr));
-  gap: 2px;
-  background: var(--border-subtle);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  font-size: var(--text-small);
-}
-
-.suppression-grid__cell {
-  background: var(--surface-card);
-  padding: var(--space-2);
-  text-align: center;
-  min-height: 2.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-variant-numeric: tabular-nums;
-}
-
-.suppression-grid__cell--header {
-  background: var(--surface-sunken);
-  font-weight: 600;
-  color: var(--text-secondary);
-  font-size: var(--text-caption);
-}
-
-.suppression-grid__cell--suppressed {
-  background: repeating-linear-gradient(
-    45deg,
-    var(--surface-sunken),
-    var(--surface-sunken) 4px,
-    var(--surface-card) 4px,
-    var(--surface-card) 8px
-  );
-}
-
-.suppression-grid__count {
-  font-weight: 700;
-  color: var(--brand-primary);
-}
-
-/* --- Suppression list: the phone version of the grid above, one region per
-   row, expandable to its year levels (U.renderSuppressionList). The summary
-   is the tap target - 44px minimum, per the forum's thumb-not-cursor note. */
+/* --- Suppression list: region x school year, replacing an eight-column
+   grid that had nowhere left to shrink to. One region per row, expandable
+   to its year levels (U.renderSuppressionList), at every screen width -
+   not a grid on desktop and a list on mobile. The summary is the tap
+   target - 44px minimum, per the forum's thumb-not-cursor note. */
 .suppression-list__region {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
@@ -615,47 +579,6 @@ svg text { font-family: var(--font-body); }
 
 @media (prefers-reduced-motion: reduce) {
   .suppression-list__region summary::after { transition: none; }
-}
-
-/* --- Outcomes mobile fallback: one activity, sorted list -------------------
-   Reuses the general-outcomes lollipop renderer (outcomes.renderGeneral)
-   filtered to the selected activity, so this needs no chart code of its
-   own - just a wrapper wide enough for its compact layout. */
-#chart-outcomes-mobile { width: 100%; }
-
-/* --- Facet grid (skills & identity, small multiples) ----------------------- */
-.facet-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-4);
-}
-
-.facet-grid__cell {
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: var(--space-3);
-}
-
-/* Each panel is drawn at its cell's measured content width (see the chart
-   modules), so this renders it 1:1 - no scaling, no sideways scroll. */
-.facet-grid__cell svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.facet-grid__title {
-  font-size: var(--text-small);
-  font-weight: 600;
-  margin-bottom: var(--space-2);
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
-
-.facet-grid__n {
-  color: var(--text-muted);
-  font-weight: 400;
 }
 
 .jobs-imagined-more {
@@ -825,33 +748,11 @@ svg text { font-family: var(--font-body); }
 .data-table td { border-bottom: 1px solid var(--border-subtle); }
 .data-table [data-align='right'] { text-align: right; font-variant-numeric: tabular-nums; }
 
-/* --- Desktop/mobile swaps ---------------------------------------------
-   A few charts genuinely don't reflow into something a 390px screen can
-   read (seven overlapping series with confidence intervals; an eight-
-   column grid) - forum feedback was explicit that these need a different
-   representation below the breakpoint, not a squeezed version of the same
-   one. Both versions render into the page always; this pair of classes
-   picks which one is visible. .filter-field.mobile-only is a specific
-   override so a shown mobile field still gets .filter-field's flex column
-   layout, not the generic block value below. */
-.mobile-only { display: none; }
-
-@media (max-width: 640px) {
-  .desktop-only { display: none; }
-  .mobile-only { display: block; }
-  .filter-field.mobile-only { display: flex; }
-  /* Same tie as .filter-field.mobile-only above, the other direction: the
-     .view-toggle{display:flex} rule below is equal specificity to
-     .desktop-only and comes later in the cascade, so it would otherwise
-     win and undo the hide. */
-  .view-toggle.desktop-only { display: none; }
-}
-
 /* --- Phones ---------------------------------------------------------------
-   The charts switch to their own compact layouts in JS below each chart's
-   designed width (label above each row, drawn at the card's real width -
-   see U.rowGeometry). This block frees up the width they draw into and
-   restacks the pieces that are plain HTML. */
+   Every chart uses one universal layout at every width now (label above a
+   plot band spanning the container's own width - see U.rowLayout), so this
+   block only needs to restack the plain-HTML pieces around the charts, not
+   maintain a second chart layout. */
 @media (max-width: 640px) {
   .page { padding: var(--space-4) var(--space-3) var(--space-6); }
   .card__header { padding: var(--space-3); }
@@ -862,7 +763,7 @@ svg text { font-family: var(--font-body); }
   .view-toggle { display: flex; width: 100%; }
   .view-toggle button { flex: 1 1 0; padding: var(--space-3) var(--space-1); min-height: 44px; }
   .legend { gap: var(--space-1) var(--space-3); font-size: var(--text-caption); }
-  .facet-grid__cell { padding: var(--space-2); }
+  .chart-controls { max-width: none; }
 
   /* The filter bar is the most-used control here, and a teacher scrolling
      a long chart shouldn't have to scroll back to the top to reach it -

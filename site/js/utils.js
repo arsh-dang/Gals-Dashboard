@@ -221,25 +221,24 @@
     return ro;
   }
 
-  // --- Narrow-screen chart layout -----------------------------------------
-  // Row charts put each label in a left gutter on a wide card. On a phone
-  // that gutter alone is most of the screen, so below a chart's designed
-  // minimum width the label moves onto its own line(s) above the row and
-  // the plot gets the full width. The chart grows taller, which a phone
-  // scrolls well, instead of scrolling sideways inside a card with its
-  // labels out of view.
-  function isCompact(container, wideMinWidth) {
-    const w = container.clientWidth;
-    return w > 0 && w < wideMinWidth;
+  // A 95% CI this wide means the mean shouldn't be read as a precise point -
+  // the interval could place the true value anywhere across more than a
+  // fifth of the 1-4 scale. Suppressed cells (n<5) never reach this check
+  // since isSuppressed already replaces them with "suppressed" rather than
+  // a value; every other cell has n>=5, which is always enough responses
+  // for ciMargin to be computable, so this only ever fires on a real,
+  // plotted bar - not a proxy for small n.
+  const IMPRECISE_MARGIN = 0.4;
+  function isImprecise(summary) {
+    return summary.ciMargin !== null && summary.ciMargin > IMPRECISE_MARGIN;
   }
 
-  // Content-box width of a padded container (a facet cell). An SVG drawn at
-  // exactly this width renders 1:1, so its text stays at the size it was set
-  // to rather than being scaled down to fit.
-  function contentWidth(el, fallback) {
-    const cs = getComputedStyle(el);
-    const w = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    return w > 0 ? Math.floor(w) : fallback;
+  // Splits a row's plot band into `count` equal sub-bands (1 or 2 series
+  // drawn as separate horizontal bars stacked inside one row), with a small
+  // gap between them.
+  function subBand(band, index, count, gap = 3) {
+    const h = (band.height - gap * (count - 1)) / count;
+    return { top: band.top + index * (h + gap), height: h };
   }
 
   // Rough character budget for a pixel width (Open Sans averages a little
@@ -304,32 +303,26 @@
     };
   }
 
-  // Row geometry for either layout. `band(key)` is the plot band - where the
-  // marks go - so a chart draws its marks the same way in both; only the
-  // labels and gridlines differ. Wide mode reproduces the charts' original
-  // scaleBand rows exactly.
-  function rowGeometry({
-    compact, keys, labelFor = (key) => key, width, margin, wideRowHeight,
-    widePadding = 0, wideOuterPadding = 0, plotHeight, gap = 10, noteFor = null,
+  // One layout, used at every screen width: label(s) above a plot band, the
+  // plot spanning the container's own width. Simpler than a chart's own
+  // pixel budget once every chart shows at most two series - and the same
+  // design that already worked for a 390px phone works for a 1400px
+  // laptop too, so there's exactly one version of each chart to maintain.
+  // `band(key)` is where the marks go for that row.
+  function rowLayout(keys, labelFor, {
+    width, margin, plotHeight, gap = 14, noteFor = null,
   }) {
-    if (compact) {
-      const layout = stackedRows(keys, labelFor, {
-        top: margin.top, width, plotHeight, gap, noteFor,
-      });
-      return {
-        layout,
-        height: layout.bottom + margin.bottom,
-        band: (key) => {
-          const row = layout.rows.get(key);
-          return { top: row.plotTop, height: row.plotHeight };
-        },
-      };
-    }
-    const height = margin.top + margin.bottom + keys.length * wideRowHeight;
-    const y = d3.scaleBand().domain(keys).range([margin.top, height - margin.bottom])
-      .paddingInner(widePadding)
-      .paddingOuter(wideOuterPadding);
-    return { layout: null, height, band: (key) => ({ top: y(key), height: y.bandwidth() }) };
+    const layout = stackedRows(keys, labelFor, {
+      top: margin.top, width, plotHeight, gap, noteFor,
+    });
+    return {
+      layout,
+      height: layout.bottom + margin.bottom,
+      band: (key) => {
+        const row = layout.rows.get(key);
+        return { top: row.plotTop, height: row.plotHeight };
+      },
+    };
   }
 
   function drawStackedLabel(svg, row, layout, { x = 0, title = null } = {}) {
@@ -383,10 +376,10 @@
     });
   }
 
-  // Compact frame for a 1-4 scale row chart: the axis repeated at the bottom
-  // (a 12-row stacked chart is too tall to keep the top one in view), row
-  // tint, per-row gridlines, stacked labels.
-  function drawCompactScaleFrame(svg, geo, x, {
+  // Frame for a row chart: the axis at the bottom (a tall stacked chart
+  // would otherwise lose the tick labels off the top), row tint, per-row
+  // gridlines, stacked labels. Every row chart in this dashboard uses this.
+  function drawScaleFrame(svg, geo, x, {
     width, height, margin, ticks, tickFormat,
   }) {
     svg.append('g')
@@ -396,6 +389,21 @@
     drawRowShading(svg, geo.layout, width);
     drawRowGridlines(svg, geo.layout, x, ticks);
     geo.layout.rows.forEach((row, key) => drawStackedLabel(svg, row, geo.layout, { title: key }));
+  }
+
+  // Every list-style chart in this dashboard defaults to its top 5 rows
+  // with this button to reveal the rest, rather than showing thirty bars
+  // and making a reader scroll past them to reach the next section.
+  function appendShowAllToggle(container, {
+    totalCount, shownCount, expanded, onToggle,
+  }) {
+    if (totalCount <= shownCount) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'filter-reset show-all-toggle';
+    btn.textContent = expanded ? 'Show top 5' : `Show all ${totalCount}`;
+    btn.addEventListener('click', () => onToggle(!expanded));
+    container.appendChild(btn);
   }
 
   // Text/table alternative to a chart, behind a <details> disclosure, per
@@ -468,15 +476,16 @@
     formatScore,
     tooltip,
     onResize,
-    isCompact,
-    contentWidth,
+    isImprecise,
+    subBand,
     charsFor,
     wrapLines,
-    rowGeometry,
+    rowLayout,
     drawStackedLabel,
     drawRowGridlines,
     drawRowShading,
-    drawCompactScaleFrame,
+    drawScaleFrame,
+    appendShowAllToggle,
     renderDataTable,
     renderFooterDate,
     SMALL_CELL_THRESHOLD,

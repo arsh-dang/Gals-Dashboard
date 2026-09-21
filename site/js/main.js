@@ -5,12 +5,11 @@
   const { respondents, ratings, selections, meta } = window.SIT_DATA;
 
   const YEAR_ORDER = ['Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11', 'Year 12'];
+  const GALS = 'Girls as Leaders in STEM program';
 
-  // Excluded types (General STEM outcomes) must not be passed in here: they
-  // still consumed a colour slot even though no chart ever displays them,
-  // which pushed a real activity (University programs) into the same
-  // series-7 slot reserved for GALS - both rendered identically everywhere
-  // this scale was used, indistinguishable in the legend and every chart.
+  // Excluded types (General STEM outcomes) must not take a colour slot - they
+  // still consume one even though no chart displays them, which pushes a
+  // real activity into the same series-7 slot GALS is hardcoded to.
   const activityColorScale = U.buildActivityColorScale(
     meta.activityTypes.filter((a) => !meta.excludedActivityTypes.includes(a.key)).map((a) => a.key),
   );
@@ -26,12 +25,24 @@
 
   const { aspirations, subjectCareer, openText } = window.SIT_DATA;
 
+  const outcomesActivities = window.SIT.charts.outcomes.activityKeysOrdered(meta);
+  const skillsActivities = window.SIT.charts.skills.activitiesWithBattery(meta);
+
   const state = {
     region: '',
     schoolLevel: '',
-    outcomesMode: 'average',
-    mobileActivity: '',
+    outcomesActivity: outcomesActivities.includes(GALS) ? GALS : (outcomesActivities[0] || ''),
+    outcomesCompare: '',
+    outcomesExpanded: false,
+    generalExpanded: false,
+    skillsActivity: skillsActivities.includes(GALS) ? GALS : (skillsActivities[0] || ''),
+    skillsExpanded: false,
     battery: 'skills',
+    regionalItem: meta.outcomeItems[0] ? meta.outcomeItems[0].item : '',
+    aspirationsExpanded: false,
+    genderExpanded: {
+      subjectChoice: false, careerChoice: false, subjectInterest: false, selfPerception: false,
+    },
     jobsExpanded: false,
   };
   const JOBS_PREVIEW_COUNT = 6;
@@ -76,22 +87,69 @@
     schoolLevelSelect.appendChild(opt);
   });
 
-  // Mobile fallback for Outcomes by activity: seven overlapping series with
-  // confidence intervals doesn't reflow into something a phone can read, so
-  // instead of squeezing that chart, mobile picks one activity at a time
-  // and shows a sorted list for it (see renderOutcomesMobile below).
+  // --- Outcomes: activity + compare selectors ------------------------------
   const outcomesActivitySelect = document.getElementById('outcomes-activity-select');
-  const mobileActivities = window.SIT.charts.outcomes.activityKeysOrdered(meta);
-  mobileActivities.forEach((key) => {
+  const outcomesCompareSelect = document.getElementById('outcomes-compare-select');
+  function populateOutcomesSelects() {
+    outcomesActivitySelect.innerHTML = '';
+    outcomesActivities.forEach((key) => {
+      const opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = key;
+      outcomesActivitySelect.appendChild(opt);
+    });
+    outcomesActivitySelect.value = state.outcomesActivity;
+
+    outcomesCompareSelect.innerHTML = '<option value="">No comparison</option>';
+    outcomesActivities.filter((key) => key !== state.outcomesActivity).forEach((key) => {
+      const opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = key;
+      outcomesCompareSelect.appendChild(opt);
+    });
+    outcomesCompareSelect.value = state.outcomesCompare;
+  }
+  populateOutcomesSelects();
+  outcomesActivitySelect.addEventListener('change', () => {
+    state.outcomesActivity = outcomesActivitySelect.value;
+    if (state.outcomesCompare === state.outcomesActivity) state.outcomesCompare = '';
+    state.outcomesExpanded = false;
+    populateOutcomesSelects();
+    renderOutcomes();
+  });
+  outcomesCompareSelect.addEventListener('change', () => {
+    state.outcomesCompare = outcomesCompareSelect.value;
+    state.outcomesExpanded = false;
+    renderOutcomes();
+  });
+
+  // --- Skills: activity selector --------------------------------------------
+  const skillsActivitySelect = document.getElementById('skills-activity-select');
+  skillsActivities.forEach((key) => {
     const opt = document.createElement('option');
     opt.value = key;
     opt.textContent = key;
-    outcomesActivitySelect.appendChild(opt);
+    skillsActivitySelect.appendChild(opt);
   });
-  state.mobileActivity = mobileActivities[0] || '';
-  outcomesActivitySelect.addEventListener('change', () => {
-    state.mobileActivity = outcomesActivitySelect.value;
-    renderOutcomesMobile();
+  skillsActivitySelect.value = state.skillsActivity;
+  skillsActivitySelect.addEventListener('change', () => {
+    state.skillsActivity = skillsActivitySelect.value;
+    state.skillsExpanded = false;
+    renderSkills();
+  });
+
+  // --- Regional: outcome-item selector --------------------------------------
+  const regionalItemSelect = document.getElementById('regional-item-select');
+  meta.outcomeItems.forEach((item) => {
+    const opt = document.createElement('option');
+    opt.value = item.item;
+    opt.textContent = item.item;
+    regionalItemSelect.appendChild(opt);
+  });
+  regionalItemSelect.value = state.regionalItem;
+  regionalItemSelect.addEventListener('change', () => {
+    state.regionalItem = regionalItemSelect.value;
+    renderRegional();
   });
 
   document.querySelectorAll('#threshold-label-1, #threshold-label-2, #threshold-label-3, #threshold-label-4, #threshold-label-5, #threshold-label-6, #threshold-label-7').forEach((el) => {
@@ -108,14 +166,6 @@
     renderAll();
   });
 
-  document.querySelectorAll('[data-outcomes-mode]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      state.outcomesMode = btn.dataset.outcomesMode;
-      document.querySelectorAll('[data-outcomes-mode]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-      renderOutcomes();
-    });
-  });
-
   // General-outcomes rows are real data, shipped like any other activity,
   // but excluded from every activity/region comparison since they aren't
   // tied to one. Chart modules stay generic (they just render what they're
@@ -127,6 +177,7 @@
   document.querySelectorAll('[data-battery]').forEach((btn) => {
     btn.addEventListener('click', () => {
       state.battery = btn.dataset.battery;
+      state.skillsExpanded = false;
       document.querySelectorAll('[data-battery]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
       renderSkills();
     });
@@ -190,7 +241,6 @@
       rows: counts,
     });
 
-    window.SIT.charts.renderSuppressionGrid(document.getElementById('chart-suppression-grid'), filteredRespondents(), meta);
     window.SIT.charts.renderSuppressionList(document.getElementById('chart-suppression-list'), filteredRespondents(), meta);
   }
 
@@ -205,50 +255,27 @@
     });
   }
 
-  // These replace the card subtitle in index.html on every render, so they
-  // follow the same one-sentence, point-first caption style.
-  const OUTCOMES_SUBTITLES = {
-    average: 'Average score per activity on the survey\'s 1–4 scale (4 = Yes a lot is best; "I do not know" excluded).',
-    smallMultiples: 'Average score per outcome, one panel per activity, with outcomes in the same order in every panel.',
-    distribution: 'Share of respondents giving each answer, per activity; "I do not know" is shown separately, outside the 100%.',
-  };
-
-  // Mobile fallback: one activity at a time, sorted best to worst, same
-  // single-colour lollipop as the general-outcomes chart below (no new
-  // chart code needed - it already IS "a sorted list with a value and a
-  // small inline bar", just fed one activity's rows instead of the
-  // general-outcomes block's).
-  function renderOutcomesMobile() {
-    const rr = excludeGeneral(filteredRatings()).filter((r) => r.activityType === state.mobileActivity);
-    window.SIT.charts.outcomes.renderGeneral(document.getElementById('chart-outcomes-mobile'), rr, meta);
-  }
-
   function renderOutcomes() {
     const rr = excludeGeneral(filteredRatings());
-    const activities = window.SIT.charts.outcomes.activityKeysOrdered(meta);
+    const allActivities = window.SIT.charts.outcomes.activityKeysOrdered(meta);
     const chartEl = document.getElementById('chart-outcomes');
-    document.getElementById('outcomes-subtitle').textContent = OUTCOMES_SUBTITLES[state.outcomesMode];
-    renderOutcomesMobile();
-
     const legendEl = document.getElementById('outcomes-activity-legend');
-    const noteEl = document.getElementById('outcomes-note');
-    const showLegendAndNote = state.outcomesMode !== 'distribution';
-    noteEl.style.display = showLegendAndNote ? '' : 'none';
 
-    if (state.outcomesMode === 'average') {
-      window.SIT.charts.outcomes.renderAverage(chartEl, rr, meta, activityColorScale);
-      buildActivityLegend(legendEl, activities);
-    } else if (state.outcomesMode === 'smallMultiples') {
-      window.SIT.charts.outcomes.renderSmallMultiples(chartEl, rr, meta, activityColorScale);
-      legendEl.innerHTML = '';
-    } else {
-      window.SIT.charts.outcomes.renderDistribution(chartEl, rr, meta, activityColorScale);
-      legendEl.innerHTML = '';
-    }
+    window.SIT.charts.outcomes.renderBySeries(chartEl, {
+      ratings: rr,
+      meta,
+      items: meta.outcomeItems,
+      primary: state.outcomesActivity,
+      compare: state.outcomesCompare || null,
+      colorFor: activityColorScale,
+      expanded: state.outcomesExpanded,
+      onToggle: (next) => { state.outcomesExpanded = next; renderOutcomes(); },
+    });
+    buildActivityLegend(legendEl, state.outcomesCompare ? [state.outcomesActivity, state.outcomesCompare] : [state.outcomesActivity]);
 
     const tableContainer = document.getElementById('table-outcomes');
     tableContainer.innerHTML = '';
-    const rows = meta.outcomeItems.flatMap((item) => window.SIT.charts.outcomes.cellsForItem(rr, item, activities));
+    const rows = meta.outcomeItems.flatMap((item) => window.SIT.charts.outcomes.cellsForItem(rr, item, allActivities));
     U.renderDataTable(tableContainer, {
       columns: [
         { label: 'Outcome statement', value: (d) => d.item },
@@ -273,7 +300,13 @@
   // --- General STEM outcomes: shown once, not per activity/region --------
   function renderGeneralOutcomes() {
     const rr = filteredRatings().filter((r) => r.activityType === meta.generalActivityType);
-    window.SIT.charts.outcomes.renderGeneral(document.getElementById('chart-general-outcomes'), rr, meta);
+    window.SIT.charts.outcomes.renderGeneral(
+      document.getElementById('chart-general-outcomes'),
+      rr,
+      meta,
+      state.generalExpanded,
+      (next) => { state.generalExpanded = next; renderGeneralOutcomes(); },
+    );
     const n = U.countDistinctIds(rr);
     document.getElementById('general-outcomes-n').textContent = `n=${n} in the current filter.`;
   }
@@ -297,37 +330,32 @@
 
     note.style.display = '';
     title.textContent = state.battery === 'skills'
-      ? 'What skills do participants say they built, by activity?'
-      : 'How do participants describe themselves after taking part, by activity?';
+      ? `What skills do ${state.skillsActivity} participants say they built?`
+      : `How do ${state.skillsActivity} participants describe themselves after taking part?`;
     window.SIT.charts.skills.render(container, {
       selections: filteredSelections(),
       ratings: excludeGeneral(filteredRatings()),
       meta,
       battery: state.battery,
+      activityType: state.skillsActivity,
       colorScale: activityColorScale,
+      expanded: state.skillsExpanded,
+      onToggle: (next) => { state.skillsExpanded = next; renderSkills(); },
     });
   }
 
   // --- View 4: Regional comparison ------------------------------------------
   function renderRegional() {
-    const rr = excludeGeneral(filteredRatings());
-    window.SIT.charts.regional.render(document.getElementById('chart-regional'), rr, meta, regionColorScale);
-
-    const legend = document.getElementById('regional-legend');
-    legend.innerHTML = '';
-    meta.regions.forEach((r) => {
-      const item = document.createElement('span');
-      item.className = 'legend__item';
-      item.innerHTML = `<span class="legend__swatch" style="background:${regionColorScale(r.key)}"></span>${r.key}`;
-      legend.appendChild(item);
-    });
+    const rr = excludeGeneral(filteredRatings()).filter((r) => r.item === state.regionalItem);
+    window.SIT.charts.regional.render(document.getElementById('chart-regional'), rr, meta, regionColorScale, state.regionalItem);
 
     const tableContainer = document.getElementById('table-regional');
     tableContainer.innerHTML = '';
+    const allItemRows = excludeGeneral(filteredRatings());
     const rows = [];
     meta.outcomeItems.forEach((item) => {
       meta.regions.forEach((region) => {
-        const cellRows = rr.filter((r) => r.item === item.item && r.region === region.key);
+        const cellRows = allItemRows.filter((r) => r.item === item.item && r.region === region.key);
         const summary = U.summarizeScores(cellRows);
         rows.push({
           item: item.item,
@@ -363,7 +391,14 @@
   // --- View 5: Aspirations and subject choice -------------------------------
   function renderAspirations() {
     const rows = filteredAspirations();
-    window.SIT.charts.aspirations.render(document.getElementById('chart-aspirations'), rows, meta, didGalsColors);
+    window.SIT.charts.aspirations.render(
+      document.getElementById('chart-aspirations'),
+      rows,
+      meta,
+      didGalsColors,
+      state.aspirationsExpanded,
+      (next) => { state.aspirationsExpanded = next; renderAspirations(); },
+    );
 
     const legend = document.getElementById('aspirations-legend');
     legend.innerHTML = `
@@ -402,6 +437,8 @@
     window.SIT.charts.influences.renderByGender(document.getElementById('chart-subject-choice-influence'), {
       rows: questionRows(meta.subjectChoice.subjectQuestion),
       colors: genderColors,
+      expanded: state.genderExpanded.subjectChoice,
+      onToggle: (next) => { state.genderExpanded.subjectChoice = next; renderSubjectChoiceInfluence(); },
     });
   }
 
@@ -409,6 +446,8 @@
     window.SIT.charts.influences.renderByGender(document.getElementById('chart-career-choice-influence'), {
       rows: questionRows(meta.subjectChoice.careerQuestion),
       colors: genderColors,
+      expanded: state.genderExpanded.careerChoice,
+      onToggle: (next) => { state.genderExpanded.careerChoice = next; renderCareerChoiceInfluence(); },
     });
   }
 
@@ -426,6 +465,8 @@
     window.SIT.charts.influences.renderByGender(document.getElementById('chart-subject-interest'), {
       rows: questionRows(meta.subjectChoice.subjectInterestQuestion),
       colors: genderColors,
+      expanded: state.genderExpanded.subjectInterest,
+      onToggle: (next) => { state.genderExpanded.subjectInterest = next; renderSubjectInterest(); },
     });
   }
 
@@ -433,6 +474,8 @@
     window.SIT.charts.influences.renderByGender(document.getElementById('chart-self-perception'), {
       rows: questionRows(meta.subjectChoice.subjectPerceptionQuestion),
       colors: genderColors,
+      expanded: state.genderExpanded.selfPerception,
+      onToggle: (next) => { state.genderExpanded.selfPerception = next; renderSelfPerception(); },
     });
   }
 
