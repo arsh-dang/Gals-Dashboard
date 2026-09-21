@@ -44,6 +44,20 @@ Re-run `node build/build.js` any time the CSVs in `./data/` change.
 No environment variables or secrets are needed. No analytics or third-party
 trackers are included, intentionally; see `data/` notes below.
 
+## Deploying to GitHub Pages
+
+This repo also includes a GitHub Actions workflow at
+`.github/workflows/deploy-pages.yml` that builds the static site and deploys the
+`site/` folder to GitHub Pages on every push to `main`.
+
+Once the repository is published in GitHub settings (Settings → Pages → Source:
+"GitHub Actions"), the public URL will be:
+
+`https://arsh-dang.github.io/Gals-Dashboard/`
+
+This is a good fit for the project because the site is already a static HTML/CSS/JS
+build and does not require a backend.
+
 `site/data/*.js` filenames don't change between deploys (no content hash), so
 `netlify.toml` sets `Cache-Control: must-revalidate` on `/data/*` - otherwise a
 browser that cached one before a data regeneration has no reason to fetch a
