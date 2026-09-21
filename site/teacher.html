@@ -124,32 +124,15 @@
       </div>
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title">Which outcomes does one activity's participants report?</h3>
+          <h3 class="card__title">What did your students actually say, per activity and outcome?</h3>
           <p class="card__subtitle">
-            Your own cohort's actual answers for one activity, sorted highest to lowest, on the survey's 1–4 scale.
-            Add a second activity to compare - two at a time, never all seven.
+            Full response distribution, not just the average: one panel per outcome statement, one bar per activity
+            your students took part in. This is the primary view here: your own cohort's actual answers, not a
+            programme-level summary.
           </p>
-          <div class="chart-controls">
-            <div class="filter-field">
-              <label for="teacher-outcomes-activity-select">Activity</label>
-              <select id="teacher-outcomes-activity-select"></select>
-            </div>
-            <div class="filter-field">
-              <label for="teacher-outcomes-compare-select">Compare with</label>
-              <select id="teacher-outcomes-compare-select">
-                <option value="">No comparison</option>
-              </select>
-            </div>
-          </div>
-          <div class="legend" id="teacher-outcomes-legend"></div>
         </div>
         <div class="card__body">
           <div id="chart-teacher-outcomes"></div>
-          <p class="card__note">
-            † marks a bar whose 95% confidence interval is wide enough that the value shouldn't be read precisely -
-            cohorts this small often will be. A suppressed row shows "suppressed" for fewer than
-            <span id="threshold-label-3"></span> students instead of a bar.
-          </p>
         </div>
       </div>
     </section>
@@ -164,7 +147,7 @@
           <p class="card__subtitle">Respondent counts by activity type, this school only.</p>
         </div>
         <div class="card__body">
-          <div class="chart" id="chart-teacher-participation"></div>
+          <div class="chart-scroll"><div class="chart" id="chart-teacher-participation"></div></div>
           <p class="card__note">
             Counts under <span id="threshold-label-1"></span> are suppressed and marked the same way as the provider
             dashboard: a small school cohort in a single activity is still identifiable.
@@ -183,17 +166,10 @@
       </div>
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title" id="skills-title">What skills do your students say they built?</h3>
+          <h3 class="card__title" id="skills-title">What skills do your students say they built, by activity?</h3>
           <p class="card__subtitle">
-            One activity at a time, sorted highest to lowest. Multi-select: students could tick more than one, so
-            these are frequencies, not averages.
+            Multi-select: students could tick more than one, so these are frequencies, not averages.
           </p>
-          <div class="chart-controls">
-            <div class="filter-field">
-              <label for="teacher-skills-activity-select">Activity</label>
-              <select id="teacher-skills-activity-select"></select>
-            </div>
-          </div>
         </div>
         <div class="card__body">
           <div id="chart-teacher-skills"></div>
@@ -210,17 +186,17 @@
         <div class="card__body">
           <h3 class="card__title">Is your cohort's average response typical of the overall sample?</h3>
           <p class="card__subtitle">
-            Average score per outcome statement, your school against all respondents, on the survey's 1–4 scale,
-            largest gap first (top 5 by default). This collapses across activity type; use the detail above for an
-            activity-by-activity view. Closed by default: your own cohort's detail is the point of this page, not
-            how it stacks up against the programme.
+            Average score per outcome statement, your school (●) against all respondents (◆), on the survey's 1–4
+            scale. 4 = Yes a lot is the best answer; "I do not know" is excluded. This collapses across activity type;
+            use the detail above for an activity-by-activity view. Closed by default: your own cohort's detail is the
+            point of this page, not how it stacks up against the programme.
           </p>
-          <div id="chart-teacher-benchmark"></div>
+          <div class="chart-scroll" id="chart-teacher-benchmark"></div>
           <p class="card__note">
-            A suppressed row shows "suppressed" for fewer than <span id="threshold-label-2"></span> of your students
-            answering. The "all respondents" bar is shown even where your school's is suppressed, since it draws on
-            the full sample. † marks a bar whose confidence interval is wide - with cohort sizes this small, treat
-            any gap as indicative, not conclusive.
+            "×" marks an outcome statement with fewer than <span id="threshold-label-2"></span> of your students
+            answering: suppressed, not plotted. The diamond (all respondents) is shown even where your school's dot is
+            suppressed, since it draws on the full sample. The faint line through each mark is a 95% confidence
+            interval. With cohort sizes this small, treat any gap from the diamond as indicative, not conclusive.
           </p>
         </div>
       </details>

@@ -105,7 +105,7 @@
             <p class="card__subtitle">Respondent counts by activity type, sorted highest to lowest.</p>
           </div>
           <div class="card__body">
-            <div class="chart" id="chart-participation-bars"></div>
+            <div class="chart-scroll"><div class="chart" id="chart-participation-bars"></div></div>
             <!-- Full reasoning (why GALS isn't a headline finding here): see README.md, "Caption reasoning". -->
             <p class="card__note">
               Participation is broadly comparable across all seven activities; GALS is narrowly the largest. A
@@ -120,11 +120,11 @@
             <p class="card__subtitle">Respondent count by region and school year, school students only.</p>
           </div>
           <div class="card__body">
-            <!-- An eight-column grid has nowhere left to shrink to, so this
-                 is one row per region, expandable to its year levels, at
-                 every screen width - not a grid on desktop and a list on
-                 mobile. -->
-            <div id="chart-suppression-list"></div>
+            <!-- Eight year columns don't fit a phone by shrinking further, so
+                 mobile gets a different representation entirely: one row per
+                 region, expandable to its year levels, instead of a grid. -->
+            <div class="chart-scroll desktop-only" id="chart-suppression-grid"></div>
+            <div class="mobile-only" id="chart-suppression-list"></div>
             <p class="card__note">
               Cells under <span id="threshold-label-1"></span> respondents are suppressed and marked, not dropped.
               Only Geelong has usable numbers across most year levels; read other regions as indicative.
@@ -138,39 +138,44 @@
     <section class="view-section" id="section-outcomes" aria-labelledby="heading-outcomes">
       <div class="view-section__heading">
         <h2 id="heading-outcomes"><span class="view-number">2</span>Outcomes by activity</h2>
+        <!-- Seven overlapping series with confidence intervals doesn't
+             reflow into something a phone can read - it needs pinch-zoom
+             regardless of label size, so mobile gets a different
+             representation (one activity, sorted list) rather than a
+             squeezed version of this toggle. -->
+        <div class="view-toggle desktop-only" role="group" aria-label="Outcomes chart type">
+          <button type="button" data-outcomes-mode="average" aria-pressed="true">Dot plot</button>
+          <button type="button" data-outcomes-mode="smallMultiples" aria-pressed="false">Small multiples</button>
+          <button type="button" data-outcomes-mode="distribution" aria-pressed="false">Distribution</button>
+        </div>
+        <div class="filter-field mobile-only">
+          <label for="outcomes-activity-select">Activity</label>
+          <select id="outcomes-activity-select"></select>
+        </div>
       </div>
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title">Which outcomes does one activity's participants report?</h3>
-          <p class="card__subtitle" id="outcomes-subtitle">
-            Average score on the survey's 1–4 scale (4 = Yes a lot is best; "I do not know" excluded), sorted
-            highest to lowest. Add a second activity to compare - two at a time, never all seven at once.
+          <h3 class="card__title">Which outcomes do participants report most positively, by activity?</h3>
+          <p class="card__subtitle desktop-only" id="outcomes-subtitle">
+            Average score per activity on the survey's 1–4 scale (4 = Yes a lot is best; "I do not know" excluded).
           </p>
-          <div class="chart-controls">
-            <div class="filter-field">
-              <label for="outcomes-activity-select">Activity</label>
-              <select id="outcomes-activity-select"></select>
-            </div>
-            <div class="filter-field">
-              <label for="outcomes-compare-select">Compare with</label>
-              <select id="outcomes-compare-select">
-                <option value="">No comparison</option>
-              </select>
-            </div>
-          </div>
-          <div class="legend" id="outcomes-activity-legend"></div>
+          <p class="card__subtitle mobile-only">
+            Average score for the selected activity, on the survey's 1–4 scale, sorted best to worst.
+          </p>
         </div>
         <div class="card__body">
-          <div id="chart-outcomes"></div>
-          <!-- Full reasoning for the "≈" wording-variant tag: README.md, "Caption reasoning". Exact confidence
-               intervals for every activity (not just the one or two shown) are in the data table below. -->
-          <p class="card__note" id="outcomes-note">
-            † marks a bar whose 95% confidence interval is wide enough that the value shouldn't be read precisely -
-            hover the bar for the exact interval, or see the full table below. "≈" flags an item that appears twice
-            with near-identical wording; a suppressed row shows "suppressed" for fewer than
-            <span id="threshold-label-2"></span> respondents instead of a bar.
-          </p>
-          <div id="table-outcomes"></div>
+          <div class="desktop-only">
+            <div class="chart-scroll" id="chart-outcomes"></div>
+            <div class="legend" id="outcomes-activity-legend"></div>
+            <!-- Full reasoning for the "≈" wording-variant tag and the sample-size point: README.md, "Caption reasoning". -->
+            <p class="card__note" id="outcomes-note">
+              Faint lines are 95% confidence intervals: activities sit close together, so read a gap alongside its
+              interval, not instead of it. "≈" flags an item that appears twice with near-identical wording; "×"
+              marks a cell suppressed for fewer than <span id="threshold-label-2"></span> respondents.
+            </p>
+            <div id="table-outcomes"></div>
+          </div>
+          <div class="mobile-only" id="chart-outcomes-mobile"></div>
         </div>
       </div>
 
@@ -179,13 +184,13 @@
           <h3 class="card__title">General STEM outcomes (not activity-specific)</h3>
           <p class="card__subtitle">
             A separate question asked of everyone, not tied to any one activity - shown on its own rather than as an
-            8th activity above. Top 5 by default; "Show all" reveals the rest.
+            8th activity above.
           </p>
         </div>
         <div class="card__body">
-          <div id="chart-general-outcomes"></div>
+          <div class="chart-scroll" id="chart-general-outcomes"></div>
           <p class="card__note">
-            Same scale as above; † marks a wide confidence interval.
+            Same scale and confidence intervals as above.
             <span id="general-outcomes-n"></span>
           </p>
         </div>
@@ -205,21 +210,14 @@
         <div class="card__header">
           <h3 class="card__title" id="skills-title">What skills do participants say they built, by activity?</h3>
           <p class="card__subtitle">
-            Percentage of one activity's participants selecting each option (multi-select, so not an average),
-            sorted highest to lowest. Top 5 by default.
+            Percentage of each activity's participants selecting each option (multi-select, so not an average).
           </p>
-          <div class="chart-controls">
-            <div class="filter-field">
-              <label for="skills-activity-select">Activity</label>
-              <select id="skills-activity-select"></select>
-            </div>
-          </div>
         </div>
         <div class="card__body">
           <div id="chart-skills"></div>
           <p class="card__note" id="skills-note">
             Excursions, Online STEM activities and the general-outcomes block didn't ask these questions (a survey
-            branch, not missing data), so they don't appear in the activity list.
+            branch, not missing data), so they're not shown here.
           </p>
         </div>
       </div>
@@ -232,26 +230,18 @@
       </div>
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title">How does one outcome compare across the six regions?</h3>
+          <h3 class="card__title">How do outcomes compare across the six regions?</h3>
           <p class="card__subtitle">
-            Average score per region for one outcome statement, same scale as Outcomes above, sorted highest to
-            lowest.
+            Average score per region, same scale as Outcomes above.
           </p>
-          <div class="chart-controls">
-            <div class="filter-field">
-              <label for="regional-item-select">Outcome statement</label>
-              <select id="regional-item-select"></select>
-            </div>
-          </div>
         </div>
         <div class="card__body">
-          <div id="chart-regional"></div>
+          <div class="chart-scroll" id="chart-regional"></div>
+          <div class="legend" id="regional-legend"></div>
           <!-- Regions outside Geelong showing several suppressed cells is the honest state of this sample, not a rendering gap: README.md, "Caption reasoning". -->
           <p class="card__note">
-            † marks a bar whose confidence interval is wide enough that the value shouldn't be read precisely.
-            A suppressed region shows "suppressed" for fewer than <span id="threshold-label-3"></span> respondents;
-            most regions outside Geelong will show this for most items - the full table below has every item and
-            region together.
+            Same confidence-interval reasoning as Outcomes above. "×" marks a cell suppressed for fewer than
+            <span id="threshold-label-3"></span> respondents; most regions outside Geelong will show several.
           </p>
           <div id="table-regional"></div>
         </div>
@@ -267,18 +257,17 @@
         <div class="card__header">
           <h3 class="card__title">Does taking part in GALS shift how girls see their future in STEM?</h3>
           <p class="card__subtitle">
-            Compares GALS participants to everyone else, item by item, on the same scale as Outcomes above - largest
-            gap first, top 5 by default.
+            Compares GALS participants to everyone else, item by item, on the same scale as Outcomes above.
           </p>
         </div>
         <div class="card__body">
+          <div class="chart-scroll" id="chart-aspirations"></div>
           <div class="legend" id="aspirations-legend"></div>
-          <div id="chart-aspirations"></div>
-          <!-- Why the small, mixed-direction Diff is expected rather than a rendering issue: README.md, "Caption reasoning". -->
+          <!-- Why the small, mixed-direction Diff is expected rather than a rendering issue, and why the CI overlap matters: README.md, "Caption reasoning". -->
           <p class="card__note">
             "Diff" is the GALS average minus the everyone-else average; in this mock data it's small and mixed in
-            direction, which is expected. † marks a wide confidence interval; a suppressed group shows "suppressed"
-            for fewer than <span id="threshold-label-4"></span> respondents.
+            direction, which is expected. "×" marks a group/item suppressed for fewer than
+            <span id="threshold-label-4"></span> respondents.
           </p>
           <div id="table-aspirations"></div>
         </div>
@@ -288,13 +277,12 @@
         <div class="card__header">
           <h3 class="card__title">What helps students decide which subjects to choose?</h3>
           <p class="card__subtitle">
-            Compares which influences matter more to female versus male students, top 5 by combined rate ("show
-            all" for the rest). Each bar splits into a female and male segment, sized to that gender's own
-            percentage (multi-select, so these don't sum to 100%) and labelled outside the segment.
+            Compares which influences matter more to female versus male students. Each bar splits into a female and
+            male segment, sized to that gender's own percentage (multi-select, so these don't sum to 100%).
           </p>
         </div>
         <div class="card__body">
-          <div id="chart-subject-choice-influence"></div>
+          <div class="chart-scroll" id="chart-subject-choice-influence"></div>
           <!-- Full confound reasoning (why this doesn't go away with real data either): README.md, "Caption reasoning". -->
           <p class="card__note">
             Mock data only, not a result - and since every GALS participant is female, part of any gender gap here is
@@ -308,13 +296,12 @@
         <div class="card__header">
           <h3 class="card__title">What helps students decide what they might do in the future?</h3>
           <p class="card__subtitle">
-            Compares which influences on future plans matter more to female versus male students, top 5 by combined
-            rate. A separate question from subject choice above; segment length is each gender's own percentage
-            (multi-select).
+            Compares which influences on future plans matter more to female versus male students. A separate
+            question from subject choice above; segment length is each gender's own percentage (multi-select).
           </p>
         </div>
         <div class="card__body">
-          <div id="chart-career-choice-influence"></div>
+          <div class="chart-scroll" id="chart-career-choice-influence"></div>
           <p class="card__note">
             Mock data only, not a result - female includes all GALS participants, so part of the gap reflects
             programme participation. A segment under <span id="threshold-label-7"></span> respondents shows
@@ -333,7 +320,7 @@
           </p>
         </div>
         <div class="card__body">
-          <div id="chart-programme-influence"></div>
+          <div class="chart-scroll" id="chart-programme-influence"></div>
           <p class="card__note">
             Mock data only, not a result - real data may show a smaller gap, no gap, or one in the other direction.
             A group under <span id="threshold-label-6"></span> respondents shows "suppressed".
@@ -346,8 +333,8 @@
           <div class="card__header">
             <h3 class="card__title">Which subjects are students interested in for Year 11 or 12?</h3>
             <p class="card__subtitle">
-              Compares subject interest between female and male students, top 5 by combined rate; segment length is
-              each gender's own percentage (multi-select).
+              Compares subject interest between female and male students; segment length is each gender's own
+              percentage (multi-select).
             </p>
           </div>
           <div class="card__body">
@@ -365,8 +352,7 @@
             <!-- Why a different tint rather than a lighter version of the influence charts: README.md, "Caption reasoning". -->
             <p class="card__subtitle">
               Compares how female and male students see their own belonging and ability in STEM subjects (not what
-              influences a choice - hence the different tint). Segment length is each gender's own percentage, top
-              5 by combined rate.
+              influences a choice - hence the different tint). Segment length is each gender's own percentage.
             </p>
           </div>
           <div class="card__body">

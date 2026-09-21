@@ -5,7 +5,6 @@
   const { respondents, ratings, selections, meta } = window.SIT_DATA;
 
   const YEAR_ORDER = ['Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11', 'Year 12'];
-  const GALS = 'Girls as Leaders in STEM program';
 
   // Excluded types (general outcomes) must not take a colour slot - same
   // fix as main.js: unfiltered, University programs lands on the colour
@@ -13,22 +12,9 @@
   const activityColorScale = U.buildActivityColorScale(
     meta.activityTypes.filter((a) => !meta.excludedActivityTypes.includes(a.key)).map((a) => a.key),
   );
-  const outcomesActivities = window.SIT.charts.outcomes.activityKeysOrdered(meta);
-  const skillsActivities = window.SIT.charts.skills.activitiesWithBattery(meta);
   U.renderFooterDate('data-refreshed');
 
-  const state = {
-    region: '',
-    school: '',
-    schoolLevel: '',
-    battery: 'skills',
-    outcomesActivity: outcomesActivities.includes(GALS) ? GALS : (outcomesActivities[0] || ''),
-    outcomesCompare: '',
-    outcomesExpanded: false,
-    skillsActivity: skillsActivities.includes(GALS) ? GALS : (skillsActivities[0] || ''),
-    skillsExpanded: false,
-    benchmarkExpanded: false,
-  };
+  const state = { region: '', school: '', schoolLevel: '', battery: 'skills' };
 
   const regionSelect = document.getElementById('filter-region');
   const schoolSelect = document.getElementById('filter-school');
@@ -78,58 +64,7 @@
 
   populateSchoolOptions();
 
-  // --- Outcomes: activity + compare selectors -------------------------------
-  const outcomesActivitySelect = document.getElementById('teacher-outcomes-activity-select');
-  const outcomesCompareSelect = document.getElementById('teacher-outcomes-compare-select');
-  function populateOutcomesSelects() {
-    outcomesActivitySelect.innerHTML = '';
-    outcomesActivities.forEach((key) => {
-      const opt = document.createElement('option');
-      opt.value = key;
-      opt.textContent = key;
-      outcomesActivitySelect.appendChild(opt);
-    });
-    outcomesActivitySelect.value = state.outcomesActivity;
-
-    outcomesCompareSelect.innerHTML = '<option value="">No comparison</option>';
-    outcomesActivities.filter((key) => key !== state.outcomesActivity).forEach((key) => {
-      const opt = document.createElement('option');
-      opt.value = key;
-      opt.textContent = key;
-      outcomesCompareSelect.appendChild(opt);
-    });
-    outcomesCompareSelect.value = state.outcomesCompare;
-  }
-  populateOutcomesSelects();
-  outcomesActivitySelect.addEventListener('change', () => {
-    state.outcomesActivity = outcomesActivitySelect.value;
-    if (state.outcomesCompare === state.outcomesActivity) state.outcomesCompare = '';
-    state.outcomesExpanded = false;
-    populateOutcomesSelects();
-    renderTeacherOutcomes();
-  });
-  outcomesCompareSelect.addEventListener('change', () => {
-    state.outcomesCompare = outcomesCompareSelect.value;
-    state.outcomesExpanded = false;
-    renderTeacherOutcomes();
-  });
-
-  // --- Skills: activity selector ---------------------------------------------
-  const skillsActivitySelect = document.getElementById('teacher-skills-activity-select');
-  skillsActivities.forEach((key) => {
-    const opt = document.createElement('option');
-    opt.value = key;
-    opt.textContent = key;
-    skillsActivitySelect.appendChild(opt);
-  });
-  skillsActivitySelect.value = state.skillsActivity;
-  skillsActivitySelect.addEventListener('change', () => {
-    state.skillsActivity = skillsActivitySelect.value;
-    state.skillsExpanded = false;
-    renderSkills();
-  });
-
-  document.querySelectorAll('#threshold-label-1, #threshold-label-2, #threshold-label-3, #threshold-label-suppressed').forEach((el) => {
+  document.querySelectorAll('#threshold-label-1, #threshold-label-2, #threshold-label-suppressed').forEach((el) => {
     el.textContent = meta.smallCellThreshold;
   });
 
@@ -163,7 +98,6 @@
   document.querySelectorAll('[data-battery]').forEach((btn) => {
     btn.addEventListener('click', () => {
       state.battery = btn.dataset.battery;
-      state.skillsExpanded = false;
       document.querySelectorAll('[data-battery]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
       renderSkills();
     });
@@ -179,47 +113,17 @@
     return rows.filter((r) => r.activityType !== meta.generalActivityType);
   }
 
-  function buildActivityLegend(container, activities) {
-    container.innerHTML = '';
-    activities.forEach((key) => {
-      const item = document.createElement('span');
-      item.className = 'legend__item';
-      item.innerHTML = `<span class="legend__swatch" style="background:${activityColorScale(key)}"></span>${key}`;
-      container.appendChild(item);
-    });
-  }
-
-  function renderTeacherOutcomes() {
-    window.SIT.charts.outcomes.renderBySeries(document.getElementById('chart-teacher-outcomes'), {
-      ratings: excludeGeneral(schoolRatings),
-      meta,
-      items: meta.outcomeItems,
-      primary: state.outcomesActivity,
-      compare: state.outcomesCompare || null,
-      colorFor: activityColorScale,
-      expanded: state.outcomesExpanded,
-      onToggle: (next) => { state.outcomesExpanded = next; renderTeacherOutcomes(); },
-    });
-    buildActivityLegend(
-      document.getElementById('teacher-outcomes-legend'),
-      state.outcomesCompare ? [state.outcomesActivity, state.outcomesCompare] : [state.outcomesActivity],
-    );
-  }
-
   function renderSkills() {
     const title = document.getElementById('skills-title');
     title.textContent = state.battery === 'skills'
-      ? `What skills do your ${state.skillsActivity} participants say they built?`
-      : `How do your ${state.skillsActivity} participants describe themselves after taking part?`;
+      ? 'What skills do your students say they built, by activity?'
+      : 'How do your students describe themselves after taking part, by activity?';
     window.SIT.charts.skills.render(document.getElementById('chart-teacher-skills'), {
       selections: schoolSelections,
       ratings: schoolRatings,
       meta,
       battery: state.battery,
-      activityType: state.skillsActivity,
       colorScale: activityColorScale,
-      expanded: state.skillsExpanded,
-      onToggle: (next) => { state.skillsExpanded = next; renderSkills(); },
     });
   }
 
@@ -281,7 +185,8 @@
     document.getElementById('snapshot-title').textContent = `How many of your ${n} students took part in each activity?`;
 
     renderTeacherSummary();
-    renderTeacherOutcomes();
+
+    window.SIT.charts.outcomes.renderDistribution(document.getElementById('chart-teacher-outcomes'), schoolRatings, meta, activityColorScale);
 
     window.SIT.charts.renderActivityBars(document.getElementById('chart-teacher-participation'), schoolRatings, meta, activityColorScale);
 
@@ -291,8 +196,6 @@
       schoolRatings: excludeGeneral(schoolRatings),
       allRatings: excludeGeneral(ratings),
       meta,
-      expanded: state.benchmarkExpanded,
-      onToggle: (next) => { state.benchmarkExpanded = next; render(); },
     });
   }
 

@@ -1,41 +1,43 @@
 // View 5: subject choice and career choice influences, plus the smaller
-// subject-interest and self-perception panels. All four are split by
-// gender (the programme-influence panel below keeps its GALS split - that
-// one wasn't part of the change).
-//
-// These charts survived narrow widths already (never more than two series
-// per bar), so the simplification here is defaulting to the top 5 options
-// by combined selection rate with "show all" to reveal the long tail, and
-// moving every percentage label outside its segment rather than centring
-// it inside once a segment was wide enough - a value sitting on a
-// saturated fill read fine on a desktop screen but not on a phone.
+// subject-interest and self-perception panels. All four are now split by
+// gender rather than GALS participation (the programme-influence panel
+// below keeps its GALS split - that one wasn't part of the change).
 //
 // Denominator for every percentage is the distinct respondent count for
 // the relevant question (not per-item), since a multi-select respondent
 // who ticked nothing would otherwise silently vanish from the
-// denominator. Non-binary and prefer-not-to-say groups are still computed
-// and shown with the same suppression marker as any small group when they
-// exist in the data, rather than being quietly filtered out.
+// denominator. The female/male comparison is the one asked for; non-binary
+// and prefer-not-to-say groups are still computed and shown with the same
+// suppression marker as any small group when they exist in the data,
+// rather than being quietly filtered out before anyone sees the count.
 (function () {
   'use strict';
 
   const U = window.SIT.utils;
 
   const SMALL_GENDER_GROUPS = ['Non-binary / third gender', 'Prefer not to say'];
-  const MARGIN = {
-    top: 4, right: 38, bottom: 4, left: 0,
-  };
-  // Fixed pixel gap reserved between the female and male segments for that
-  // segment's own label - forum feedback moved these outside the bar
-  // entirely rather than centred inside a wide-enough one. Wide enough for
-  // "100%" at the label's font size.
-  const SEGMENT_LABEL_GAP = 30;
+
+  // Below these container widths each chart moves its labels above the
+  // bars (see U.rowGeometry) instead of keeping a 210-220px label gutter.
+  const BY_GENDER_WIDE_MIN = 520;
+  const PROGRAMME_WIDE_MIN = 480;
+
+  function truncate(text, max) {
+    return text.length > max ? `${text.slice(0, max - 1)}…` : text;
+  }
 
   function pctOf(rows, item, denomIds) {
     if (!denomIds.size) return { n: 0, pct: 0 };
     const n = new Set(rows.filter((r) => r.item === item).map((r) => r.id)).size;
     return { n, pct: n / denomIds.size };
   }
+
+  // Fixed pixel gap reserved between the two segments (and after the last
+  // one) for that segment's own label - forum feedback moved these outside
+  // the bar entirely, since a value sitting on top of a fairly saturated
+  // magenta/teal fill read fine to us but not to teachers glancing at it on
+  // a phone. Wide enough for "100%" at the label's font size.
+  const SEGMENT_LABEL_GAP = 30;
 
   // --- Chart: a single multi-select question, split female vs male -------
   // Used for subject-choice influences, career-choice influences, subject
@@ -46,12 +48,12 @@
   // end to end (female first, then male). Each segment's length is that
   // gender's OWN percentage - "share of that gender's respondents who
   // selected this item" - so the two segments are two independent numbers
-  // placed next to each other, not two parts of a shared 100%. There is
-  // deliberately no percentage axis under this chart: one would invite
-  // reading the bar as a stacked total, which it is not.
-  function renderByGender(container, {
-    rows, colors, expanded, onToggle,
-  }) {
+  // placed next to each other, not two parts of a shared 100%. Every
+  // segment carries its own value as a label directly on or next to it, so
+  // a reader never has to infer a number from position on an axis: there
+  // is deliberately no percentage axis under this chart, since one would
+  // invite reading the bar as a stacked total, which it is not.
+  function renderByGender(container, { rows, colors }) {
     container.innerHTML = '';
 
     const femaleIds = new Set(rows.filter((r) => r.gender === 'Female').map((r) => r.id));
@@ -100,19 +102,37 @@
         maleWidth: maleSuppressed ? 0 : male.pct,
       };
     }).sort((a, b) => (b.femaleWidth + b.maleWidth) - (a.femaleWidth + a.maleWidth));
-    const shownBars = expanded ? bars : bars.slice(0, 5);
 
-    const width = Math.max(container.clientWidth || 320, 280);
-    const margin = { ...MARGIN };
-    const geo = U.rowLayout(shownBars.map((d) => d.item), (key) => U.displayLabel(key), {
-      width, margin, plotHeight: 20,
+    const compact = U.isCompact(container, BY_GENDER_WIDE_MIN);
+    const width = compact ? container.clientWidth : Math.max(container.clientWidth || BY_GENDER_WIDE_MIN, BY_GENDER_WIDE_MIN);
+    // Right margin holds the trailing (male) segment's label, now that
+    // every value sits outside its segment rather than inside whichever
+    // ones were wide enough.
+    const margin = compact
+      ? {
+        top: 4, right: 38, bottom: 4, left: 0,
+      }
+      : {
+        top: 4, right: 42, bottom: 4, left: 220,
+      };
+    const geo = U.rowGeometry({
+      compact,
+      keys: bars.map((d) => d.item),
+      labelFor: (key) => U.displayLabel(key),
+      width,
+      margin,
+      wideRowHeight: 34,
+      widePadding: 0.3,
+      wideOuterPadding: 0.3,
+      plotHeight: 18,
     });
     const { height, band } = geo;
 
     // Domain covers the widest combined segment length across all rows,
     // with headroom for labels - not [0,1], since two segments placed end
     // to end can together exceed 1. This axis has no percentage meaning of
-    // its own, so no ticks are drawn under it.
+    // its own, so no ticks are drawn under it: a labelled scale would
+    // invite reading the bar as a stacked total, which it is not.
     const maxCombined = d3.max(bars, (d) => d.femaleWidth + d.maleWidth) || 0.1;
     const x = d3.scaleLinear().domain([0, maxCombined * 1.35]).range([margin.left, width - margin.right]);
 
@@ -124,11 +144,25 @@
     const tip = U.tooltip();
     const zeroPx = x(0);
 
-    shownBars.forEach((d) => {
+    bars.forEach((d) => {
       const label = U.displayLabel(d.item);
-      const rowBand = band(d.item);
-      const barMid = rowBand.top + rowBand.height / 2;
-      U.drawStackedLabel(svg, geo.layout.rows.get(d.item), geo.layout, { title: label });
+      const b = band(d.item);
+      // Wide rows keep some air above and below the bar inside each band;
+      // a compact band is already just the bar.
+      const bar = compact ? b : { top: b.top + b.height * 0.15, height: b.height * 0.7 };
+      const barMid = bar.top + bar.height / 2;
+
+      if (compact) {
+        U.drawStackedLabel(svg, geo.layout.rows.get(d.item), geo.layout, { title: label });
+      } else {
+        svg.append('text')
+          .attr('class', 'item-row-label')
+          .style('font-size', '0.72rem')
+          .attr('x', margin.left - 10).attr('y', barMid)
+          .attr('text-anchor', 'end').attr('dy', '0.32em')
+          .text(truncate(label, 34))
+          .append('title').text(label);
+      }
 
       if (femaleSuppressed && maleSuppressed) {
         svg.append('text')
@@ -162,15 +196,19 @@
         const denomSize = genderLabel === 'Female' ? femaleIds.size : maleIds.size;
         svg.append('rect')
           .attr('x', rectX).attr('width', segPx)
-          .attr('y', rowBand.top).attr('height', rowBand.height)
+          .attr('y', bar.top).attr('height', bar.height)
           .attr('fill', color)
           .attr('tabindex', 0)
           .attr('role', 'img')
           .attr('aria-label', `${genderLabel}, ${label}: ${U.formatPct(val.pct)} (n=${val.n} of ${denomSize})`)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${genderLabel}</strong>${label}<br>${U.formatPct(val.pct)} (n=${val.n} of ${denomSize})`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`<strong>${genderLabel}</strong>${truncate(label, 60)}<br>${U.formatPct(val.pct)} (n=${val.n} of ${denomSize})`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
 
+        // Outside the segment, not inside it, regardless of how wide the
+        // segment is - a value sitting on the fill read fine on a desktop
+        // screen but not on a phone, so every label lives in the same
+        // SEGMENT_LABEL_GAP reserved after its own segment now.
         svg.append('text')
           .attr('class', 'bar-label')
           .attr('x', rectX + segPx + 4)
@@ -185,15 +223,12 @@
       });
     });
 
-    U.appendShowAllToggle(container, {
-      totalCount: bars.length, shownCount: 5, expanded, onToggle,
-    });
+    if (!compact) container.querySelector('svg').style.minWidth = `${BY_GENDER_WIDE_MIN}px`;
   }
 
   // --- Programme influence, called out on its own, by did_gals ------------
   // Unchanged split - the team asked to change the other four charts to
-  // gender, not this one. Only 4 rows (2 questions x 2 groups), so no
-  // show-all needed.
+  // gender, not this one.
   function renderProgrammeInfluence(container, {
     subjectRows, careerRows, meta, didGalsColors,
   }) {
@@ -224,10 +259,23 @@
       });
     });
 
-    const width = Math.max(container.clientWidth || 320, 280);
-    const margin = { ...MARGIN, right: 44 };
-    const geo = U.rowLayout(entries.map((e) => e.key), (key) => key, {
-      width, margin, plotHeight: 18,
+    const compact = U.isCompact(container, PROGRAMME_WIDE_MIN);
+    const width = compact ? container.clientWidth : Math.max(container.clientWidth || PROGRAMME_WIDE_MIN, PROGRAMME_WIDE_MIN);
+    const margin = compact
+      ? {
+        top: 4, right: 44, bottom: 4, left: 0,
+      }
+      : {
+        top: 8, right: 50, bottom: 8, left: 210,
+      };
+    const geo = U.rowGeometry({
+      compact,
+      keys: entries.map((e) => e.key),
+      width,
+      margin,
+      wideRowHeight: 32,
+      widePadding: 0.4,
+      plotHeight: 16,
     });
     const { height, band } = geo;
 
@@ -238,8 +286,27 @@
 
     const x = d3.scaleLinear().domain([0, 1]).range([margin.left, width - margin.right]);
     const ticks = [0, 0.25, 0.5, 0.75, 1];
-    U.drawRowGridlines(svg, geo.layout, x, ticks);
-    entries.forEach((e) => U.drawStackedLabel(svg, geo.layout.rows.get(e.key), geo.layout));
+
+    if (compact) {
+      U.drawRowGridlines(svg, geo.layout, x, ticks);
+      entries.forEach((e) => U.drawStackedLabel(svg, geo.layout.rows.get(e.key), geo.layout));
+    } else {
+      svg.selectAll('line.gridline')
+        .data(ticks)
+        .join('line')
+        .attr('class', 'gridline')
+        .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
+        .attr('y1', margin.top).attr('y2', height - margin.bottom);
+      entries.forEach((e) => {
+        const b = band(e.key);
+        svg.append('text')
+          .attr('class', 'item-row-label')
+          .attr('x', margin.left - 12).attr('y', b.top + b.height / 2)
+          .attr('text-anchor', 'end').attr('dy', '0.32em')
+          .style('font-size', '0.7rem')
+          .text(e.key);
+      });
+    }
 
     const tip = U.tooltip();
 
@@ -248,7 +315,7 @@
       const mid = b.top + b.height / 2;
       if (e.suppressed) {
         svg.append('text')
-          .attr('x', margin.left).attr('y', mid)
+          .attr('x', margin.left + 8).attr('y', mid)
           .attr('dy', '0.32em')
           .style('font-size', '0.65rem')
           .attr('fill', U.cssVar('--text-muted'))
@@ -269,6 +336,8 @@
         .attr('dy', '0.32em')
         .text(U.formatPct(e.pct));
     });
+
+    if (!compact) container.querySelector('svg').style.minWidth = `${PROGRAMME_WIDE_MIN}px`;
   }
 
   window.SIT.charts = window.SIT.charts || {};
