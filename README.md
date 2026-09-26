@@ -130,26 +130,29 @@ forum audience (teachers and principals reading cold, on their own devices,
 with about ten seconds per chart). Where a sentence was cut rather than just
 shortened, the fuller version is kept here rather than lost:
 
-- **Participation by activity**: GALS is narrowly the largest single
-  activity, but participation across all seven is broadly comparable now -
-  worth noting because early data drops had GALS dominating the chart
-  outright, which read as a headline finding it wasn't (a sampling artifact
-  of who was easiest to recruit early on, not a program effect).
+- **Participation by activity**: check whether any one activity dominates
+  the chart, and do not caption a "largest" activity unless the gap is real.
+  Early data drops had GALS dominating the chart outright, which read as a
+  headline finding it wasn't (a sampling artifact of who was easiest to
+  recruit early on, not a program effect). Re-check after each regeneration.
 - **Outcomes by activity**: the "≈" wording-variant tag exists because three
   outcome statements appear twice with near-identical phrasing - a survey
   artifact (one activity's question block used slightly different wording
   than the rest), not missing or duplicated data. Shown as separate adjacent
   rows so the pattern is visible instead of looking like a gap.
-- **Regional comparison**: most regions outside Geelong show several
-  suppressed cells. That's the honest state of this sample (thin regional
-  recruitment), not a rendering gap - worth saying plainly if someone asks
-  why a whole region looks empty.
+- **Regional comparison**: a region with few responses can show suppressed
+  cells. If a whole region looks empty, that is the honest state of the
+  sample (thin regional recruitment), not a rendering gap - check that
+  region's response count first. How many cells are suppressed changes
+  whenever the data does, so don't quote a number.
 - **Aspirations (GALS vs everyone else)**: the "Diff" column's confidence
   intervals usually overlap. That overlap is the honest signal that this
   sample size cannot support a claim of significance either way - read the
   difference alongside the interval, not instead of it. The mock generator
-  has no built-in assumption that GALS improves aspirations, so the small,
-  mixed-direction gap (roughly ±0.2) is expected, not a rendering issue.
+  has no built-in assumption that GALS improves aspirations, so expect small
+  differences that go in both directions, not a rendering issue. Check the
+  size and direction of the gaps after each regeneration rather than relying
+  on a remembered figure.
 - **Subject-choice / career-choice / subject-interest / self-perception
   (all four gender-split charts)**: female respondents include every GALS
   participant, since GALS is a girls' programme. Any gender gap across the

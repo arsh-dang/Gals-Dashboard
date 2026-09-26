@@ -329,7 +329,7 @@ Nothing below has been rewritten yet; this is the list to decide from. Figures a
 from `data/*.csv` (200 people: 116 Female, 73 Male, 6 Non-binary / third gender,
 5 Prefer not to say; GALS 65).
 
-**Needs a change (no longer true)**
+**Needs a change (no longer true)** - N1 to N5 have since been rewritten to say what to look for rather than quote a ranking or count; nothing else in this section was touched.
 
 | ID | Where | Text | Why it is no longer true |
 |---|---|---|---|
