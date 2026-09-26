@@ -12,7 +12,7 @@ Examples
   python backend/ingest.py --wave-id mock-2026-a --survey-version v3 \\
       --tidy-dir data
   python backend/ingest.py --wave-id mock-2026-b --survey-version v3 \\
-      --text new_data/mock_v3_text.csv --numeric new_data/mock_v3_numeric.csv \\
+      --text data/raw/mock_v3_text.csv --numeric data/raw/mock_v3_numeric.csv \\
       --qsf backend/private/survey_v3.qsf
 
 SYNTHETIC DATA ONLY. The input must have a sidecar <file>.meta.json containing
@@ -26,6 +26,7 @@ transaction: a failure leaves the database exactly as it was. Exit codes: 0 load
 """
 import argparse
 import sys
+import warnings
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -169,6 +170,24 @@ def validate(tables, config, survey_version, known_columns):
     return problems
 
 
+def soft_warnings(tables):
+    """Things worth knowing that do not stop a load."""
+    found = []
+    resp = tables["respondents"]
+    if {"is_school_student", "school", "school_level"} <= set(resp.columns):
+        post = resp[resp["is_school_student"].str.strip().str.lower() == "no"]
+        with_school = post[post["school"].str.strip() != ""]
+        if len(with_school):
+            with_level = int((with_school["school_level"].str.strip() != "").sum())
+            found.append(
+                f"{len(with_school)} of {len(post)} post-school respondents (is_school_student = No) have a "
+                f"school value ({with_level} also have a year level). The data contract says these are blank; "
+                "the dashboard build blanks them, but the source data is inconsistent. "
+                "Rows: " + ", ".join(f"row {i + 2}" for i in with_school.index[:5])
+                + (" ..." if len(with_school) > 5 else ""))
+    return found
+
+
 def print_report(problems, out=None):
     out = out or sys.stderr  # looked up at call time so redirected streams work
     """Group by table and kind so 5,000 bad rows read as a handful of lines."""
@@ -236,7 +255,7 @@ def load_wave(con, wave, tables, codebook_rows, codebook_source, replace):
             "source_file, date_loaded, is_mock, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             (wave["wave_id"], wave["survey_version"], wave.get("collection_start"),
              wave.get("collection_end"), wave["source_file"], wave["date_loaded"],
-             1 if wave["is_mock"] else 0, wave.get("notes")))
+             bool(wave["is_mock"]), wave.get("notes")))
         for name in TABLE_ORDER:
             insert_table(con, wave["wave_id"], name, tables[name])
         con.execute("COMMIT")
@@ -249,7 +268,7 @@ def load_wave(con, wave, tables, codebook_rows, codebook_source, replace):
 # --- command line -----------------------------------------------------------------
 def build_parser():
     ap = argparse.ArgumentParser(description="Load one survey wave into the database (mock data only).")
-    ap.add_argument("--db", default=str(sitdb.DEFAULT_DB), help="database file (default backend/sit.db)")
+    ap.add_argument("--db", default=str(sitdb.DEFAULT_DB), help="SQLite file (default backend/sit.db) or a postgresql:// URL")
     ap.add_argument("--wave-id", required=True, help="short label for this wave, e.g. mock-2026-a")
     ap.add_argument("--survey-version", required=True, help="instrument version, e.g. v3")
     src = ap.add_argument_group("input: raw Qualtrics export")
@@ -316,9 +335,14 @@ def run(args, out=None, err=None):
         is_mock = sitdb.check_mock_guard(meta, meta_path, ids, args.allow_real, warn)
 
         # --- reshape (raw only) and validate -------------------------------------
+        with warnings.catch_warnings(record=True) as caught:  # e.g. unknown piped text
+            warnings.simplefilter("always")
+            if raw:
+                tables = stringify(codebook.reshape_v3.reshape(text_df, numeric_df, QS))
+                cb_rows = codebook.from_qsf(qsf, QS, args.survey_version, export_columns=text_df.columns)
+        for w in caught:
+            warn(f"warning: {w.message}")
         if raw:
-            tables = stringify(codebook.reshape_v3.reshape(text_df, numeric_df, QS))
-            cb_rows = codebook.from_qsf(qsf, QS, args.survey_version, export_columns=text_df.columns)
             cb_source = "qsf"
         else:
             tables = {n: tidy[n] for n in TABLE_ORDER}
@@ -338,6 +362,8 @@ def run(args, out=None, err=None):
         if problems:
             print_report(problems, err)
             return 1
+        for message in soft_warnings(tables):  # warnings never block the load
+            warn(f"warning: {message}")
 
         # --- write ------------------------------------------------------------------
         wave = dict(

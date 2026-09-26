@@ -76,7 +76,7 @@ def from_qsf(qsf, QS, survey_version, export_columns=()):
         rows[source_column] = dict(
             survey_version=survey_version, source_column=source_column, question_id=tag,
             item_id=item_id, item_label=item_label,
-            question_text=reshape_v3.clean(q.get("QuestionText", "")),
+            question_text=reshape_v3.question_label(q.get("QuestionText", "")),
             question_type=q["QuestionType"], block=blocks.get(qid),
             scale="free_text" if str(item_id or "").endswith("_TEXT") else _scale(q, tag, scored), battery=battery, activity_type=activity,
             codebook_source="qsf",

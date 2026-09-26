@@ -318,3 +318,45 @@ Reply with the IDs to approve, reject or edit. I will then:
 2. Run `npm run build`.
 3. Check every view (provider, teacher, open-text) on desktop and at 375px wide for rendering errors and horizontal overflow, including the wording changes in tooltips and `aria-label`s.
 4. Send a short summary of what changed.
+
+---
+
+## 9. Captions that quote a number or ranking: still true on the new dataset?
+
+The dashboard now runs on wave `mock-2026-b` (`data/raw/`, see `docs/backend_design.md`),
+which is a different mock population from the one the captions were written against.
+Nothing below has been rewritten yet; this is the list to decide from. Figures are
+from `data/*.csv` (200 people: 116 Female, 73 Male, 6 Non-binary / third gender,
+5 Prefer not to say; GALS 65).
+
+**Needs a change (no longer true)**
+
+| ID | Where | Text | Why it is no longer true |
+|---|---|---|---|
+| N1 | index.html, participation note | "Similar numbers of people answered about each of the seven activities. **GALS (Girls as Leaders in STEM) has slightly the most.**" | GALS has 65 people, tied for fifth of seven (with Excursions). The most is **School club or lunchtime activity (77)**, then University programs (75), Competitions and Online STEM activities (69 each), Excursions and GALS (65), Tech school programs (60). "Similar" is still fair (60 to 77), but the GALS claim is wrong. |
+| N2 | index.html, regional card note | "Regions other than Geelong have fewer responses, so **more of their results are hidden**." | In the regional chart no result is hidden for any region: every region has at least 5 answers on all 12 statements. The claim is true only of the region-by-year-level grid (see T3). |
+| N3 | README, "Caption reasoning": participation | "GALS is narrowly the largest single activity, but participation across all seven is broadly comparable" | Same as N1. |
+| N4 | README, "Caption reasoning": regional | "most regions outside Geelong show several suppressed cells" | Same as N2: none in the regional chart. |
+| N5 | README, "Caption reasoning": aspirations | "small, mixed-direction gap (roughly ±0.2)" | Differences run from -0.31 to +0.14, and 7 of 10 are negative. Still small and still mixed, but not "±0.2". |
+
+**Still true**
+
+| ID | Where | Text | Evidence |
+|---|---|---|---|
+| T1 | index.html, participation subtitle | "Many people took part in more than one activity, so the bars overlap." | 86% took part in more than one; median 4. |
+| T2 | index.html, region card note | "Geelong has the most responses, so its results are the most complete." | Geelong 54 (Ballarat 41, Bendigo 35, Gippsland 25, Warnambool 24, Ararat 21). |
+| T3 | index.html, region card note | "Other regions have fewer, so more of their results are hidden." (the region-by-year-level grid) | Cells with at least 5 school students, of 6 year levels: Geelong 5, Ballarat 4, Bendigo 3, Gippsland 1, Warnambool 1, Ararat 0. |
+| T4 | index.html, gender cards' notes and About text | "Every GALS participant answered Female" / "Everyone who took part in GALS answered Female" | 65 of 65. |
+| T5 | index.html, skills note | "Students in Excursions and Online STEM activities were not asked these questions, and neither were they asked in the general question." | Skills and identity answers exist only for Competitions, GALS, School club, Tech school and University programs. |
+| T6 | index.html, aspirations note | "In this made-up data the differences are small and go both ways." | Range -0.31 to +0.14 (3 positive, 7 negative); every confidence interval overlaps. |
+| T7 | index.html, programme-influence note and README | (a gap is built into the mock data) | GALS 42% v 19% for subject choice, 49% v 24% for future plans. |
+| T8 | teacher.html, About | "Most schools in this made-up data have only a few students, so many results are hidden." | 18 of 19 schools have 5 to 13 students, and 104 of 126 school-by-activity counts (83%) are under 5. Fine as written; an older wording ("most schools well under the threshold") would have been wrong. |
+| T9 | throughout | "six regions", "seven activities", "an eighth activity" | 6 regions, 7 activities plus the general question. |
+
+**Depends on the data at the time (already computed live, so cannot go stale)**
+
+- The provider and teacher "What this shows" sentences (which activity or school stands out, or that none does; the count of people).
+- The gender charts' legend counts and their "hidden for privacy" note. Note for the current data: "Prefer not to say" has 5, 4, 5 and 3 people across the four questions and "Non-binary / third gender" has 4, 5, 5 and 4, so which group is shown or hidden **differs from chart to chart**.
+- KPI tiles, filter counts, the jobs-answers count.
+
+**Also stale, in the older sections of this file** (kept as history): the counts quoted in sections 0 to 8 (for example "125 Female", "Prefer not to say has 5, 7, 6 and 6") describe the first mock dataset.

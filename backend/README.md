@@ -12,9 +12,12 @@ and the "before real data" checklist: [`docs/backend_design.md`](../docs/backend
 - `verify_roundtrip.py` - shows ingest -> export -> build leaves the site unchanged
 - `private/` - **git-ignored.** The real survey definition goes here as
   `private/survey_v3.qsf`; it stays out of the repo until confirmed it can be public.
-- `*.db` files, `data_real/` and `new_data/` are git-ignored. Never commit a database.
+- `*.db` files and `data_real/` are git-ignored. Never commit a database.
 
 ```bash
 pip install -r backend/requirements.txt
-python -m pytest backend/tests
+python -m pytest backend/tests        # works without the real QSF (two tests skip)
 ```
+
+SQLite is the default; `--db postgresql://...` (needs `psycopg`) uses PostgreSQL, and
+`SIT_TEST_POSTGRES=postgresql://... pytest backend/tests` runs the suite there.

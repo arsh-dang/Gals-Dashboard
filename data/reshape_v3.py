@@ -10,7 +10,7 @@ Also importable: load_qsf(path) and reshape(text_df, numeric_df, qs) do the work
 without touching the file system (backend/ingest.py uses them), and main() is the
 command-line wrapper around them. Nothing runs at import time.
 """
-import argparse, sys, re, os, json, html
+import argparse, sys, re, os, json, html, warnings
 import pandas as pd
 
 DEFAULT_QSF = "survey_v3.qsf"
@@ -19,6 +19,31 @@ GENERAL_ACTIVITY = "General STEM outcomes (not activity-specific)"
 
 def clean(t):
     t = re.sub(r"<[^>]+>", " ", str(t)); return re.sub(r"\s+", " ", html.unescape(t)).strip()
+
+# Qualtrics "piped text": a question's wording can embed an earlier answer, written
+# ${q://QID1/ChoiceGroup/SelectedChoices} (QID1 = "Where do you live?"). A label
+# containing it would differ per respondent and would leak the region into the
+# question text, so each known placeholder maps to one neutral phrase. Any other
+# ${...} is left as written and reported with a warning: it needs a decision, not
+# a guess.
+PIPED_TEXT = {
+    "${q://QID1/ChoiceGroup/SelectedChoices}": "your area",
+}
+_PIPE_RE = re.compile(r"\$\{[^}]*\}")
+
+
+def resolve_piped(text):
+    for placeholder, phrase in PIPED_TEXT.items():
+        text = text.replace(placeholder, phrase)
+    for leftover in _PIPE_RE.findall(text):
+        warnings.warn(f"unknown piped text {leftover} in {text!r}: left as written", UserWarning, stacklevel=2)
+    return text
+
+
+def question_label(html_text):
+    """Question wording as a plain one-line label, piped text resolved."""
+    return resolve_piped(clean(html_text))
+
 
 def load_qsf(path):
     """Read a Qualtrics survey definition. Returns (qsf, QS) where QS maps each
@@ -55,26 +80,28 @@ BLOCKS = {
 # Aspirations: a 10-item matrix on the same 1-4 scale as the outcome batteries.
 ASPIRATIONS_MATRIX = "Q25"
 
+# Question labels here are what build/build.js looks up by exact string (see
+# backend/tests/test_build_labels.py) - change one and a chart silently empties.
 # Subject selection and career-decision multi-selects. Grouped so the dashboard
 # can show them as themed sections rather than a flat list of questions.
 MULTI_SETS = {
     "Q20":  ("Subject selection", "Subjects interested in studying in Year 11 or 12"),
     "Q21":  ("Subject selection", "What helps decide which subjects to choose"),
-    "Q22":  ("Subject selection", "Why choosing STEM subjects feels hard"),
-    "Q108": ("Subject selection", "Reasons for wanting to choose STEM subjects"),
-    "Q109": ("Subject selection", "Reasons for choosing STEM subjects"),
-    "Q110": ("Subject selection", "Reasons for not choosing STEM subjects"),
-    "Q82":  ("Subject selection", "What helped decide to take those subjects (post-school)"),
-    "Q83":  ("Subject selection", "Reasons for not studying STEM subjects (post-school)"),
-    "Q26":  ("Career aspirations", "What helps decide future plans"),
-    "Q91":  ("Career aspirations", "What helps decide which jobs to do (post-school)"),
+    "Q22":  ("Subject selection", "Why choosing STEM subjects feels hard (current students)"),
+    "Q108": ("Subject selection", "Reasons for wanting to choose STEM subjects (current students)"),
+    "Q109": ("Subject selection", "Reasons they chose STEM subjects (looking back)"),
+    "Q110": ("Subject selection", "Reasons they did not choose STEM subjects (looking back)"),
+    "Q82":  ("Subject selection", "What helped them decide to take those subjects (looking back)"),
+    "Q83":  ("Subject selection", "Reasons they decided against STEM subjects (looking back)"),
+    "Q26":  ("Career aspirations", "What helps decide future plans (school students)"),
+    "Q91":  ("Career aspirations", "What helps decide which jobs to do"),
     "Q89":  ("Career aspirations", "What would help to know more about STEM careers"),
 }
 
 # Single-choice questions worth reporting alongside the above.
 SINGLE_SETS = {
-    "Q90": ("Career aspirations", "Do you think you will study STEM in the future? (post-school)"),
-    "Q96": ("Career aspirations", "How much do you know about local STEM jobs? (post-school)"),
+    "Q90": ("Career aspirations", "Do you think you will study STEM in the future?"),
+    "Q96": ("Career aspirations", "How much do you know about local STEM jobs?"),
 }
 
 
@@ -236,7 +263,7 @@ def reshape(d, dn, QS):
     ot = []
     for tag, q in QS.items():
         if q["QuestionType"] != "TE" or tag not in d.columns: continue
-        label = clean(q["QuestionText"])[:120]
+        label = question_label(q["QuestionText"])[:120]
         for i in d.index:
             v = d.at[i, tag].strip()
             if v:

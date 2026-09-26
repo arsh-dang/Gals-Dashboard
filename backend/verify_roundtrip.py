@@ -36,8 +36,10 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         db = tmp / "check.db"
+        meta = tmp / "wave.meta.json"  # ./data/ holds mock data only; ingest still wants it flagged
+        meta.write_text('{"is_mock": true}', encoding="utf-8")
         code = ingest.main(["--db", str(db), "--wave-id", "roundtrip-check", "--survey-version", "v3",
-                            "--tidy-dir", str(sitdb.DATA_DIR)])
+                            "--tidy-dir", str(sitdb.DATA_DIR), "--meta", str(meta)])
         if code != 0:
             return code
         exported = tmp / "exported"

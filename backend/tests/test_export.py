@@ -7,7 +7,7 @@ import pytest
 import export
 import ingest
 import sitdb
-from conftest import TABLES, counts, raw_args, read_rows, tidy_args
+from conftest import sqlite_only, OLD_WAVE, OLD_WAVE_META, TABLES, counts, raw_args, read_rows, tidy_args
 
 
 def read(path):
@@ -15,12 +15,21 @@ def read(path):
 
 
 # --- round trip ---------------------------------------------------------------------
-def test_export_reproduces_the_current_mock_csvs_byte_for_byte(db, tmp_path):
-    ingest.main(tidy_args(db, sitdb.DATA_DIR))
+@pytest.mark.parametrize("source", [sitdb.DATA_DIR, OLD_WAVE], ids=["dashboard data", "first mock wave"])
+def test_export_reproduces_a_mock_dataset_byte_for_byte(db, tmp_path, source):
+    ingest.main(tidy_args(db, source, "w1", "v3", "--meta", str(OLD_WAVE_META)))
     out = tmp_path / "out"
     assert export.main(["--db", str(db), "--parity", "--out-dir", str(out)]) == 0
     for name in TABLES:
-        assert (out / f"{name}.csv").read_bytes() == (sitdb.DATA_DIR / f"{name}.csv").read_bytes(), name
+        assert (out / f"{name}.csv").read_bytes() == (source / f"{name}.csv").read_bytes(), name
+
+
+def test_the_two_mock_waves_can_be_loaded_and_exported_together(db, tmp_path):
+    ingest.main(tidy_args(db, OLD_WAVE, "mock-2026-a"))
+    ingest.main(tidy_args(db, sitdb.DATA_DIR, "mock-2026-b", "v3", "--meta", str(OLD_WAVE_META)))
+    export.main(["--db", str(db), "--parity", "--out-dir", str(tmp_path)])
+    ids = read(tmp_path / "respondents.csv").ResponseId
+    assert len(ids) == 400 and ids.is_unique  # R_MK0000230 exists in both waves; prefixes keep them apart
 
 
 def test_raw_ingest_then_export_equals_reshape_output(db, tiny, tmp_path):
@@ -119,8 +128,9 @@ def test_export_reports_what_it_suppressed(db, tiny, tmp_path, capsys):
     assert "occupation follow-ups" in out
 
 
-def test_current_mock_data_has_no_visible_group_under_5_after_suppression(db, tmp_path):
-    ingest.main(tidy_args(db, sitdb.DATA_DIR))
+@pytest.mark.parametrize("source", [sitdb.DATA_DIR, OLD_WAVE], ids=["dashboard data", "first mock wave"])
+def test_mock_data_has_no_visible_group_under_5_after_suppression(db, tmp_path, source):
+    ingest.main(tidy_args(db, source, "w1", "v3", "--meta", str(OLD_WAVE_META)))
     export.main(["--db", str(db), "--out-dir", str(tmp_path)])
     s = read(tmp_path / "respondents.csv")
     for cols in (["gender"], ["school"], ["region", "school_level"]):
@@ -154,6 +164,7 @@ def test_unknown_wave_is_refused(db, tiny, tmp_path, capsys):
     assert "unknown wave" in capsys.readouterr().err
 
 
+@sqlite_only
 def test_exporting_an_empty_or_missing_database_is_refused(tmp_path, capsys):
     assert export.main(["--db", str(tmp_path / "none.db"), "--out-dir", str(tmp_path)]) == 2
     assert "database not found" in capsys.readouterr().err

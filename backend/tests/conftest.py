@@ -1,8 +1,8 @@
 """Shared test setup. Everything runs against synthetic data: the current mock
 CSVs in ./data/ and the tiny fixture in tests/fixtures/."""
 import json
+import os
 import shutil
-import sqlite3
 import sys
 from pathlib import Path
 
@@ -19,6 +19,13 @@ import reshape_v3  # noqa: E402
 import sitdb  # noqa: E402
 
 FIXTURES = Path(__file__).parent / "fixtures"
+OLD_WAVE = FIXTURES / "mock_wave_a"      # the first mock dataset (tidy CSVs), kept as the second wave in tests
+OLD_WAVE_META = OLD_WAVE / "wave.meta.json"
+REFERENCE = FIXTURES / "reference"        # reshape output from the same generator run as data/raw
+RAW_TEXT = REPO / "data" / "raw" / "mock_v3_text.csv"
+RAW_NUMERIC = REPO / "data" / "raw" / "mock_v3_numeric.csv"
+PRIVATE_QSF = BACKEND / "private" / "survey_v3.qsf"
+NO_REAL_QSF = "real QSF not found at backend/private/, skipping reproduction test"
 TABLES = list(sitdb.TABLE_COLUMNS)
 
 
@@ -44,9 +51,29 @@ def tidy(tmp_path, tiny):
     return dest
 
 
+# Set SIT_TEST_POSTGRES to a postgresql:// URL of a scratch database to run the whole
+# suite on PostgreSQL instead of SQLite. Each test gets its own schema (dropped
+# afterwards), so nothing else in that database is touched.
+PG_URL = os.environ.get("SIT_TEST_POSTGRES")
+ON_POSTGRES = bool(PG_URL)
+sqlite_only = pytest.mark.skipif(ON_POSTGRES, reason="SQLite-specific behaviour (file databases, PRAGMA)")
+
+
 @pytest.fixture()
 def db(tmp_path):
-    return tmp_path / "test.db"
+    """The database under test: a SQLite file, or a fresh PostgreSQL schema."""
+    if not ON_POSTGRES:
+        yield tmp_path / "test.db"
+        return
+    import uuid
+    import psycopg
+    schema = f"t_{uuid.uuid4().hex[:12]}"
+    with psycopg.connect(PG_URL, autocommit=True) as admin:
+        admin.execute(f"CREATE SCHEMA {schema}")
+    sep = "&" if "?" in PG_URL else "?"
+    yield f"{PG_URL}{sep}options=-csearch_path%3D{schema}"
+    with psycopg.connect(PG_URL, autocommit=True) as admin:
+        admin.execute(f"DROP SCHEMA {schema} CASCADE")
 
 
 def raw_args(db, tiny, wave="w1", version="v3", *extra):
@@ -60,12 +87,11 @@ def tidy_args(db, folder, wave="w1", version="v3", *extra):
 
 def counts(db):
     """Row count of every table, or {} if the database does not exist yet."""
-    if not Path(db).exists():
+    if not sitdb.is_postgres(db) and not Path(db).exists():
         return {}
-    con = sqlite3.connect(str(db))
+    con = sitdb.connect(db)
     try:
-        names = [r[0] for r in con.execute("SELECT name FROM sqlite_master WHERE type = 'table'")]
-        return {n: con.execute(f"SELECT COUNT(*) FROM {n}").fetchone()[0] for n in names}
+        return {n: con.execute(f"SELECT COUNT(*) FROM {n}").fetchone()[0] for n in con.table_names()}
     finally:
         con.close()
 
@@ -76,7 +102,7 @@ def assert_untouched(db):
 
 
 def read_rows(db, sql, params=()):
-    con = sqlite3.connect(str(db))
+    con = sitdb.connect(db)
     try:
         return con.execute(sql, params).fetchall()
     finally:

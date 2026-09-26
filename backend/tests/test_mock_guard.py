@@ -84,7 +84,7 @@ def test_real_export_defaults_to_the_git_ignored_folder(db, tiny, tmp_path, monk
 
 def test_the_repository_ignores_databases_and_real_data_folders():
     ignore = (sitdb.REPO_DIR / ".gitignore").read_text()
-    for pattern in ("*.db", "data_real/", "backend/private/", "new_data/"):
+    for pattern in ("*.db", "data_real/", "backend/private/"):
         assert pattern in ignore
 
 
@@ -94,5 +94,5 @@ def test_no_database_or_real_data_file_is_tracked_by_git():
     # the invented test QSF is the one .qsf allowed in the repository
     tracked = [f for f in tracked if f and not f.startswith("backend/tests/fixtures/")]
     bad = [f for f in tracked
-           if f.endswith((".db", ".sqlite", ".sqlite3", ".qsf")) or f.startswith(("data_real/", "backend/private/", "new_data/"))]
+           if f.endswith((".db", ".sqlite", ".sqlite3", ".qsf")) or f.startswith(("data_real/", "backend/private/"))]
     assert not bad, bad

@@ -111,10 +111,9 @@ def write_csv(path, columns, rows):
 
 def run(args, out=None, err=None):
     out, err = out or sys.stdout, err or sys.stderr
-    db_path = Path(args.db)
-    if not db_path.exists():
-        raise Refused(f"database not found: {db_path}. Load a wave first with backend/ingest.py.")
-    con = sitdb.connect(db_path)
+    if not sitdb.is_postgres(args.db) and not Path(args.db).exists():
+        raise Refused(f"database not found: {args.db}. Load a wave first with backend/ingest.py.")
+    con = sitdb.connect(args.db)
     try:
         waves = fetch_waves(con, [w for w in (args.waves or "").split(",") if w])
         if not waves:
@@ -159,7 +158,7 @@ def run(args, out=None, err=None):
 
 def build_parser():
     ap = argparse.ArgumentParser(description="Export waves as the CSVs the dashboard build reads.")
-    ap.add_argument("--db", default=str(sitdb.DEFAULT_DB))
+    ap.add_argument("--db", default=str(sitdb.DEFAULT_DB), help="SQLite file or a postgresql:// URL")
     ap.add_argument("--waves", help="comma-separated wave ids (default: all loaded waves)")
     ap.add_argument("--out-dir", help="default: data/ (mock waves) or data_real/ (real, with --allow-real)")
     mode = ap.add_mutually_exclusive_group()

@@ -68,6 +68,11 @@ commit to `site/data/` before assuming the counting logic is wrong.
 
 ## Data
 
+`data/*.csv` is generated, not hand-edited: the synthetic exports in `data/raw/` go
+through `backend/ingest.py` and `backend/export.py` (see `docs/backend_design.md`), then
+`npm run build` turns the CSVs into `site/data/*.js`. The real survey definition
+(`backend/private/survey_v3.qsf`) is git-ignored; ingest needs it, the build does not.
+
 - `data/respondents.csv`, `data/activity_ratings.csv`, `data/aspirations.csv`,
   `data/subject_career.csv`: required. See
   `.claude/skills/sit-dashboard/references/data-contract.md` for the schema.
