@@ -358,6 +358,32 @@
     return Math.ceil(Math.min(max, Math.max(min, longest)) + pad);
   }
 
+  // Results hidden for privacy: one grey "hidden" tag per row, in a fixed column
+  // at the right edge of the plot. A tag in the plotting area would read as a
+  // data point; here it cannot. names lists what was hidden, for the tooltip
+  // and the accessible label.
+  function drawHiddenChip(svg, {
+    x, yMid, count, total, names, context = '', tip = null,
+  }) {
+    const label = count >= total ? 'hidden' : `${count} hidden`;
+    const w = Math.ceil(measureText(label, 10.5, 'hidden-chip__text')) + 14;
+    const message = `Hidden for privacy: fewer than ${SMALL_CELL_THRESHOLD} people`;
+    const g = svg.append('g')
+      .attr('class', 'hidden-chip')
+      .attr('transform', `translate(${x},${yMid})`)
+      .attr('tabindex', 0)
+      .attr('role', 'img')
+      .attr('aria-label', `${context ? `${context}: ` : ''}${names.join(', ')}. ${message}`);
+    g.append('rect').attr('x', 0).attr('y', -8).attr('width', w).attr('height', 16).attr('rx', 8);
+    g.append('text').attr('x', w / 2).attr('dy', '0.35em').attr('text-anchor', 'middle').text(label);
+    if (tip) {
+      g.on('mouseenter focus', (evt) => tip.show(`<strong>${message}</strong>${context ? `${context}<br>` : ''}${names.join('<br>')}`, evt))
+        .on('mousemove', (evt) => tip.move(evt))
+        .on('mouseleave blur', () => tip.hide());
+    }
+    return w;
+  }
+
   const PAIR_NOTE = 'Also asked in a similar wording (see the matching row)';
 
   // A right-aligned row label, vertically centred on yMid. With badge set, a
@@ -587,6 +613,7 @@
     wrapToWidth,
     labelGutter,
     drawWideLabel,
+    drawHiddenChip,
     PAIR_NOTE,
     buildMarkerScale,
     markerPath,

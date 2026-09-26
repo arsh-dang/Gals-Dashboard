@@ -35,10 +35,10 @@
     const gutter = compact ? 0 : U.labelGutter(items.map((i) => i.item), 12, { min: 200, max: 300 });
     const margin = compact
       ? {
-        top: 28, right: 30, bottom: 30, left: 18,
+        top: 28, right: 68, bottom: 30, left: 18,
       }
       : {
-        top: 28, right: 24, bottom: 16, left: gutter,
+        top: 28, right: 96, bottom: 16, left: gutter,
       };
     // Compact: each region's dot on its own line under the label, same as
     // the outcomes dot plot.
@@ -100,25 +100,19 @@
 
     items.forEach((item) => {
       const b = band(item.item);
+      const hiddenHere = regions.filter((region) => { const n = ratings.filter((r) => r.item === item.item && r.region === region).length; return n > 0 && U.isSuppressed(n); });
+      if (hiddenHere.length) {
+        U.drawHiddenChip(svg, {
+          x: width - margin.right + 10, yMid: b.top + b.height / 2, count: hiddenHere.length, total: regions.length, names: hiddenHere, context: item.item, tip,
+        });
+      }
       regions.forEach((region) => {
         const rows = ratings.filter((r) => r.item === item.item && r.region === region);
         const summary = U.summarizeScores(rows);
         const cy = b.top + b.height / 2 + sub(region);
         const suppressed = U.isSuppressed(rows.length);
 
-        if (suppressed) {
-          svg.append('text')
-            .attr('x', x(2.5)).attr('y', cy)
-            .attr('text-anchor', 'middle').attr('dy', '0.32em')
-            .attr('fill', U.cssVar('--text-muted'))
-            .style('font-size', '0.7rem')
-            .text('×')
-            .attr('tabindex', 0)
-            .on('mouseenter focus', (evt) => tip.show(`<strong>${region}</strong>${item.item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
-            .on('mousemove', (evt) => tip.move(evt))
-            .on('mouseleave blur', () => tip.hide());
-          return;
-        }
+        if (suppressed) return;
 
         const display = U.toDisplayScore(summary.mean);
         const ci = U.ciDisplayBounds(summary);

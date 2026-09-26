@@ -27,7 +27,7 @@
 <meta name="twitter:description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 <meta name="twitter:image" content="https://galsdashboard.netlify.app/og-image.png">
 
-<link rel="stylesheet" href="css/styles.css?v=aaf7a235da">
+<link rel="stylesheet" href="css/styles.css?v=c09845d25a">
 </head>
 <body>
 <div class="page">
@@ -163,7 +163,7 @@
             <p class="card__note" id="outcomes-note">
               The faint line on each dot shows the likely range for that average (a 95% confidence interval).
               Activities score close together, so when two lines overlap the difference may not be real. "≈" marks a
-              statement asked in two similar wordings. "×" marks a result hidden for privacy (fewer than
+              statement asked in two similar wordings. A grey "hidden" tag marks a result hidden for privacy (fewer than
               <span id="threshold-label-2"></span> people).
             </p>
             <div id="table-outcomes"></div>
@@ -238,7 +238,7 @@
           <div class="legend" id="regional-legend"></div>
           <!-- Regions outside Geelong showing several suppressed cells is the honest state of this sample, not a rendering gap: README.md, "Caption reasoning". -->
           <p class="card__note">
-            The faint lines show likely ranges, as above. "×" marks a result hidden for privacy (fewer than
+            The faint lines show likely ranges, as above. A grey "hidden" tag marks a result hidden for privacy (fewer than
             <span id="threshold-label-3"></span> people). A region with fewer responses is more likely to have results
             hidden.
           </p>
@@ -266,7 +266,7 @@
           <!-- Why the small, mixed-direction Diff is expected rather than a rendering issue, and why the CI overlap matters: README.md, "Caption reasoning". -->
           <p class="card__note">
             "Difference" is the GALS average minus the average for people who did not take part. In this made-up data
-            the differences are small and go both ways. "×" marks a result hidden for privacy (fewer than
+            the differences are small and go both ways. A grey "hidden" tag marks a result hidden for privacy (fewer than
             <span id="threshold-label-4"></span> people).
           </p>
           <div id="table-aspirations"></div>
@@ -277,8 +277,8 @@
         <div class="card__header">
           <h3 class="card__title">What helps students decide which subjects to choose?</h3>
           <p class="card__subtitle">
-            Compares what influences students in each gender group. Each bar has one segment for each group, sized to
-            that group's own percentage. Students could pick more than one option, so percentages do not add to 100%.
+            Compares what influences students in each gender group. Each dot is one group's own percentage, on a shared 0 to 100%
+            scale. Students could pick more than one option, so percentages do not add to 100%.
           </p>
         </div>
         <div class="card__body">
@@ -286,7 +286,7 @@
           <!-- Full confound reasoning (why this doesn't go away with real data either): README.md, "Caption reasoning". -->
           <p class="card__note">
             Made-up data only, not a result. Every GALS participant answered Female, so part of any gap between groups
-            may come from taking part in GALS. "×" marks a result hidden for privacy (fewer than
+            may come from taking part in GALS. A grey "hidden" tag marks a result hidden for privacy (fewer than
             <span id="threshold-label-5"></span> people).
           </p>
         </div>
@@ -297,14 +297,14 @@
           <h3 class="card__title">What helps students decide what they might do in the future?</h3>
           <p class="card__subtitle">
             Compares what influences future plans for students in each gender group. This is a separate question
-            from subject choice above. Each segment is that group's own percentage.
+            from subject choice above. Each dot is that group's own percentage.
           </p>
         </div>
         <div class="card__body">
           <div class="chart-scroll" id="chart-career-choice-influence"></div>
           <p class="card__note">
             Made-up data only, not a result. Everyone who took part in GALS answered Female, so part of any gap may
-            come from GALS. "×" marks a result hidden for privacy (fewer than <span id="threshold-label-7"></span> people).
+            come from GALS. A grey "hidden" tag marks a result hidden for privacy (fewer than <span id="threshold-label-7"></span> people).
           </p>
         </div>
       </div>
@@ -332,8 +332,7 @@
           <div class="card__header">
             <h3 class="card__title">Which subjects are students interested in for Year 11 or 12?</h3>
             <p class="card__subtitle">
-              Compares subject interest between students in each gender group. Each segment is that group's own
-              percentage.
+              Compares subject interest between students in each gender group. Each dot is that group's own percentage.
             </p>
           </div>
           <div class="card__body">
@@ -351,7 +350,7 @@
             <p class="card__subtitle">
               Compares how students in each gender group see their own belonging and ability in STEM subjects. This is
               about how they see themselves, not what influences a choice. It uses a different colour so you can tell the
-              two apart at a glance. Each segment is that group's own percentage.
+              two apart at a glance. Each dot is that group's own percentage.
             </p>
           </div>
           <div class="card__body">
@@ -420,15 +419,15 @@
 <script src="data/aspirations.js?v=85aad3d786"></script>
 <script src="data/subjectCareer.js?v=839bf90227"></script>
 <script src="data/openText.js?v=55dae8171a"></script>
-<script src="data/meta.js?v=b80430a5ad"></script>
-<script src="js/utils.js?v=2fa440ee88"></script>
+<script src="data/meta.js?v=8bf1f94622"></script>
+<script src="js/utils.js?v=cf9ddbabdd"></script>
 <script src="js/summary.js?v=4e6d3527bd"></script>
 <script src="js/charts/participation.js?v=6adee1fd4a"></script>
-<script src="js/charts/outcomes.js?v=81553a28a6"></script>
+<script src="js/charts/outcomes.js?v=9bf557dc3a"></script>
 <script src="js/charts/skills.js?v=b6066b5106"></script>
-<script src="js/charts/regional.js?v=5e3ca3213c"></script>
-<script src="js/charts/aspirations.js?v=61f64aa46e"></script>
-<script src="js/charts/influences.js?v=cfb7d981fe"></script>
+<script src="js/charts/regional.js?v=0787d99330"></script>
+<script src="js/charts/aspirations.js?v=e0350f5016"></script>
+<script src="js/charts/influences.js?v=6237a53f14"></script>
 <script src="js/main.js?v=b504f25014"></script>
 </body>
 </html>

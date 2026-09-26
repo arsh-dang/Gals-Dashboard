@@ -35,7 +35,7 @@
     // The right margin holds the "Diff" column in both layouts.
     const margin = compact
       ? {
-        top: 40, right: 52, bottom: 30, left: 18,
+        top: 40, right: 62, bottom: 30, left: 18,
       }
       : {
         top: 40, right: 80, bottom: 8, left: gutter,
@@ -106,19 +106,7 @@
       const b = band(item);
       const cy = b.top + b.height / 2 + sub(key);
 
-      if (suppressed) {
-        svg.append('text')
-          .attr('x', x(2.5)).attr('y', cy)
-          .attr('text-anchor', 'middle').attr('dy', '0.32em')
-          .attr('fill', U.cssVar('--text-muted'))
-          .style('font-size', '0.7rem')
-          .text('×')
-          .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${label}</strong>${item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
-          .on('mousemove', (evt) => tip.move(evt))
-          .on('mouseleave blur', () => tip.hide());
-        return { summary: null, suppressed: true };
-      }
+      if (suppressed) return { summary: null, suppressed: true, label };
 
       const ci = U.ciDisplayBounds(summary);
       if (ci) {
@@ -156,7 +144,13 @@
         .style('fill', U.cssVar('--text-muted'));
 
       if (gals.suppressed || nonGals.suppressed || !gals.summary || !nonGals.summary) {
-        diffLabel.text('–');
+        // No difference can be shown, so the Difference column carries the
+        // grey "hidden" tag, naming which group was hidden.
+        diffLabel.remove();
+        const hiddenGroups = [gals, nonGals].filter((g) => g.suppressed).map((g) => g.label);
+        U.drawHiddenChip(svg, {
+          x: diffX - 6, yMid: b.top + b.height / 2, count: 1, total: 1, names: hiddenGroups, context: item, tip,
+        });
       } else {
         const diff = gals.summary.mean - nonGals.summary.mean;
         diffLabel.text(`${diff >= 0 ? '+' : ''}${diff.toFixed(2)}`)

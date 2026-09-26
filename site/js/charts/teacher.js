@@ -27,10 +27,10 @@
     const gutter = compact ? 0 : U.labelGutter(items.map((i) => i.item), 12, { min: 200, max: 300 });
     const margin = compact
       ? {
-        top: 28, right: 30, bottom: 30, left: 18,
+        top: 28, right: 68, bottom: 30, left: 18,
       }
       : {
-        top: 28, right: 24, bottom: 16, left: gutter,
+        top: 28, right: 96, bottom: 16, left: gutter,
       };
     const geo = U.rowGeometry({
       compact,
@@ -119,16 +119,9 @@
       const schoolRows = schoolRatings.filter((r) => r.item === item.item);
       const suppressed = U.isSuppressed(schoolRows.length);
       if (suppressed) {
-        svg.append('text')
-          .attr('x', x(2.5)).attr('y', cy)
-          .attr('text-anchor', 'middle').attr('dy', '0.32em')
-          .attr('fill', U.cssVar('--text-muted'))
-          .style('font-size', '0.7rem')
-          .text('×')
-          .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>This school</strong>${item.item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} students answered`, evt))
-          .on('mousemove', (evt) => tip.move(evt))
-          .on('mouseleave blur', () => tip.hide());
+        U.drawHiddenChip(svg, {
+          x: width - margin.right + 10, yMid: cy, count: 1, total: 1, names: ['This school'], context: item.item, tip,
+        });
         return;
       }
 

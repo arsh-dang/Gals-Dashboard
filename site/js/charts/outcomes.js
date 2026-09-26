@@ -23,7 +23,7 @@
 
   const WIDE_MIN_WIDTH = 640;
   const COMPACT_MARGIN = {
-    top: 28, right: 30, bottom: 30, left: 18,
+    top: 28, right: 68, bottom: 30, left: 18,
   };
   const SCALE_TICKS = [1, 2, 3, 4];
   const FACET_LABEL_FONT = 11;
@@ -69,7 +69,7 @@
     const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
     const gutter = compact ? 0 : U.labelGutter(items.map((i) => i.item), LABEL_FONT, { min: 200, max: 300 });
     const margin = compact ? COMPACT_MARGIN : {
-      top: 28, right: 24, bottom: 36, left: gutter,
+      top: 28, right: 96, bottom: 36, left: gutter,
     };
     // Compact: each activity's dot sits on its own line (legend order) in a
     // band under the label, so seven dots stay separable on a narrow plot
@@ -140,22 +140,21 @@
     const cellData = items.flatMap((item) => cellsForItem(ratings, item, activities));
 
     const dotG = svg.append('g');
+    // Results hidden for privacy get one grey tag per row in a fixed right-hand
+    // column, never a mark in the plotting area.
+    items.forEach((item) => {
+      const hiddenHere = cellData.filter((c) => c.item === item.item && c.suppressed && c.n > 0).map((c) => c.activityType);
+      // n = 0 means that wording was never asked of that activity, not hidden.
+      if (!hiddenHere.length) return;
+      const b = band(item.item);
+      U.drawHiddenChip(svg, {
+        x: width - margin.right + 10, yMid: b.top + b.height / 2, count: hiddenHere.length, total: activities.length, names: hiddenHere, context: item.item, tip,
+      });
+    });
     cellData.forEach((cell) => {
       const b = band(cell.item);
       const cy = b.top + b.height / 2 + sub(cell.activityType);
-      if (cell.suppressed) {
-        dotG.append('text')
-          .attr('x', x(2.5)).attr('y', cy)
-          .attr('text-anchor', 'middle').attr('dy', '0.32em')
-          .attr('fill', U.cssVar('--text-muted'))
-          .style('font-size', '0.7rem')
-          .text('×')
-          .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${cell.activityType}</strong>${cell.item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
-          .on('mousemove', (evt) => tip.move(evt))
-          .on('mouseleave blur', () => tip.hide());
-        return;
-      }
+      if (cell.suppressed) return;
       const ci = U.ciDisplayBounds(cell);
       const tooltipHtml = `<strong>${cell.activityType}</strong>${cell.item}<br>
             Average (1=No … 4=Yes a lot): ${U.formatScore(cell.mean)}<br>
@@ -231,7 +230,7 @@
     // Labels get just over half the panel: the plot only needs room for four
     // scale positions, and item wording is what tells two rows apart.
     const margin = {
-      top: 4, right: 10, bottom: 4, left: Math.round(width * 0.52),
+      top: 4, right: 62, bottom: 4, left: Math.round(width * 0.5),
     };
     const height = margin.top + margin.bottom + items.length * rowHeight;
     const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
@@ -265,16 +264,9 @@
         const suppressed = U.isSuppressed(rows.length);
 
         if (suppressed) {
-          svg.append('text')
-            .attr('x', x(2.5)).attr('y', cy)
-            .attr('text-anchor', 'middle').attr('dy', '0.32em')
-            .attr('fill', U.cssVar('--text-muted'))
-            .style('font-size', '0.65rem')
-            .text('×')
-            .attr('tabindex', 0)
-            .on('mouseenter focus', (evt) => tip.show(`<strong>${activityType}</strong>${item.item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
-            .on('mousemove', (evt) => tip.move(evt))
-            .on('mouseleave blur', () => tip.hide());
+          U.drawHiddenChip(svg, {
+            x: width - margin.right + 8, yMid: cy, count: 1, total: 1, names: [activityType], context: item.item, tip,
+          });
           return;
         }
 
@@ -488,7 +480,7 @@
     const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
     const gutter = compact ? 0 : U.labelGutter(rows.map((r) => r.item), LABEL_FONT, { min: 200, max: 300 });
     const margin = compact ? COMPACT_MARGIN : {
-      top: 28, right: 24, bottom: 8, left: gutter,
+      top: 28, right: 96, bottom: 8, left: gutter,
     };
     const geo = U.rowGeometry({
       compact,
@@ -540,16 +532,9 @@
       }
 
       if (r.suppressed) {
-        svg.append('text')
-          .attr('x', x(2.5)).attr('y', cy)
-          .attr('text-anchor', 'middle').attr('dy', '0.32em')
-          .attr('fill', U.cssVar('--text-muted'))
-          .style('font-size', '0.7rem')
-          .text('×')
-          .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`${r.item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
-          .on('mousemove', (evt) => tip.move(evt))
-          .on('mouseleave blur', () => tip.hide());
+        U.drawHiddenChip(svg, {
+          x: width - margin.right + 10, yMid: cy, count: 1, total: 1, names: ['All people who answered'], context: r.item, tip,
+        });
         return;
       }
 
