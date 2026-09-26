@@ -32,12 +32,13 @@
     const items = meta.outcomeItems;
     const compact = U.isCompact(container, WIDE_MIN_WIDTH);
     const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
+    const gutter = compact ? 0 : U.labelGutter(items.map((i) => i.item), 12, { min: 200, max: 300 });
     const margin = compact
       ? {
         top: 28, right: 30, bottom: 30, left: 18,
       }
       : {
-        top: 28, right: 24, bottom: 16, left: 340,
+        top: 28, right: 24, bottom: 16, left: gutter,
       };
     // Compact: each region's dot on its own line under the label, same as
     // the outcomes dot plot.
@@ -46,8 +47,8 @@
       keys: items.map((i) => i.item),
       width,
       margin,
-      wideRowHeight: 34,
-      widePadding: 0.15,
+      wideRowHeight: 38,
+      widePadding: 0.1,
       plotHeight: regions.length * 6 + 6,
     });
     const { height, band } = geo;
@@ -80,16 +81,12 @@
         .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
         .attr('y1', margin.top).attr('y2', height - margin.bottom);
 
+      const labelTip = U.tooltip();
       items.forEach((item, i) => {
         const b = band(item.item);
-        svg.append('text')
-          .attr('class', 'item-row-label')
-          .attr('x', margin.left - 16)
-          .attr('y', b.top + b.height / 2)
-          .attr('text-anchor', 'end')
-          .attr('dy', '0.32em')
-          .text(truncate(item.item, 48))
-          .append('title').text(item.item);
+        U.drawWideLabel(svg, {
+          x: margin.left, yMid: b.top + b.height / 2, text: item.item, gutter, fontPx: 12, badge: item.pairId !== null, tip: labelTip,
+        });
 
         svg.append('rect')
           .attr('x', margin.left).attr('width', width - margin.left - margin.right)
@@ -117,7 +114,7 @@
             .style('font-size', '0.7rem')
             .text('×')
             .attr('tabindex', 0)
-            .on('mouseenter focus', (evt) => tip.show(`<strong>${region}</strong>${truncate(item.item, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
+            .on('mouseenter focus', (evt) => tip.show(`<strong>${region}</strong>${item.item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
             .on('mousemove', (evt) => tip.move(evt))
             .on('mouseleave blur', () => tip.hide());
           return;
@@ -125,7 +122,7 @@
 
         const display = U.toDisplayScore(summary.mean);
         const ci = U.ciDisplayBounds(summary);
-        const tooltipHtml = `<strong>${region}</strong>${truncate(item.item, 60)}<br>
+        const tooltipHtml = `<strong>${region}</strong>${item.item}<br>
               Average (1=No … 4=Yes a lot): ${U.formatScore(summary.mean)}<br>
               Likely range: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'too few people to estimate a range'}<br>
               ${summary.n} people${summary.unknownN ? `<br><span class="tt-muted">${summary.unknownN} more answered "I do not know" (left out of the average)</span>` : ''}`;

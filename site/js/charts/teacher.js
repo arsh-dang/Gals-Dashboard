@@ -24,20 +24,21 @@
     const items = meta.outcomeItems;
     const compact = U.isCompact(container, WIDE_MIN_WIDTH);
     const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
+    const gutter = compact ? 0 : U.labelGutter(items.map((i) => i.item), 12, { min: 200, max: 300 });
     const margin = compact
       ? {
         top: 28, right: 30, bottom: 30, left: 18,
       }
       : {
-        top: 28, right: 24, bottom: 16, left: 340,
+        top: 28, right: 24, bottom: 16, left: gutter,
       };
     const geo = U.rowGeometry({
       compact,
       keys: items.map((i) => i.item),
       width,
       margin,
-      wideRowHeight: 30,
-      widePadding: 0.2,
+      wideRowHeight: 36,
+      widePadding: 0.15,
       plotHeight: 16,
       gap: 8,
     });
@@ -67,16 +68,12 @@
         .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
         .attr('y1', margin.top).attr('y2', height - margin.bottom);
 
+      const labelTip = U.tooltip();
       items.forEach((item, i) => {
         const b = band(item.item);
-        svg.append('text')
-          .attr('class', 'item-row-label')
-          .attr('x', margin.left - 16)
-          .attr('y', b.top + b.height / 2)
-          .attr('text-anchor', 'end')
-          .attr('dy', '0.32em')
-          .text(truncate(item.item, 48))
-          .append('title').text(item.item);
+        U.drawWideLabel(svg, {
+          x: margin.left, yMid: b.top + b.height / 2, text: item.item, gutter, fontPx: 12, badge: item.pairId !== null, tip: labelTip,
+        });
 
         svg.append('rect')
           .attr('x', margin.left).attr('width', width - margin.left - margin.right)
@@ -111,7 +108,7 @@
           .attr('transform', `translate(${x(U.toDisplayScore(benchSummary.mean))},${cy})`)
           .attr('fill', benchmarkColor)
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>All people who answered</strong>${truncate(item.item, 60)}<br>
+          .on('mouseenter focus', (evt) => tip.show(`<strong>All people who answered</strong>${item.item}<br>
             Average: ${U.formatScore(benchSummary.mean)}<br>
             Likely range: ${benchCi ? `${U.formatScore(benchCi.low)}–${U.formatScore(benchCi.high)}` : 'too few people to estimate a range'}<br>
             ${benchSummary.n} people`, evt))
@@ -129,7 +126,7 @@
           .style('font-size', '0.7rem')
           .text('×')
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>This school</strong>${truncate(item.item, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} students answered`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`<strong>This school</strong>${item.item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} students answered`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
         return;
@@ -155,7 +152,7 @@
         .attr('role', 'img')
         .attr('aria-label', `This school, ${item.item}: average ${summary.mean.toFixed(2)} of 4, higher is more positive, ${summary.n} people${ci ? `, likely range ${U.formatScore(ci.low)} to ${U.formatScore(ci.high)}` : ''}`)
         .on('mouseenter focus', (evt) => {
-          tip.show(`<strong>This school</strong>${truncate(item.item, 60)}<br>
+          tip.show(`<strong>This school</strong>${item.item}<br>
             Average (1=No … 4=Yes a lot): ${U.formatScore(summary.mean)}<br>
             Likely range: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'too few people to estimate a range'}<br>
             ${summary.n} people${summary.unknownN ? `<br><span class="tt-muted">${summary.unknownN} more answered "I do not know" (left out of the average)</span>` : ''}`, evt);

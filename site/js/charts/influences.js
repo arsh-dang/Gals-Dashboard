@@ -175,7 +175,7 @@
             .attr('tabindex', 0)
             .attr('role', 'img')
             .attr('aria-label', `${seg.group.group}, ${label}: hidden for privacy, fewer than ${U.SMALL_CELL_THRESHOLD} people`)
-            .on('mouseenter focus', (evt) => tip.show(`<strong>${seg.group.group}</strong>${truncate(label, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
+            .on('mouseenter focus', (evt) => tip.show(`<strong>${seg.group.group}</strong>${label}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
             .on('mousemove', (evt) => tip.move(evt))
             .on('mouseleave blur', () => tip.hide());
           cursor += SEGMENT_LABEL_GAP;
@@ -194,7 +194,7 @@
           .attr('tabindex', 0)
           .attr('role', 'img')
           .attr('aria-label', desc)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${seg.group.group}</strong>${truncate(label, 60)}<br>${U.formatPct(seg.pct)} (${seg.n} of ${seg.group.size} people)`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`<strong>${seg.group.group}</strong>${label}<br>${U.formatPct(seg.pct)} (${seg.n} of ${seg.group.size} people)`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
 
@@ -252,12 +252,13 @@
 
     const compact = U.isCompact(container, PROGRAMME_WIDE_MIN);
     const width = compact ? container.clientWidth : Math.max(container.clientWidth || PROGRAMME_WIDE_MIN, PROGRAMME_WIDE_MIN);
+    const gutter = compact ? 0 : U.labelGutter(entries.map((e) => e.key), 12, { min: 160, max: 300, pad: 14 });
     const margin = compact
       ? {
         top: 4, right: 44, bottom: 4, left: 0,
       }
       : {
-        top: 8, right: 50, bottom: 8, left: 210,
+        top: 8, right: 50, bottom: 8, left: gutter,
       };
     const geo = U.rowGeometry({
       compact,
@@ -290,12 +291,9 @@
         .attr('y1', margin.top).attr('y2', height - margin.bottom);
       entries.forEach((e) => {
         const b = band(e.key);
-        svg.append('text')
-          .attr('class', 'item-row-label')
-          .attr('x', margin.left - 12).attr('y', b.top + b.height / 2)
-          .attr('text-anchor', 'end').attr('dy', '0.32em')
-          .style('font-size', '0.7rem')
-          .text(e.key);
+        U.drawWideLabel(svg, {
+          x: margin.left, yMid: b.top + b.height / 2, text: e.key, gutter, fontPx: 12, pad: 14,
+        });
       });
     }
 

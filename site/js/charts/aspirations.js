@@ -31,21 +31,22 @@
     const items = meta.aspirationItems;
     const compact = U.isCompact(container, WIDE_MIN_WIDTH);
     const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
+    const gutter = compact ? 0 : U.labelGutter(items, 12, { min: 200, max: 300 });
     // The right margin holds the "Diff" column in both layouts.
     const margin = compact
       ? {
         top: 40, right: 52, bottom: 30, left: 18,
       }
       : {
-        top: 40, right: 80, bottom: 8, left: 340,
+        top: 40, right: 80, bottom: 8, left: gutter,
       };
     const geo = U.rowGeometry({
       compact,
       keys: items,
       width,
       margin,
-      wideRowHeight: 36,
-      widePadding: 0.25,
+      wideRowHeight: 40,
+      widePadding: 0.2,
       plotHeight: 22,
     });
     const { height, band } = geo;
@@ -83,14 +84,9 @@
 
       items.forEach((item, i) => {
         const b = band(item);
-        svg.append('text')
-          .attr('class', 'item-row-label')
-          .attr('x', margin.left - 16)
-          .attr('y', b.top + b.height / 2)
-          .attr('text-anchor', 'end')
-          .attr('dy', '0.32em')
-          .text(truncate(item, 48))
-          .append('title').text(item);
+        U.drawWideLabel(svg, {
+          x: margin.left, yMid: b.top + b.height / 2, text: item, gutter, fontPx: 12,
+        });
 
         svg.append('rect')
           .attr('class', 'row-band')
@@ -118,7 +114,7 @@
           .style('font-size', '0.7rem')
           .text('×')
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${label}</strong>${truncate(item, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`<strong>${label}</strong>${item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
         return { summary: null, suppressed: true };
@@ -138,7 +134,7 @@
         .attr('tabindex', 0)
         .attr('role', 'img')
         .attr('aria-label', `${label}, ${item}: average ${summary.mean.toFixed(2)} of 4, higher is more positive, ${summary.n} people`)
-        .on('mouseenter focus', (evt) => tip.show(`<strong>${label}</strong>${truncate(item, 60)}<br>
+        .on('mouseenter focus', (evt) => tip.show(`<strong>${label}</strong>${item}<br>
           Average (1=No … 4=Yes a lot): ${U.formatScore(summary.mean)}<br>
           Likely range: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'too few people to estimate a range'}<br>
           ${summary.n} people`, evt))

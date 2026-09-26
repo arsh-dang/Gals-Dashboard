@@ -298,6 +298,108 @@
     return lines;
   }
 
+  // --- Wide-layout row labels ---------------------------------------------
+  // A label gutter sized from the longest label (measured in the real font)
+  // instead of a fixed pixel guess, and labels that wrap onto a second line
+  // rather than being cut off. The full text always stays in a <title>.
+  let measurer = null;
+  const measureCache = new Map();
+  function measureText(text, fontPx, cls = 'item-row-label') {
+    const key = `${cls}|${fontPx}|${text}`;
+    if (measureCache.has(key)) return measureCache.get(key);
+    if (!measurer) {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;visibility:hidden';
+      measurer = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      svg.appendChild(measurer);
+      document.body.appendChild(svg);
+    }
+    measurer.setAttribute('class', cls);
+    measurer.style.fontSize = `${fontPx}px`;
+    measurer.textContent = text;
+    const w = measurer.getComputedTextLength();
+    measureCache.set(key, w);
+    return w;
+  }
+
+  // Greedy wrap by measured width into at most maxLines lines. Only if the
+  // text still does not fit does the last line end in an ellipsis.
+  function wrapToWidth(text, maxPx, fontPx, maxLines = 2, cls = 'item-row-label') {
+    const words = String(text).split(/\s+/).filter(Boolean);
+    const lines = [];
+    let line = '';
+    let i = 0;
+    while (i < words.length) {
+      const next = line ? `${line} ${words[i]}` : words[i];
+      if (measureText(next, fontPx, cls) <= maxPx || !line) {
+        line = next;
+        i += 1;
+      } else if (lines.length < maxLines - 1) {
+        lines.push(line);
+        line = '';
+      } else {
+        break;
+      }
+    }
+    if (i < words.length) {
+      let last = `${line} ${words.slice(i).join(' ')}`;
+      while (last.length > 1 && measureText(`${last}…`, fontPx, cls) > maxPx) last = last.slice(0, -1);
+      line = `${last.trimEnd()}…`;
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  // Width of the label gutter: the longest label on one line, up to `max`;
+  // anything longer wraps onto a second line inside that width.
+  function labelGutter(labels, fontPx, { min = 140, max = 300, pad = 16 } = {}) {
+    const longest = d3.max(labels, (l) => measureText(l, fontPx)) || 0;
+    return Math.ceil(Math.min(max, Math.max(min, longest)) + pad);
+  }
+
+  const PAIR_NOTE = 'Also asked in a similar wording (see the matching row)';
+
+  // A right-aligned row label, vertically centred on yMid. With badge set, a
+  // small "≈" badge (own tooltip, keyboard focusable) sits between the label
+  // and the plot instead of a second line of text that would collide with a
+  // wrapped label.
+  function drawWideLabel(svg, {
+    x, yMid, text, gutter, fontPx = 12, badge = false, tip = null, pad = 16, title = text,
+  }) {
+    const badgeW = badge ? 22 : 0;
+    const lines = wrapToWidth(text, gutter - pad - badgeW, fontPx);
+    const lineH = 1.2;
+    const el = svg.append('text')
+      .attr('class', 'item-row-label')
+      .style('font-size', `${fontPx}px`)
+      .attr('x', x - pad - badgeW).attr('y', yMid)
+      .attr('text-anchor', 'end');
+    lines.forEach((line, i) => {
+      el.append('tspan')
+        .attr('x', x - pad - badgeW)
+        .attr('dy', i === 0 ? `${0.32 - ((lines.length - 1) * lineH) / 2}em` : `${lineH}em`)
+        .text(line);
+    });
+    el.append('title').text(title);
+    if (badge) {
+      const g = svg.append('g')
+        .attr('class', 'pair-badge')
+        .attr('transform', `translate(${x - pad + 2 - 7},${yMid})`)
+        .attr('tabindex', 0)
+        .attr('role', 'img')
+        .attr('aria-label', PAIR_NOTE);
+      g.append('circle').attr('r', 8);
+      g.append('text').attr('dy', '0.35em').attr('text-anchor', 'middle').text('≈');
+      if (tip) {
+        g.on('mouseenter focus', (evt) => tip.show(PAIR_NOTE, evt))
+          .on('mousemove', (evt) => tip.move(evt))
+          .on('mouseleave blur', () => tip.hide());
+      }
+    }
+    return lines.length;
+  }
+
   // Stacked layout: each row is its label line(s), an optional smaller note
   // line (the "≈ wording variant" tag), then a plot band of plotHeight.
   function stackedRows(keys, labelFor, {
@@ -467,11 +569,25 @@
     el.textContent = `Data last updated: ${new Date(window.SIT_DATA.meta.generatedAt).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}`;
   }
 
+  // Labels are measured in the real font, so lay everything out again once it
+  // has loaded (a no-op if it was already cached).
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      measureCache.clear();
+      window.dispatchEvent(new Event('resize'));
+    });
+  }
+
   window.SIT = window.SIT || {};
   window.SIT.utils = {
     cssVar,
     buildActivityColorScale,
     displayLabel,
+    measureText,
+    wrapToWidth,
+    labelGutter,
+    drawWideLabel,
+    PAIR_NOTE,
     buildMarkerScale,
     markerPath,
     legendMarker,

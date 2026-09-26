@@ -25,12 +25,14 @@
 
     const compact = U.isCompact(container, WIDE_MIN_WIDTH);
     const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
+    // Sized from the longest activity name, so no name is ever clipped.
+    const gutter = compact ? 0 : U.labelGutter(counts.map((d) => d.key), 13, { min: 150, max: 300, pad: 14 });
     const margin = compact
       ? {
         top: 4, right: 36, bottom: 28, left: 4,
       }
       : {
-        top: 12, right: 40, bottom: 32, left: 210,
+        top: 12, right: 40, bottom: 32, left: gutter,
       };
     const geo = U.rowGeometry({
       compact,
@@ -76,15 +78,11 @@
         .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
         .attr('y1', margin.top).attr('y2', height - margin.bottom);
 
-      svg.selectAll('text.row-label')
-        .data(counts)
-        .join('text')
-        .attr('class', 'item-row-label')
-        .attr('x', margin.left - 12)
-        .attr('y', (d) => band(d.key).top + band(d.key).height / 2)
-        .attr('text-anchor', 'end')
-        .attr('dy', '0.32em')
-        .text((d) => d.key);
+      counts.forEach((d) => {
+        U.drawWideLabel(svg, {
+          x: margin.left, yMid: band(d.key).top + band(d.key).height / 2, text: d.key, gutter, fontPx: 13, pad: 14,
+        });
+      });
     }
 
     const tip = U.tooltip();

@@ -25,3 +25,7 @@ __pycache__/
 .pytest_cache/
 
 .venv/
+
+# Front-end review screenshots (regenerated locally)
+review/before/
+review/after/

@@ -55,11 +55,10 @@
     if (!facets.length) return;
 
     const width = U.contentWidth(facets[0].cell, 320);
-    const rowH = 24;
+    const rowH = 30;
     const margin = {
       top: 4, right: 44, bottom: 4, left: Math.min(148, Math.round(width * 0.46)),
     };
-    const labelChars = U.charsFor(margin.left - 8, LABEL_FONT);
     const x = d3.scaleLinear().domain([0, 1]).range([margin.left, width - margin.right]);
 
     facets.forEach(({ activityType, denom, cell }) => {
@@ -97,17 +96,11 @@
 
       const y = d3.scaleBand().domain(bars.map((d) => d.item)).range([margin.top, height - margin.bottom]).padding(0.25);
 
-      svg.selectAll('text.label')
-        .data(bars)
-        .join('text')
-        .attr('class', 'item-row-label')
-        .style('font-size', `${LABEL_FONT}px`)
-        .attr('x', margin.left - 8)
-        .attr('y', (d) => y(d.item) + y.bandwidth() / 2)
-        .attr('dy', '0.32em')
-        .attr('text-anchor', 'end')
-        .text((d) => truncate(d.item, labelChars))
-        .append('title').text((d) => d.item);
+      bars.forEach((d) => {
+        U.drawWideLabel(svg, {
+          x: margin.left + 8, yMid: y(d.item) + y.bandwidth() / 2, text: d.item, gutter: margin.left + 8, fontPx: LABEL_FONT, pad: 16,
+        });
+      });
 
       const shown = bars.filter((d) => !d.suppressed);
       const hidden = bars.filter((d) => d.suppressed);

@@ -27,6 +27,7 @@
   };
   const SCALE_TICKS = [1, 2, 3, 4];
   const FACET_LABEL_FONT = 11;
+  const LABEL_FONT = 12;
 
   function activityKeysOrdered(meta) {
     return meta.activityTypes
@@ -66,8 +67,9 @@
     const items = meta.outcomeItems;
     const compact = U.isCompact(container, WIDE_MIN_WIDTH);
     const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
+    const gutter = compact ? 0 : U.labelGutter(items.map((i) => i.item), LABEL_FONT, { min: 200, max: 300 });
     const margin = compact ? COMPACT_MARGIN : {
-      top: 28, right: 24, bottom: 36, left: 340,
+      top: 28, right: 24, bottom: 36, left: gutter,
     };
     // Compact: each activity's dot sits on its own line (legend order) in a
     // band under the label, so seven dots stay separable on a narrow plot
@@ -77,8 +79,8 @@
       keys: items.map((i) => i.item),
       width,
       margin,
-      wideRowHeight: 34,
-      widePadding: 0.15,
+      wideRowHeight: 38,
+      widePadding: 0.1,
       plotHeight: activities.length * 6 + 6,
       noteFor: (key) => (items.find((i) => i.item === key).pairId !== null ? '≈ Also asked in a similar wording (see the matching row)' : null),
     });
@@ -115,25 +117,12 @@
         .attr('x1', (d) => x(d)).attr('x2', (d) => x(d))
         .attr('y1', margin.top).attr('y2', height - margin.bottom);
 
-      const rowLabels = svg.append('g');
+      const labelTip = U.tooltip();
       items.forEach((item) => {
         const b = band(item.item);
-        const g = rowLabels.append('g').attr('transform', `translate(0,${b.top + b.height / 2})`);
-        g.append('text')
-          .attr('class', 'item-row-label')
-          .attr('x', margin.left - 16)
-          .attr('text-anchor', 'end')
-          .attr('dy', '0.32em')
-          .text(truncate(item.item, 48))
-          .append('title').text(item.item);
-        if (item.pairId !== null) {
-          g.append('text')
-            .attr('class', 'pair-tag')
-            .attr('x', margin.left - 16)
-            .attr('dy', '1.3em')
-            .attr('text-anchor', 'end')
-            .text('≈ Also asked in a similar wording (see the matching row)');
-        }
+        U.drawWideLabel(svg, {
+          x: margin.left, yMid: b.top + b.height / 2, text: item.item, gutter, fontPx: LABEL_FONT, badge: item.pairId !== null, tip: labelTip,
+        });
       });
 
       svg.selectAll('rect.row-band')
@@ -162,13 +151,13 @@
           .style('font-size', '0.7rem')
           .text('×')
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${cell.activityType}</strong>${truncate(cell.item, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`<strong>${cell.activityType}</strong>${cell.item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
         return;
       }
       const ci = U.ciDisplayBounds(cell);
-      const tooltipHtml = `<strong>${cell.activityType}</strong>${truncate(cell.item, 60)}<br>
+      const tooltipHtml = `<strong>${cell.activityType}</strong>${cell.item}<br>
             Average (1=No … 4=Yes a lot): ${U.formatScore(cell.mean)}<br>
             Likely range: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'too few people to estimate a range'}<br>
             ${cell.n} people${cell.unknownN ? `<br><span class="tt-muted">${cell.unknownN} more answered "I do not know" (left out of the average)</span>` : ''}`;
@@ -238,14 +227,12 @@
     const width = U.contentWidth(facets[0].cell, 320);
     // Phone-width panels wrap each label onto two lines instead of cutting it
     // off - truncated, several outcome wordings are indistinguishable.
-    const narrow = width < 420;
-    const rowHeight = narrow ? 28 : 20;
+    const rowHeight = 28;
     // Labels get just over half the panel: the plot only needs room for four
     // scale positions, and item wording is what tells two rows apart.
     const margin = {
       top: 4, right: 10, bottom: 4, left: Math.round(width * 0.52),
     };
-    const labelChars = U.charsFor(margin.left - 8, FACET_LABEL_FONT);
     const height = margin.top + margin.bottom + items.length * rowHeight;
     const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
 
@@ -269,23 +256,9 @@
 
       items.forEach((item, i) => {
         const cy = margin.top + i * rowHeight + rowHeight / 2;
-        const label = svg.append('text')
-          .attr('class', 'item-row-label')
-          .style('font-size', `${FACET_LABEL_FONT}px`)
-          .attr('x', margin.left - 8).attr('y', cy)
-          .attr('text-anchor', 'end');
-        if (narrow) {
-          const lines = U.wrapLines(item.item, labelChars, 2);
-          lines.forEach((line, li) => {
-            label.append('tspan')
-              .attr('x', margin.left - 8)
-              .attr('dy', li === 0 ? `${-(lines.length - 1) * 0.5 + 0.32}em` : '1em')
-              .text(line);
-          });
-        } else {
-          label.attr('dy', '0.32em').text(truncate(item.item, labelChars));
-        }
-        label.append('title').text(item.item);
+        U.drawWideLabel(svg, {
+          x: margin.left + 8, yMid: cy, text: item.item, gutter: margin.left + 8, fontPx: FACET_LABEL_FONT, pad: 16, tip,
+        });
 
         const rows = ratings.filter((r) => r.item === item.item && r.activityType === activityType);
         const summary = U.summarizeScores(rows);
@@ -299,7 +272,7 @@
             .style('font-size', '0.65rem')
             .text('×')
             .attr('tabindex', 0)
-            .on('mouseenter focus', (evt) => tip.show(`<strong>${activityType}</strong>${truncate(item.item, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
+            .on('mouseenter focus', (evt) => tip.show(`<strong>${activityType}</strong>${item.item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
             .on('mousemove', (evt) => tip.move(evt))
             .on('mouseleave blur', () => tip.hide());
           return;
@@ -321,7 +294,7 @@
           .attr('tabindex', 0)
           .attr('role', 'img')
           .attr('aria-label', `${item.item}: average ${summary.mean.toFixed(2)} of 4, higher is more positive, ${summary.n} people`)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${activityType}</strong>${truncate(item.item, 60)}<br>
+          .on('mouseenter focus', (evt) => tip.show(`<strong>${activityType}</strong>${item.item}<br>
             Average (1=No … 4=Yes a lot): ${U.formatScore(summary.mean)}<br>
             Likely range: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'too few people to estimate a range'}<br>
             ${summary.n} people`, evt))
@@ -380,11 +353,11 @@
     if (!facets.length) return;
 
     const width = U.contentWidth(facets[0].cell, 320);
-    const rowH = 22;
+    const rowH = 26;
+    const shortName = (a) => a.replace(' program', '').replace(' or lunchtime activity', '');
     const margin = {
-      top: 4, right: 8, bottom: 4, left: Math.min(118, Math.round(width * 0.38)),
+      top: 4, right: 8, bottom: 4, left: Math.min(150, Math.round(width * 0.42)),
     };
-    const labelChars = U.charsFor(margin.left - 8, FACET_LABEL_FONT);
     // Fixed -100%..100% domain on every facet - not auto-scaled to each
     // item's own max, so bar length means the same thing everywhere.
     const x = d3.scaleLinear().domain([-1, 1]).range([margin.left, width - margin.right]);
@@ -414,13 +387,9 @@
       rowsData.forEach((d) => {
         const rowY = yScale(d.activityType);
 
-        svg.append('text')
-          .attr('x', margin.left - 8).attr('y', rowY + yScale.bandwidth() / 2)
-          .attr('text-anchor', 'end').attr('dy', '0.32em')
-          .attr('class', 'item-row-label')
-          .style('font-size', `${FACET_LABEL_FONT}px`)
-          .text(truncate(d.activityType.replace(' program', '').replace(' or lunchtime activity', ''), labelChars))
-          .append('title').text(d.activityType);
+        U.drawWideLabel(svg, {
+          x: margin.left + 8, yMid: rowY + yScale.bandwidth() / 2, text: shortName(d.activityType), gutter: margin.left + 8, fontPx: FACET_LABEL_FONT, pad: 16, title: d.activityType,
+        });
 
         if (d.suppressed) {
           svg.append('rect')
@@ -517,15 +486,16 @@
 
     const compact = U.isCompact(container, WIDE_MIN_WIDTH);
     const width = compact ? container.clientWidth : Math.max(container.clientWidth || 640, WIDE_MIN_WIDTH);
+    const gutter = compact ? 0 : U.labelGutter(rows.map((r) => r.item), LABEL_FONT, { min: 200, max: 300 });
     const margin = compact ? COMPACT_MARGIN : {
-      top: 28, right: 24, bottom: 8, left: 340,
+      top: 28, right: 24, bottom: 8, left: gutter,
     };
     const geo = U.rowGeometry({
       compact,
       keys: rows.map((r) => r.item),
       width,
       margin,
-      wideRowHeight: 30,
+      wideRowHeight: 36,
       widePadding: 0.25,
       plotHeight: 14,
       gap: 8,
@@ -564,12 +534,9 @@
       const b = band(r.item);
       const cy = b.top + b.height / 2;
       if (!compact) {
-        svg.append('text')
-          .attr('class', 'item-row-label')
-          .attr('x', margin.left - 16).attr('y', cy)
-          .attr('text-anchor', 'end').attr('dy', '0.32em')
-          .text(truncate(r.item, 48))
-          .append('title').text(r.item);
+        U.drawWideLabel(svg, {
+          x: margin.left, yMid: cy, text: r.item, gutter, fontPx: LABEL_FONT, badge: r.pairId !== null, tip,
+        });
       }
 
       if (r.suppressed) {
@@ -580,7 +547,7 @@
           .style('font-size', '0.7rem')
           .text('×')
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`${truncate(r.item, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`${r.item}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
         return;
@@ -606,7 +573,7 @@
         .attr('tabindex', 0)
         .attr('role', 'img')
         .attr('aria-label', `${r.item}: average ${r.mean.toFixed(2)} of 4, higher is more positive, ${r.n} people`)
-        .on('mouseenter focus', (evt) => tip.show(`${truncate(r.item, 60)}<br>
+        .on('mouseenter focus', (evt) => tip.show(`${r.item}<br>
           Average (1=No … 4=Yes a lot): ${U.formatScore(r.mean)}<br>
           Likely range: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'too few people to estimate a range'}<br>
           ${r.n} people`, evt))
