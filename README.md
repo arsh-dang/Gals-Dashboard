@@ -1,195 +1,86 @@
 # STEM Impact Tracker
 
-A static dashboard reporting on a survey of school-age girls' participation in
-STEM activities (GALS and related programmes), for two audiences: programme
-providers/funders (`site/index.html`) and individual teachers
-(`site/teacher.html`), plus a filterable open-text response list
-(`site/open-text.html`).
+A prototype dashboard for a survey about students' participation in STEM
+activities, including the Girls as Leaders in STEM (GALS) program. It was built
+for Deakin University's School of Education.
 
-**All data on every view is synthetic mock data.** Real survey collection is
-pending Deakin ethics approval.
+**Every number in it is made-up test data.** It is a prototype, not a live
+reporting tool. The real survey has not started. It is waiting for Deakin ethics
+approval. Do not put real student data in this repository.
 
-## Running locally
+Live prototype: <https://arsh-dang.github.io/Gals-Dashboard/>
 
-The build step reads the CSVs in `./data/` and writes classic-script JS data
-files into `site/data/` (no `fetch`/JSON, so the site works when opened
-directly via `file://`, with no server):
+## What it shows
 
-```
-node build/build.js
-```
+There are three pages.
 
-Then open `site/index.html` by double-clicking it, or serve the `site/`
-folder with any static file server if you prefer:
+**Program overview** (`site/index.html`), for program providers and funders:
 
-```
-npx serve site
-```
+1. Who took part: how many people answered about each activity, and a table of
+   region by year level.
+2. What students reported, by activity: how positive the answers were for 12
+   statements, in three chart types. There is also a separate card for a general
+   question that is not about one activity.
+3. Skills, and how students see themselves.
+4. A comparison of the six regions.
+5. Future plans and subject choice: GALS participants against everyone else,
+   what influences subject and job choices (split by gender group), and a list
+   of jobs students imagine doing.
 
-Re-run `node build/build.js` any time the CSVs in `./data/` change.
+**Teacher view** (`site/teacher.html`): a teacher picks a school and sees that
+school's answers in detail. Schools with fewer than 5 students are hidden. This
+is not a real login.
 
-## Deploying to Netlify
+**Written answers** (`site/open-text.html`): a list of free-text answers that
+you can filter by question, region and activity.
 
-`netlify.toml` at the project root already sets the build command
-(`npm run build`, which runs `node build/build.js`) and the publish directory
-(`site`), so either of Netlify's standard flows works with no extra setup:
+Results based on fewer than 5 people are always hidden and marked.
 
-- **Drag-and-drop**: run `node build/build.js` locally, then drag the `site/`
-  folder onto [app.netlify.com/drop](https://app.netlify.com/drop). This
-  skips the build step entirely: you're deploying the already-built output.
-- **Connect a repo**: point a new Netlify site at this repository. It reads
-  `netlify.toml` automatically and runs the build on every push, so the live
-  site always reflects the latest `./data/` CSVs.
+## Quick start
 
-No environment variables or secrets are needed. No analytics or third-party
-trackers are included, intentionally; see `data/` notes below.
-
-## Deploying to GitHub Pages
-
-This repo also includes a GitHub Actions workflow at
-`.github/workflows/deploy-pages.yml` that builds the static site and deploys the
-`site/` folder to GitHub Pages on every push to `main`.
-
-Once the repository is published in GitHub settings (Settings → Pages → Source:
-"GitHub Actions"), the public URL will be:
-
-`https://arsh-dang.github.io/Gals-Dashboard/`
-
-This is a good fit for the project because the site is already a static HTML/CSS/JS
-build and does not require a backend.
-
-`site/data/*.js` filenames don't change between deploys (no content hash), so
-`netlify.toml` sets `Cache-Control: must-revalidate` on `/data/*` - otherwise a
-browser that cached one before a data regeneration has no reason to fetch a
-fresh copy later, and silently keeps showing an old respondent count with no
-error. If a live-site bug report shows numbers that don't match the current
-CSVs, check the "Data snapshot" date in the page footer against the last
-commit to `site/data/` before assuming the counting logic is wrong.
-
-## Data
-
-`data/*.csv` is generated, not hand-edited: the synthetic exports in `data/raw/` go
-through `backend/ingest.py` and `backend/export.py` (see `docs/backend_design.md`), then
-`npm run build` turns the CSVs into `site/data/*.js`. The real survey definition
-(`backend/private/survey_v3.qsf`) is git-ignored; ingest needs it, the build does not.
-
-- `data/respondents.csv`, `data/activity_ratings.csv`, `data/aspirations.csv`,
-  `data/subject_career.csv`: required. See
-  `.claude/skills/sit-dashboard/references/data-contract.md` for the schema.
-  `respondents.csv` should include a `did_gals` column; if a future drop omits
-  it, the build falls back to deriving it from GALS activity participation.
-- `data/battery_selections.csv`, `data/open_text.csv`: optional. The
-  Skills-and-identity and Open-text views degrade to an explicit empty state
-  (never invented data) when these aren't present.
-- `data/open_text_themes.csv`: optional, only relevant once `open_text.csv`
-  exists. Columns `ResponseId,question,theme` populate the theme column
-  on the open-text list once coding is done.
-
-## Notes moved off the dashboard footer
-
-The on-page "Data notes" section is trimmed to the three things a principal or
-teacher reading cold actually needs: it's synthetic data, groups under five are
-suppressed, and the scale runs 1 = No to 4 = Yes a lot (higher is better). The
-detail below is for whoever maintains this, so it's here instead:
-
-- "General STEM outcomes (not activity-specific)" is a real question block
-  asked of everyone, shown on its own in the Outcomes section. It is not a
-  real 8th activity, so it's excluded from every activity and region
-  comparison elsewhere on the page.
-- Colours follow the real Deakin Dashboard Style Guide (Nov 2025); see
-  `site/css/tokens.css` for sourcing notes on where each value comes from.
-- The option "Subjects I need for a future job" displays on the page as
-  "Knowing which subjects I need for a future job": a display-only override
-  of the raw survey wording, requested by the team so it reads as being about
-  knowing the requirement rather than the subjects themselves. The mapping
-  lives in `site/js/utils.js` (`LABEL_OVERRIDES` / `U.displayLabel`) so future
-  label overrides go in one place rather than being hardcoded at each point
-  of display. The underlying survey text is unchanged and is still the
-  join/sort key everywhere else in the pipeline.
-- Source CSVs: `respondents.csv`, `activity_ratings.csv`,
-  `battery_selections.csv`, `aspirations.csv`, `subject_career.csv` and
-  `open_text.csv` from the reshaped Qualtrics export. If a future data drop
-  removes any of these, the affected view shows an explicit empty state
-  rather than stale or invented data.
-
-### Moved here during the wording review
-
-These were visible developer notes on the public pages and were removed from them:
-
-- **Teacher page footer:** some respondents' raw `school` and `school_level` values in the source CSV contradict the data contract (populated on a Post-school row, which should be blank; the `school` value often looks like a leaked open-text answer). This recurred in the latest data drop (7 rows, up from 1). Worth flagging to whoever maintains the reshape script. Both fields are treated as blank rather than shown.
-- **Teacher and open-text page footers:** colours follow the Deakin Dashboard Style Guide (Nov 2025); see `site/css/tokens.css` for sourcing notes.
-- **Open-text page, "not available" state:** it appears when `open_text.csv` is missing from `./data/`. Columns are `ResponseId,question,source_column,response`; re-run `node build/build.js` after adding it. Theme coding slots in the same way with `open_text_themes.csv` (`ResponseId,question,theme`).
-- **Skills and identity, "not available" state:** appears when `battery_selections.csv` is missing.
-
-Wording conventions used on the pages: "program" (Australian spelling), "people who answered" instead of "respondents", "year level", and small results are "hidden for privacy (fewer than 5 people)". See `wording_review.md` for the full list of changes.
-
-## Caption reasoning (trimmed from the page)
-
-The on-page captions were cut to one or two sentences each for the Friday
-forum audience (teachers and principals reading cold, on their own devices,
-with about ten seconds per chart). Where a sentence was cut rather than just
-shortened, the fuller version is kept here rather than lost:
-
-- **Participation by activity**: check whether any one activity dominates
-  the chart, and do not caption a "largest" activity unless the gap is real.
-  Early data drops had GALS dominating the chart outright, which read as a
-  headline finding it wasn't (a sampling artifact of who was easiest to
-  recruit early on, not a program effect). Re-check after each regeneration.
-- **Outcomes by activity**: the "≈" wording-variant tag exists because three
-  outcome statements appear twice with near-identical phrasing - a survey
-  artifact (one activity's question block used slightly different wording
-  than the rest), not missing or duplicated data. Shown as separate adjacent
-  rows so the pattern is visible instead of looking like a gap.
-- **Regional comparison**: a region with few responses can show suppressed
-  cells. If a whole region looks empty, that is the honest state of the
-  sample (thin regional recruitment), not a rendering gap - check that
-  region's response count first. How many cells are suppressed changes
-  whenever the data does, so don't quote a number.
-- **Aspirations (GALS vs everyone else)**: the "Diff" column's confidence
-  intervals usually overlap. That overlap is the honest signal that this
-  sample size cannot support a claim of significance either way - read the
-  difference alongside the interval, not instead of it. The mock generator
-  has no built-in assumption that GALS improves aspirations, so expect small
-  differences that go in both directions, not a rendering issue. Check the
-  size and direction of the gaps after each regeneration rather than relying
-  on a remembered figure.
-- **Subject-choice / career-choice / subject-interest / self-perception
-  (all four gender-split charts)**: female respondents include every GALS
-  participant, since GALS is a girls' programme. Any gender gap across the
-  whole sample therefore partly reflects who took part in the programme
-  rather than gender alone - and that confound doesn't go away with real
-  data either, so any gender comparison here should always be read alongside
-  programme participation, not instead of it.
-- **Programme influence panel**: gets its own panel because "the STEM
-  activities and programmes" option appears in both the subject-choice and
-  career-choice questions, and is the closest thing in the survey to a
-  direct measure of the programmes' own influence - otherwise it would sit
-  as one row among ten and be easy to miss. The gap shown is built into the
-  mock data so the panel has something to show; real data may show a smaller
-  gap, no gap, or a gap in the other direction.
-- **Self-perception card tint**: shown on a pink-tinted card, not the same
-  white as the influence charts above it, because it's a different kind of
-  question (self-image, not what influences a decision) - the tint is a
-  glance-level signal of that, not a lighter version of the same chart.
-
-## Icons and link-preview image
-
-`site/favicon.svg` is the hand-authored source for every icon. The PNGs
-(`apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `og-image.png`) are
-committed binaries, not generated during the Netlify build - regenerating
-them needs Playwright (a full browser download), which isn't worth adding as
-a build dependency for an asset that only changes when the design does.
-Regenerate them after editing `favicon.svg` or the preview text with:
+You need Node.js 18 or newer. This was tested with Node 24 on macOS.
 
 ```
-npm install --no-save playwright
-node scripts/generate-icon-assets.js
+git clone https://github.com/arsh-dang/Gals-Dashboard.git
+cd Gals-Dashboard
+npm run build
+python3 -m http.server 8000 --directory site
 ```
 
-## A note on the mock-data banner
+Then open <http://localhost:8000> in a browser. You can also double-click
+`site/index.html`. It works without a server.
 
-Every page carries a prominent mock-data banner at the top (not tucked in a
-footer) because this dashboard is designed to be publicly reachable once
-deployed. Anyone who finds the URL without context must not mistake invented
-numbers for a real programme's results. Don't remove or downplay it when
-customising the design.
+`npm run build` reads the CSV files in `data/` and writes `site/data/*.js`. Run
+it again whenever the CSVs change. It always changes a timestamp in
+`site/data/meta.js`, so `git status` shows a few modified files after a build.
+That is normal.
+
+## Running the tests
+
+The tests cover the data pipeline in `backend/`. They need Python 3.12.
+
+```
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r backend/requirements.txt
+python -m pytest backend/tests
+```
+
+Without the private survey file the result is `80 passed, 3 skipped`. The three
+skipped tests need `backend/private/survey_v3.qsf`, which is not in this
+repository. See `docs/MAINTAINER.md`.
+
+## Where to read next
+
+| If you want to... | Read |
+|---|---|
+| Understand what exists and how to do common jobs | `docs/HANDOVER.md` |
+| Know what every data field means | `docs/DATA_DICTIONARY.md` |
+| Change the code, or fix something fragile | `docs/MAINTAINER.md` |
+| See what is still unclear | `docs/QUESTIONS_FOR_ARSH.md` |
+| Read the database design and the "before real data" checklist | `docs/backend_design.md` |
+| See the list of wording changes | `wording_review.md` |
+
+## Licence and use
+
+No licence file is in this repository. Ask the team before reusing the code.
