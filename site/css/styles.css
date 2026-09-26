@@ -1108,7 +1108,23 @@ svg text { font-family: var(--font-body); }
 }
 
 /* --- Print: the overview as a clean PDF ------------------------------------ */
-@page { size: A4; margin: 30mm 12mm 14mm; }
+/* The mock-data warning is printed in the top margin of every page (a page
+   margin box), so no printed page can be shared without it. The on-screen
+   banner still prints in full on page 1. */
+@page {
+  size: A4;
+  margin: 20mm 12mm 14mm;
+  @top-center {
+    content: "MOCK DATA: every number in this report is made-up test data. Not real survey results.";
+    font-family: 'Open Sans', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: #AD4206;
+    border-bottom: 1.5pt solid #F76919;
+    vertical-align: bottom;
+    padding-bottom: 2mm;
+  }
+}
 
 @media print {
   html, body { background: #fff; }
@@ -1117,20 +1133,13 @@ svg text { font-family: var(--font-body); }
   .highlight-field, .data-table-toggle, details, .jobs-imagined-more,
   .viz-tooltip, #outcomes-single { display: none !important; }
   .overview-bar { grid-template-columns: 1fr; }
-  /* The mock-data banner repeats at the top of every printed page. */
-  .banner-mock {
-    position: fixed;
-    top: -24mm;
-    left: 0;
-    right: 0;
-    margin: 0;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
+  .banner-mock { break-inside: avoid; }
   .card { box-shadow: none; break-inside: avoid; page-break-inside: avoid; }
   .view-section__heading { break-after: avoid; page-break-after: avoid; }
   .view-section { break-before: auto; }
   .card--summary, .kpi-row, .data-notes { break-inside: avoid; }
+  /* A card taller than a page has to break; its panels and charts don't. */
+  .facet-grid__cell, .chart-scroll, .legend, .card__header, .card__note { break-inside: avoid; page-break-inside: avoid; }
   .chart-scroll { overflow: visible; }
   svg { max-width: 100%; height: auto; }
   a { color: inherit; text-decoration: none; }
