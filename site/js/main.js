@@ -22,11 +22,13 @@
   const didGalsColors = { gals: U.cssVar('--series-7'), nonGals: U.cssVar('--series-6') };
   // --series-3, not --series-7, so "Male" doesn't collide with the GALS
   // colour directly above it in this same section.
+  // Neutral categorical colours, the same on every chart, with a distinct
+  // shape per group as well. Not pink for female and blue for male.
   const genderColors = {
-    Female: U.cssVar('--series-2'),
-    Male: U.cssVar('--series-3'),
-    'Non-binary / third gender': U.cssVar('--series-4'),
-    'Prefer not to say': U.cssVar('--series-8'),
+    Female: U.cssVar('--brand-primary'),
+    Male: U.cssVar('--series-8'),
+    'Non-binary / third gender': U.cssVar('--series-3'),
+    'Prefer not to say': U.cssVar('--series-6'),
   };
 
   const { aspirations, subjectCareer, openText } = window.SIT_DATA;
@@ -38,6 +40,8 @@
     mobileActivity: '',
     battery: 'skills',
     jobsExpanded: false,
+    activityHighlight: '',
+    regionHighlight: '',
   };
   const JOBS_PREVIEW_COUNT = 6;
 
@@ -103,14 +107,14 @@
     el.textContent = meta.smallCellThreshold;
   });
 
-  regionSelect.addEventListener('change', () => { state.region = regionSelect.value; renderAll(); });
-  schoolLevelSelect.addEventListener('change', () => { state.schoolLevel = schoolLevelSelect.value; renderAll(); });
+  regionSelect.addEventListener('change', () => { state.region = regionSelect.value; renderAfterFilter(); });
+  schoolLevelSelect.addEventListener('change', () => { state.schoolLevel = schoolLevelSelect.value; renderAfterFilter(); });
   document.getElementById('filter-reset').addEventListener('click', () => {
     state.region = '';
     state.schoolLevel = '';
     regionSelect.value = '';
     schoolLevelSelect.value = '';
-    renderAll();
+    renderAfterFilter();
   });
 
   document.querySelectorAll('[data-outcomes-mode]').forEach((btn) => {
@@ -156,11 +160,73 @@
   function updateFilterStatus() {
     const n = U.countDistinctIds(filteredRespondents());
     const status = document.getElementById('filter-status');
-    if (!state.region && !state.schoolLevel) {
-      status.textContent = `Showing all ${respondents.length} people who answered`;
-    } else {
-      status.textContent = `Showing ${n} of ${respondents.length} people who answered`;
-    }
+    const active = [state.region, state.schoolLevel].filter(Boolean).length;
+    const count = active ? `${active} filter${active === 1 ? '' : 's'} on` : 'No filters on';
+    const showing = active
+      ? `Showing ${n} of ${respondents.length} people who answered`
+      : `Showing all ${respondents.length} people who answered`;
+    status.innerHTML = `<span class="filter-status__count">${count}</span>${showing}`;
+  }
+
+  // Filter changes get a short fade on the charts (and only filter changes:
+  // not resizes, not the first draw). Skipped entirely with reduced motion,
+  // via the CSS.
+  function renderAfterFilter() {
+    renderAll();
+    const grid = document.querySelector('.view-grid');
+    grid.classList.remove('is-refreshing');
+    void grid.offsetWidth;
+    grid.classList.add('is-refreshing');
+    setTimeout(() => grid.classList.remove('is-refreshing'), 400);
+  }
+
+  // --- Highlight one series in a dot plot -----------------------------------
+  // The default view stays a comparison of all series; the selector, or
+  // hovering / focusing a legend item, keeps one at full strength and fades
+  // the rest. The selection survives re-renders (filters, resize).
+  function wireHighlight({ select, keys, chartId, legendId, stateKey }) {
+    keys.forEach((key) => {
+      const opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = key;
+      select.appendChild(opt);
+    });
+    select.addEventListener('change', () => {
+      state[stateKey] = select.value;
+      applyHighlight(chartId, legendId, state[stateKey]);
+    });
+  }
+
+  function applyHighlight(chartId, legendId, key) {
+    U.setEmphasis(document.getElementById(chartId), key || null);
+    document.querySelectorAll(`#${legendId} .legend__item--button`).forEach((b) => {
+      b.setAttribute('aria-pressed', String(!!key && b.dataset.key === key));
+    });
+  }
+
+  function buildInteractiveLegend(container, keys, markerOf, colorOf, chartId, stateKey, selectId) {
+    container.innerHTML = '';
+    keys.forEach((key) => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'legend__item legend__item--button';
+      item.dataset.key = key;
+      item.setAttribute('aria-pressed', String(state[stateKey] === key));
+      item.innerHTML = `${U.legendMarker(markerOf(key), colorOf(key))}${key}`;
+      const chart = () => document.getElementById(chartId);
+      item.addEventListener('mouseenter', () => U.setEmphasis(chart(), key));
+      item.addEventListener('focus', () => U.setEmphasis(chart(), key));
+      item.addEventListener('mouseleave', () => U.setEmphasis(chart(), state[stateKey] || null));
+      item.addEventListener('blur', () => U.setEmphasis(chart(), state[stateKey] || null));
+      // Clicking a legend item sets (or clears) the same highlight as the selector.
+      item.addEventListener('click', () => {
+        state[stateKey] = state[stateKey] === key ? '' : key;
+        document.getElementById(selectId).value = state[stateKey];
+        applyHighlight(chartId, container.id, state[stateKey]);
+      });
+      container.appendChild(item);
+    });
+    applyHighlight(chartId, container.id, state[stateKey]);
   }
 
   // --- Summary layer: plain sentences above the charts --------------------
@@ -204,13 +270,7 @@
   const regionMarkerFor = U.buildMarkerScale(meta.regions.map((r) => r.key));
 
   function buildActivityLegend(container, activities) {
-    container.innerHTML = '';
-    activities.forEach((key) => {
-      const item = document.createElement('span');
-      item.className = 'legend__item';
-      item.innerHTML = `${U.legendMarker(markerFor(key), activityColorScale(key))}${key}`;
-      container.appendChild(item);
-    });
+    buildInteractiveLegend(container, activities, markerFor, activityColorScale, 'chart-outcomes', 'activityHighlight', 'outcomes-highlight');
   }
 
   // These replace the card subtitle in index.html on every render, so they
@@ -250,6 +310,7 @@
     const showLegendAndNote = state.outcomesMode !== 'distribution';
     noteEl.style.display = showLegendAndNote ? '' : 'none';
 
+    document.getElementById('outcomes-highlight-field').style.display = state.outcomesMode === 'average' ? '' : 'none';
     if (state.outcomesMode === 'average') {
       window.SIT.charts.outcomes.renderAverage(chartEl, rr, meta, activityColorScale);
       buildActivityLegend(legendEl, activities);
@@ -330,12 +391,7 @@
 
     const legend = document.getElementById('regional-legend');
     legend.innerHTML = '';
-    meta.regions.forEach((r) => {
-      const item = document.createElement('span');
-      item.className = 'legend__item';
-      item.innerHTML = `${U.legendMarker(regionMarkerFor(r.key), regionColorScale(r.key))}${r.key}`;
-      legend.appendChild(item);
-    });
+    buildInteractiveLegend(legend, meta.regions.map((r) => r.key), regionMarkerFor, regionColorScale, 'chart-regional', 'regionHighlight', 'regional-highlight');
 
     const tableContainer = document.getElementById('table-regional');
     tableContainer.innerHTML = '';
@@ -512,6 +568,21 @@
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(renderAll, 200);
+  });
+
+  wireHighlight({
+    select: document.getElementById('outcomes-highlight'),
+    keys: window.SIT.charts.outcomes.activityKeysOrdered(meta),
+    chartId: 'chart-outcomes',
+    legendId: 'outcomes-activity-legend',
+    stateKey: 'activityHighlight',
+  });
+  wireHighlight({
+    select: document.getElementById('regional-highlight'),
+    keys: meta.regions.map((r) => r.key),
+    chartId: 'chart-regional',
+    legendId: 'regional-legend',
+    stateKey: 'regionHighlight',
   });
 
   renderAll();

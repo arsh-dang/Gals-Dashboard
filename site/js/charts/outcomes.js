@@ -88,7 +88,7 @@
     const bw = items.length ? band(items[0].item).height : 0;
     const inset = compact ? 4 : 8;
     const sub = d3.scalePoint().domain(activities).range([-bw / 2 + inset, bw / 2 - inset]);
-    const dotR = compact ? 4 : 5;
+    const dotR = compact ? 5 : 6.5;
     const markerFor = U.buildMarkerScale(activities);
 
     const svg = d3.select(container).append('svg')
@@ -163,18 +163,23 @@
 
       if (ci) {
         dotG.append('line')
-          .attr('class', 'ci-whisker')
+          .attr('class', 'ci-whisker series-mark')
+          .attr('data-key', cell.activityType)
           .attr('x1', x(ci.low)).attr('x2', x(ci.high))
           .attr('y1', cy).attr('y2', cy)
           .attr('stroke', colorScale(cell.activityType))
-          .attr('stroke-width', 1.5)
-          .attr('opacity', 0.45);
+          .attr('stroke-width', 1.25)
+          .attr('stroke-opacity', 0.3);
       }
 
       dotG.append('path')
         .attr('transform', `translate(${x(cell.display)},${cy})`)
         .attr('d', U.markerPath(markerFor(cell.activityType), dotR))
+        .attr('class', 'series-mark')
+        .attr('data-key', cell.activityType)
         .attr('fill', colorScale(cell.activityType))
+        .attr('stroke', U.markOutline(colorScale(cell.activityType)))
+        .attr('stroke-width', 1)
         .attr('tabindex', 0)
         .attr('role', 'img')
         .attr('aria-label', `${cell.activityType}, ${cell.item}: average ${cell.mean.toFixed(2)} of 4, higher is more positive, ${cell.n} people${ci ? `, likely range ${U.formatScore(ci.low)} to ${U.formatScore(ci.high)}` : ''}`)
@@ -263,6 +268,7 @@
         const summary = U.summarizeScores(rows);
         const suppressed = U.isSuppressed(rows.length);
 
+        if (rows.length === 0) return; // wording never asked of this activity
         if (suppressed) {
           U.drawHiddenChip(svg, {
             x: width - margin.right + 8, yMid: cy, count: 1, total: 1, names: [activityType], context: item.item, tip,
@@ -346,7 +352,8 @@
 
     const width = U.contentWidth(facets[0].cell, 320);
     const rowH = 26;
-    const shortName = (a) => a.replace(' program', '').replace(' or lunchtime activity', '');
+    // 'University programs' -> 'University' (not 'Universitys').
+    const shortName = (a) => a.replace(/ programs?$/, '').replace(' or lunchtime activity', '');
     const margin = {
       top: 4, right: 8, bottom: 4, left: Math.min(150, Math.round(width * 0.42)),
     };
@@ -383,6 +390,16 @@
           x: margin.left + 8, yMid: rowY + yScale.bandwidth() / 2, text: shortName(d.activityType), gutter: margin.left + 8, fontPx: FACET_LABEL_FONT, pad: 16, title: d.activityType,
         });
 
+        if (d.total === 0) {
+          // This wording was never asked of this activity: say so plainly.
+          svg.append('text')
+            .attr('x', margin.left + 6).attr('y', rowY + yScale.bandwidth() / 2)
+            .attr('dy', '0.32em')
+            .style('font-size', '0.62rem')
+            .attr('fill', U.cssVar('--text-secondary'))
+            .text('not asked');
+          return;
+        }
         if (d.suppressed) {
           svg.append('rect')
             .attr('x', margin.left).attr('width', width - margin.left - margin.right)
@@ -531,6 +548,7 @@
         });
       }
 
+      if (r.n === 0) return; // wording never asked here: nothing to hide
       if (r.suppressed) {
         U.drawHiddenChip(svg, {
           x: width - margin.right + 10, yMid: cy, count: 1, total: 1, names: ['All people who answered'], context: r.item, tip,

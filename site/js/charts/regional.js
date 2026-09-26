@@ -12,7 +12,8 @@
   const SCALE_TICKS = [1, 2, 3, 4];
 
   function buildRegionColorScale(regions) {
-    const vars = ['--series-1', '--series-2', '--series-3', '--series-4', '--series-5', '--series-6'];
+    // No yellow (--series-5): it fails contrast for thin marks on white.
+    const vars = ['--series-1', '--series-2', '--series-3', '--series-4', '--series-8', '--series-6'];
     const map = new Map(regions.map((r, i) => [r, U.cssVar(vars[i % vars.length])]));
     return (r) => map.get(r) || U.cssVar('--text-muted');
   }
@@ -55,7 +56,7 @@
     const bw = items.length ? band(items[0].item).height : 0;
     const inset = compact ? 4 : 8;
     const sub = d3.scalePoint().domain(regions).range([-bw / 2 + inset, bw / 2 - inset]);
-    const dotR = compact ? 4 : 5;
+    const dotR = compact ? 5 : 6.5;
 
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
@@ -123,18 +124,23 @@
 
         if (ci) {
           svg.append('line')
-            .attr('class', 'ci-whisker')
+            .attr('class', 'ci-whisker series-mark')
+            .attr('data-key', region)
             .attr('x1', x(ci.low)).attr('x2', x(ci.high))
             .attr('y1', cy).attr('y2', cy)
             .attr('stroke', regionColorScale(region))
-            .attr('stroke-width', 1.5)
-            .attr('opacity', 0.45);
+            .attr('stroke-width', 1.25)
+            .attr('stroke-opacity', 0.3);
         }
 
         svg.append('path')
           .attr('transform', `translate(${x(display)},${cy})`)
           .attr('d', U.markerPath(markerFor(region), dotR))
+          .attr('class', 'series-mark')
+          .attr('data-key', region)
           .attr('fill', regionColorScale(region))
+          .attr('stroke', U.markOutline(regionColorScale(region)))
+          .attr('stroke-width', 1)
           .attr('tabindex', 0)
           .attr('role', 'img')
           .attr('aria-label', `${region}, ${item.item}: average ${summary.mean.toFixed(2)} of 4, higher is more positive, ${summary.n} people${ci ? `, likely range ${U.formatScore(ci.low)} to ${U.formatScore(ci.high)}` : ''}`)

@@ -184,7 +184,7 @@
           .attr('transform', `translate(${x(p.pct)},${cy})`)
           .attr('d', U.markerPath(p.group.marker, 5.5))
           .attr('fill', p.group.color)
-          .attr('stroke', U.cssVar('--surface-card'))
+          .attr('stroke', U.markOutline(p.group.color))
           .attr('stroke-width', 1)
           .attr('tabindex', 0)
           .attr('role', 'img')

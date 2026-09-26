@@ -16,7 +16,9 @@
     return styleCache.get(name);
   }
 
-  const SERIES_VARS = ['--series-1', '--series-2', '--series-3', '--series-4', '--series-5', '--series-6', '--series-7', '--series-8'];
+  // Yellow (--series-5) is left out of the series palette: it fails contrast
+  // for thin marks and lines on white. It stays in tokens.css for filled areas.
+  const SERIES_VARS = ['--series-1', '--series-2', '--series-3', '--series-4', '--series-8', '--series-6', '--series-7'];
 
   function seriesColor(index) {
     return cssVar(SERIES_VARS[index % SERIES_VARS.length]);
@@ -45,7 +47,42 @@
   // Marker shapes, so a dot plot never relies on colour alone to tell its
   // series apart: each series gets its own shape as well as its own colour,
   // in the order the caller passes the keys (the same order the legend uses).
-  const MARKER_TYPES = () => [d3.symbolCircle, d3.symbolSquare, d3.symbolDiamond, d3.symbolTriangle, d3.symbolCross, d3.symbolStar, d3.symbolWye];
+  // Simple, solid shapes only (no cross, star or "Y" glyph): each needs to
+  // read as one mark at small sizes. Sizes are areas, so the shapes look
+  // equally heavy.
+  const polygon = (points) => ({
+    draw(ctx, size) {
+      const r = Math.sqrt(size / 2.6);
+      points.forEach(([px, py], i) => (i ? ctx.lineTo(px * r, py * r) : ctx.moveTo(px * r, py * r)));
+      ctx.closePath();
+    },
+  });
+  const regular = (n, rot) => polygon(Array.from({ length: n }, (_v, i) => i).map((i) => {
+    const a = rot + (i * 2 * Math.PI) / n;
+    return [Math.cos(a), Math.sin(a)];
+  }));
+  // Built on first use: the written-answers page does not load D3.
+  const MARKER_TYPES = () => [d3.symbolCircle, d3.symbolSquare, regular(4, -Math.PI / 2), regular(3, -Math.PI / 2),
+    regular(3, Math.PI / 2), regular(6, 0), regular(5, -Math.PI / 2)];
+
+  // Light fills (teal, orange) get a thin dark outline, so the mark still
+  // stands out from a white card by 3:1.
+  function markOutline(color) {
+    const c = d3.rgb(color);
+    const lum = (0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b) / 255;
+    return lum > 0.45 ? cssVar('--text-secondary') : cssVar('--surface-card');
+  }
+
+  // Emphasis for a chart whose marks carry class "series-mark" and a
+  // data-key: one key stays at full strength, the others fade.
+  function setEmphasis(root, key) {
+    if (!root) return;
+    const on = key !== null && key !== undefined && key !== '';
+    root.classList.toggle('is-emphasising', on);
+    root.querySelectorAll('.series-mark').forEach((el) => {
+      el.classList.toggle('is-emphasised', on && el.getAttribute('data-key') === key);
+    });
+  }
   function buildMarkerScale(orderedKeys) {
     const types = MARKER_TYPES();
     const map = new Map(orderedKeys.map((k, i) => [k, types[i % types.length]]));
@@ -616,6 +653,8 @@
     drawHiddenChip,
     PAIR_NOTE,
     buildMarkerScale,
+    markOutline,
+    setEmphasis,
     markerPath,
     legendMarker,
     isSuppressed,

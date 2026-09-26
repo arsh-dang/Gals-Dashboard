@@ -118,6 +118,7 @@
 
       const schoolRows = schoolRatings.filter((r) => r.item === item.item);
       const suppressed = U.isSuppressed(schoolRows.length);
+      if (schoolRows.length === 0) return; // nobody here was asked this wording
       if (suppressed) {
         U.drawHiddenChip(svg, {
           x: width - margin.right + 10, yMid: cy, count: 1, total: 1, names: ['This school'], context: item.item, tip,
