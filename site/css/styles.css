@@ -575,6 +575,20 @@ svg text { font-family: var(--font-body); }
   );
 }
 
+.suppression-grid__cell--zero {
+  color: var(--text-muted);
+  background: var(--surface-card);
+}
+
+.suppression-grid__key { margin-top: var(--space-3); }
+.suppression-grid__key-ramp { width: 3rem; height: 0.85rem; border-radius: 3px; flex: none; }
+.suppression-grid__key-swatch {
+  min-width: 2.25rem; height: 1.5rem; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border-subtle); border-radius: 3px;
+  font-size: var(--text-caption);
+}
+
 .suppression-grid__count {
   font-weight: 700;
   color: var(--brand-primary);
@@ -705,7 +719,7 @@ svg text { font-family: var(--font-body); }
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-raised);
-  padding: var(--space-7) var(--space-6);
+  padding: var(--space-6) var(--space-6) var(--space-5);
   margin-bottom: var(--space-6);
   max-width: 34rem;
   margin-left: auto;
@@ -730,11 +744,14 @@ svg text { font-family: var(--font-body); }
 .teacher-gate__form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
   align-items: stretch;
 }
 
-.teacher-gate__form .filter-field { text-align: left; }
+/* flex: none - in this column layout the filter bar's flex-basis would
+   otherwise become a 200px height for each field, leaving big gaps. */
+.teacher-gate__form .filter-field { text-align: left; flex: none; }
+.teacher-gate--active .teacher-gate__form .filter-field { flex: 1 1 12rem; }
 .teacher-gate__form .filter-field select { min-width: 0; width: 100%; padding: var(--space-3); font-size: var(--text-body); }
 
 .teacher-gate__form .filter-reset,

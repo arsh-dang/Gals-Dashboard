@@ -156,13 +156,15 @@
 
     const maxCount = d3.max(regions, (region) => d3.max(levels, (lvl) => schoolRows.filter((r) => r.region === region && r.schoolLevel === lvl).length))
  || 1;
-    const rampColors = [U.cssVar('--ramp-1'), U.cssVar('--ramp-2'), U.cssVar('--ramp-3'), U.cssVar('--ramp-4'), U.cssVar('--ramp-5')];
-    const shade = d3.scaleQuantize().domain([U.SMALL_CELL_THRESHOLD, maxCount]).range(rampColors);
-    // The top two ramp steps are dark enough that the brand-teal number
-    // reads as low-contrast (ramp-5 is nearly the same colour as the text
-    // itself) - switch to white text on those cells instead of a fixed
-    // colour for every shade.
-    const textColorFor = (bg) => (rampColors.indexOf(bg) >= 3 ? U.cssVar('--text-inverse') : U.cssVar('--brand-primary'));
+    // One monotonic ramp between the lightest and darkest steps of the
+    // guide's teal gradient, interpolated in Lab so each extra student is
+    // always a little darker. (The five fixed steps were not monotonic to the
+    // eye: step 2 is brighter than step 3, so 6 looked stronger than 7.)
+    const ramp = d3.interpolateLab(U.cssVar('--ramp-1'), U.cssVar('--ramp-5'));
+    const tFor = (n) => (maxCount > U.SMALL_CELL_THRESHOLD ? (n - U.SMALL_CELL_THRESHOLD) / (maxCount - U.SMALL_CELL_THRESHOLD) : 1);
+    const shade = (n) => ramp(0.15 + 0.85 * tFor(n));
+    // White text once the background is dark enough for it (4.5:1).
+    const textColorFor = (bg) => (d3.lab(bg).l < 55 ? U.cssVar('--text-inverse') : U.cssVar('--text-primary'));
 
     const tip = U.tooltip();
 
@@ -176,13 +178,18 @@
       levels.forEach((lvl) => {
         const n = schoolRows.filter((r) => r.region === region && r.schoolLevel === lvl).length;
         const cell = document.createElement('div');
-        const suppressed = U.isSuppressed(n);
-        cell.className = `suppression-grid__cell${suppressed ? ' suppression-grid__cell--suppressed' : ''}`;
+        const zero = n === 0;
+        const suppressed = !zero && U.isSuppressed(n);
+        cell.className = `suppression-grid__cell${suppressed ? ' suppression-grid__cell--suppressed' : ''}${zero ? ' suppression-grid__cell--zero' : ''}`;
         cell.tabIndex = 0;
-        if (suppressed) {
+        if (zero) {
+          // Zero means nobody answered: nothing to hide, so not hatched.
+          cell.innerHTML = '<span aria-hidden="true">0</span>';
+          cell.setAttribute('aria-label', `${region}, ${lvl}: no students`);
+        } else if (suppressed) {
           const badge = document.createElement('span');
           badge.className = 'badge-suppressed';
-          badge.textContent = n === 0 ? '0' : `<${U.SMALL_CELL_THRESHOLD}`;
+          badge.textContent = `<${U.SMALL_CELL_THRESHOLD}`;
           cell.appendChild(badge);
           cell.setAttribute('aria-label', `${region}, ${lvl}: hidden for privacy, fewer than ${U.SMALL_CELL_THRESHOLD} people`);
         } else {
@@ -195,24 +202,29 @@
           cell.appendChild(span);
           cell.setAttribute('aria-label', `${region}, ${lvl}: ${n} people`);
         }
-        cell.addEventListener('mouseenter', (evt) => {
-          tip.show(suppressed
-            ? `<strong>${region} · ${lvl}</strong>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`
-            : `<strong>${region} · ${lvl}</strong>${n} people`, evt);
-        });
+        const cellTip = zero ? 'No students'
+          : suppressed ? `Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people` : `${n} people`;
+        cell.addEventListener('mouseenter', (evt) => tip.show(`<strong>${region} · ${lvl}</strong>${cellTip}`, evt));
         cell.addEventListener('mousemove', (evt) => tip.move(evt));
         cell.addEventListener('mouseleave', () => tip.hide());
-        cell.addEventListener('focus', (evt) => {
-          tip.show(suppressed
-            ? `<strong>${region} · ${lvl}</strong>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`
-            : `<strong>${region} · ${lvl}</strong>${n} people`, evt);
-        });
+        cell.addEventListener('focus', (evt) => tip.show(`<strong>${region} · ${lvl}</strong>${cellTip}`, evt));
         cell.addEventListener('blur', () => tip.hide());
         grid.appendChild(cell);
       });
     });
 
     container.appendChild(grid);
+
+    // Key: what the shading, the hatching and a plain 0 each mean.
+    const key = document.createElement('div');
+    key.className = 'legend suppression-grid__key';
+    const lo = shade(U.SMALL_CELL_THRESHOLD);
+    const hi = shade(maxCount);
+    key.innerHTML = `
+      <span class="legend__item"><span class="suppression-grid__key-ramp" style="background:linear-gradient(90deg, ${lo}, ${hi})"></span>${U.SMALL_CELL_THRESHOLD} to ${Math.max(maxCount, U.SMALL_CELL_THRESHOLD)} students (darker = more)</span>
+      <span class="legend__item"><span class="suppression-grid__key-swatch suppression-grid__cell--suppressed"><span class="badge-suppressed">&lt;${U.SMALL_CELL_THRESHOLD}</span></span>Hidden for privacy (1 to ${U.SMALL_CELL_THRESHOLD - 1} students)</span>
+      <span class="legend__item"><span class="suppression-grid__key-swatch suppression-grid__cell--zero">0</span>No students</span>`;
+    container.appendChild(key);
   }
 
   // Phone version of the same region x year data: eight columns don't fit,
