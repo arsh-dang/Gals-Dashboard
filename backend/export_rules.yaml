@@ -1,0 +1,36 @@
+# Small-group suppression applied by export.py before anything leaves the
+# database. Read by export.py only. --parity switches every rule off (used only
+# to prove the export reproduces the current dashboard data exactly).
+#
+# NOTE: this protects the exported files. It does NOT make row-level CSVs safe
+# to publish: see "before real data" in docs/backend_design.md.
+
+# A group smaller than this is hidden. Matches SMALL_CELL_THRESHOLD in
+# build/build.js and the front end.
+min_cell: 5
+
+# Columns whose values are blanked for every respondent (the column stays, so
+# the file format is unchanged). Nothing in the dashboard uses these: checked
+# against site/js/ and build/build.js.
+blank_columns:
+  respondents:
+    - birth_year
+    - adult1_occupation
+    - adult2_occupation
+
+# Open-text rows whose question text contains any of these phrases are removed
+# (they are the free-text follow-ups to the adult occupation questions).
+drop_open_text_questions_containing:
+  - "what job adult"
+
+# Where a value is shared by fewer than min_cell respondents (counted within
+# the group_by columns, within one wave), the value is blanked.
+small_cell_blanking:
+  - column: school
+    group_by: [school]
+  - column: school_level
+    group_by: [region, school_level]
+  - column: gender
+    group_by: [gender]
+  - column: language_other_than_english
+    group_by: [language_other_than_english]

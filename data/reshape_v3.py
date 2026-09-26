@@ -4,23 +4,38 @@ Reshape a v3 Qualtrics export into tidy long tables for Tableau.
 The same batteries repeat per activity type. This turns activity type into a
 dimension so one chart compares all activities.
 
-Usage: python reshape_v3.py <export.csv> [numeric_export.csv]
+Usage: python reshape_v3.py <export.csv> [numeric_export.csv] [--qsf survey_v3.qsf] [--out tableau_v3]
+
+Also importable: load_qsf(path) and reshape(text_df, numeric_df, qs) do the work
+without touching the file system (backend/ingest.py uses them), and main() is the
+command-line wrapper around them. Nothing runs at import time.
 """
-import sys, re, os, json, html
+import argparse, sys, re, os, json, html
 import pandas as pd
 
-QSF = "survey_v3.qsf"
-OUT = "tableau_v3"
+DEFAULT_QSF = "survey_v3.qsf"
+DEFAULT_OUT = "tableau_v3"
+GENERAL_ACTIVITY = "General STEM outcomes (not activity-specific)"
 
 def clean(t):
     t = re.sub(r"<[^>]+>", " ", str(t)); return re.sub(r"\s+", " ", html.unescape(t)).strip()
 
-qsf = json.load(open(QSF))
-QS = {e["Payload"]["DataExportTag"]: e["Payload"] for e in qsf["SurveyElements"] if e["Element"] == "SQ"}
+def load_qsf(path):
+    """Read a Qualtrics survey definition. Returns (qsf, QS) where QS maps each
+    question's DataExportTag (Q15, Q16, ...) to its payload."""
+    with open(path, encoding="utf-8") as f:
+        qsf = json.load(f)
+    QS = {e["Payload"]["DataExportTag"]: e["Payload"]
+          for e in qsf["SurveyElements"] if e["Element"] == "SQ"}
+    return qsf, QS
 
-Q9 = QS["Q9"]["Choices"]
-ACTIVITY = {c: clean(Q9[c]["Display"]).split(" (")[0] for c in Q9}
-ACTIVITY["general"] = "General STEM outcomes (not activity-specific)"
+
+def activity_names(QS):
+    """Activity code (a Q9 choice id, or "general") -> activity name."""
+    Q9 = QS["Q9"]["Choices"]
+    activity = {c: clean(Q9[c]["Display"]).split(" (")[0] for c in Q9}
+    activity["general"] = GENERAL_ACTIVITY
+    return activity
 
 # outcomes matrix / skills / identity per activity code
 BLOCKS = {
@@ -63,12 +78,12 @@ SINGLE_SETS = {
 }
 
 
-def build_aspirations(d, dn):
+def build_aspirations(QS, d, dn):
     """Q25 - the future/aspirations matrix. Same scale handling as outcomes."""
     tag = ASPIRATIONS_MATRIX
     if tag not in QS:
         return pd.DataFrame()
-    it = items(tag)
+    it = items(QS, tag)
     rows = []
     for cid, label in it.items():
         col = f"{tag}_{cid}"
@@ -87,7 +102,28 @@ def build_aspirations(d, dn):
     return pd.DataFrame(rows)
 
 
-def build_multi_sets(d):
+def split_multi(QS, tag, text_val, num_val):
+    """The ticked options of a multi-select cell, as labels.
+
+    Some option labels contain commas ("I do not like maths, science or
+    technology subjects"), so splitting the TEXT export on commas cuts them into
+    fragments. The NUMERIC export holds choice ids ("1,4,11"), which have no such
+    problem, so when it is available the ids are looked up in the QSF. Without a
+    numeric export this falls back to splitting the text (labels with commas
+    will be wrong).
+    """
+    if num_val:
+        choices = QS[tag].get("Choices", {})
+        labels = []
+        for cid in [p.strip() for p in num_val.split(",") if p.strip()]:
+            if cid not in choices:
+                raise ValueError(f"{tag}: choice id {cid!r} in the numeric export is not in the survey definition")
+            labels.append(clean(choices[cid]["Display"]))
+        return labels
+    return [p.strip() for p in text_val.split(",") if p.strip()]
+
+
+def build_multi_sets(QS, d, dn):
     """Subject selection and career multi-selects, one row per ticked option."""
     rows = []
     for tag, (group, question) in MULTI_SETS.items():
@@ -97,7 +133,8 @@ def build_multi_sets(d):
             v = d.at[i, tag].strip()
             if not v:
                 continue
-            for part in [p.strip() for p in v.split(",") if p.strip()]:
+            num = dn.at[i, tag].strip() if dn is not None and tag in dn.columns else ""
+            for part in split_multi(QS, tag, v, num):
                 rows.append(dict(ResponseId=d.at[i, "ResponseId"], question_group=group,
                                  question=question, item=part, multi_select=True,
                                  source_column=tag))
@@ -114,7 +151,7 @@ def build_multi_sets(d):
 
 
 
-def items(tag):
+def items(QS, tag):
     ch = QS[tag].get("Choices", {})
     order = QS[tag].get("ChoiceOrder", sorted(ch, key=lambda x: int(x)))
     return {str(c): clean(ch[str(c)]["Display"]) for c in order}
@@ -123,10 +160,10 @@ def load(path):
     raw = pd.read_csv(path, dtype=str, keep_default_na=False)
     return raw.iloc[2:].reset_index(drop=True)
 
-def main():
-    d = load(sys.argv[1])
-    dn = load(sys.argv[2]) if len(sys.argv) > 2 else None
-    os.makedirs(OUT, exist_ok=True)
+def reshape(d, dn, QS):
+    """d / dn: text and numeric exports with the three header rows already
+    removed (see load()). Returns {table name: DataFrame}."""
+    ACTIVITY = activity_names(QS)
 
     # respondents
     resp = pd.DataFrame({
@@ -155,7 +192,7 @@ def main():
         act = ACTIVITY.get(code, code)
         tag = b["out"]
         if not tag or tag not in QS: continue
-        it = items(tag)
+        it = items(QS, tag)
         for cid, label in it.items():
             col = f"{tag}_{cid}"
             if col not in d.columns: continue
@@ -185,11 +222,12 @@ def main():
         for key, name in (("skl", "skills"), ("idn", "identity")):
             tag = b.get(key)
             if not tag or tag not in d.columns: continue
-            it = items(tag)
+            it = items(QS, tag)
             for i in d.index:
                 v = d.at[i, tag].strip()
                 if not v: continue
-                for part in [p.strip() for p in v.split(",") if p.strip()]:
+                num = dn.at[i, tag].strip() if dn is not None and tag in dn.columns else ""
+                for part in split_multi(QS, tag, v, num):
                     picks.append(dict(ResponseId=d.at[i, "ResponseId"], activity_type=act,
                                       battery=name, item=part, source_column=tag))
     selections = pd.DataFrame(picks)
@@ -213,15 +251,32 @@ def main():
         if not ratings.empty else set()
     resp["did_gals"] = resp.ResponseId.isin(gals_ids)
 
-    aspirations = build_aspirations(d, dn)
-    subject_career = build_multi_sets(d)
+    aspirations = build_aspirations(QS, d, dn)
+    subject_career = build_multi_sets(QS, d, dn)
 
-    for name, df in (("respondents", resp), ("activity_ratings", ratings),
-                     ("battery_selections", selections), ("open_text", open_text),
-                     ("aspirations", aspirations), ("subject_career", subject_career)):
-        df.to_csv(f"{OUT}/{name}.csv", index=False)
+    return {"respondents": resp, "activity_ratings": ratings,
+            "battery_selections": selections, "open_text": open_text,
+            "aspirations": aspirations, "subject_career": subject_career}
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Reshape a v3 Qualtrics export into tidy tables.")
+    ap.add_argument("export", help="text export (choice labels)")
+    ap.add_argument("numeric", nargs="?", help="numeric export (choice codes)")
+    ap.add_argument("--qsf", default=DEFAULT_QSF, help="survey definition file")
+    ap.add_argument("--out", default=DEFAULT_OUT, help="output folder")
+    args = ap.parse_args()
+
+    _, QS = load_qsf(args.qsf)
+    d = load(args.export)
+    dn = load(args.numeric) if args.numeric else None
+    os.makedirs(args.out, exist_ok=True)
+    tables = reshape(d, dn, QS)
+    for name, df in tables.items():
+        df.to_csv(f"{args.out}/{name}.csv", index=False)
         print(f"  {name+'.csv':24s} {len(df):6d} rows")
 
+    ratings = tables["activity_ratings"]
     if not ratings.empty:
         print("\nActivities:", ", ".join(sorted(ratings.activity_type.unique())))
 

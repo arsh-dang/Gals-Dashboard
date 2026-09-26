@@ -1,0 +1,15 @@
+StartDate,EndDate,Status,ResponseId,Finished,Q1,Q2,Q7,Q73,Q6,Q111,Q3,Q4,Q5,Q9,Q15_1,Q15_2,Q16,Q74,Q36_1,Q107_1,Q25_1,Q25_2,Q20,Q26,Q10,Q102
+StartDate,EndDate,Status,ResponseId,Finished,Where do you live?,Are you:,Language other than English at home?,Birth year,Adult 1 occupation,Adult 2 occupation,Are you a school student?,Which school?,Which year level?,Which activities have you done?,The activity helped me to be...,The activity helped me to be...,Skills built,I see myself as...,The excursion helped me to be...,"In general, I feel...",About your future...,About your future...,Subjects interested in,What helps decide future plans,What did you enjoy most about the activity?,Please specify what job adult 1 does
+"{""ImportId"": ""StartDate""}","{""ImportId"": ""EndDate""}","{""ImportId"": ""Status""}","{""ImportId"": ""ResponseId""}","{""ImportId"": ""Finished""}","{""ImportId"": ""Q1""}","{""ImportId"": ""Q2""}","{""ImportId"": ""Q7""}","{""ImportId"": ""Q73""}","{""ImportId"": ""Q6""}","{""ImportId"": ""Q111""}","{""ImportId"": ""Q3""}","{""ImportId"": ""Q4""}","{""ImportId"": ""Q5""}","{""ImportId"": ""Q9""}","{""ImportId"": ""Q15_1""}","{""ImportId"": ""Q15_2""}","{""ImportId"": ""Q16""}","{""ImportId"": ""Q74""}","{""ImportId"": ""Q36_1""}","{""ImportId"": ""Q107_1""}","{""ImportId"": ""Q25_1""}","{""ImportId"": ""Q25_2""}","{""ImportId"": ""Q20""}","{""ImportId"": ""Q26""}","{""ImportId"": ""Q10""}","{""ImportId"": ""Q102""}"
+2026-09-14 10:00:00,2026-09-14 10:10:00,0,R_MK0001,True,1,1,1,1,1,2,1,1,1,"1,2",1,2,"1,3","1,2",1,3,1,4,"2,3",1,Invented answer number 1.,Made-up job
+2026-09-15 10:00:00,2026-09-15 10:10:00,0,R_MK0002,True,1,1,1,2,2,1,1,1,1,1,2,3,"1,3","1,2",,4,2,5,"2,3",1,,Made-up job
+2026-09-16 10:00:00,2026-09-16 10:10:00,0,R_MK0003,True,1,1,2,1,1,2,1,1,1,"1,2",3,4,"1,3","1,2",3,5,3,1,"2,3",1,,Made-up job
+2026-09-17 10:00:00,2026-09-17 10:10:00,0,R_MK0004,True,1,1,2,2,2,1,1,1,1,1,4,5,"1,3","1,2",,1,4,2,"2,3",1,Invented answer number 4.,Made-up job
+2026-09-18 10:00:00,2026-09-18 10:10:00,0,R_MK0005,True,1,1,2,1,1,2,1,1,1,"1,2",1,1,"1,3","1,2",2,2,1,3,"2,3",1,,Made-up job
+2026-09-19 10:00:00,2026-09-19 10:10:00,0,R_MK0006,True,1,1,2,2,2,1,1,1,1,1,2,2,"1,3","1,2",,3,2,4,"2,3",1,,Made-up job
+2026-09-20 10:00:00,2026-09-20 10:10:00,0,R_MK0007,True,2,2,1,1,1,2,1,2,2,"1,2",3,3,"1,3","1,2",1,4,3,5,"2,3",1,Invented answer number 7.,Made-up job
+2026-09-21 10:00:00,2026-09-21 10:10:00,0,R_MK0008,True,2,2,2,2,2,1,1,2,2,1,4,4,"1,3","1,2",,5,4,1,"2,3",1,,Made-up job
+2026-09-22 10:00:00,2026-09-22 10:10:00,0,R_MK0009,True,2,2,2,1,1,2,1,2,2,"1,2",1,5,"1,3","1,2",3,1,1,2,"2,3",1,,Made-up job
+2026-09-23 10:00:00,2026-09-23 10:10:00,0,R_MK0010,True,2,2,2,2,2,1,1,2,2,1,2,1,"1,3","1,2",,2,2,3,"2,3",1,Invented answer number 10.,Made-up job
+2026-09-24 10:00:00,2026-09-24 10:10:00,0,R_MK0011,True,2,3,2,1,1,2,1,2,2,"1,2",3,2,"1,3","1,2",2,3,3,4,"2,3",1,,Made-up job
+2026-09-25 10:00:00,2026-09-25 10:10:00,0,R_MK0012,True,2,4,2,2,2,1,1,3,1,1,4,3,"1,3","1,2",,4,4,5,"2,3",1,,Made-up job

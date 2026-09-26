@@ -1,0 +1,78 @@
+# Required fields for loading a survey wave.
+#
+# This file is the single place the team can read and change what ingest.py
+# insists on. ingest.py checks every rule here BEFORE writing anything, prints
+# what failed and where, and leaves the database untouched if anything fails.
+#
+# WHEN THE SURVEY CHANGES
+#   1. Give the new instrument a new version number (v4, ...) and add it to
+#      survey_versions_accepted below. Do not reuse a version number for a
+#      different questionnaire: the codebook is stored per version.
+#   2. Export the new survey definition from Qualtrics (.qsf) and pass it to
+#      ingest.py with --qsf. The codebook (question_item table) for that version
+#      is built from it.
+#   3. Update the lists below if columns were added, renamed or removed (for
+#      example raw_export.required_columns when a question id changes), and
+#      update data/reshape_v3.py if the new version changes which questions
+#      belong to which activity or battery.
+#   4. Run the tests (pytest backend/tests) and load a small mock wave first.
+#   5. If the dashboard needs the change (a new chart, a renamed item), that is
+#      build/build.js and site/, not this file.
+
+survey_versions_accepted:
+  - v3
+
+# Scores are 1 = No .. 4 = Yes a lot, blank for "I do not know".
+score_range:
+  min: 1
+  max: 4
+
+# --- Raw Qualtrics exports (text export + numeric export + QSF) ---------------
+raw_export:
+  # Columns that must exist in BOTH exports. These are the ones reshape_v3.py
+  # reads to build the respondents table; a missing one would otherwise become
+  # a silently blank column.
+  required_columns:
+    - ResponseId
+    - StartDate
+    - Finished
+    - Q1     # region
+    - Q2     # gender
+    - Q3     # is a school student
+    - Q4     # school
+    - Q5     # school year level
+    - Q6     # adult 1 occupation
+    - Q7     # language other than English
+    - Q9     # activities taken part in
+    - Q73    # birth year
+    - Q111   # adult 2 occupation
+
+# --- Already-reshaped tables (the CSVs the dashboard build reads) -------------
+# required_columns: must be in the file header.
+# not_blank: must have a value on every row.
+# boolean_columns: must be True or False (or blank where the column allows it).
+tidy_tables:
+  respondents:
+    required_columns: [ResponseId, StartDate, Finished, region, gender, language_other_than_english, birth_year, is_school_student, school, school_level, adult1_occupation, adult2_occupation, activities_selected, pathway, n_activities, did_gals]
+    not_blank: [ResponseId]
+    boolean_columns: [Finished, did_gals]
+  activity_ratings:
+    required_columns: [ResponseId, activity_type, battery, item, response, response_code, score, is_dont_know, source_column]
+    not_blank: [ResponseId, activity_type, battery, item, source_column]
+    boolean_columns: [is_dont_know]
+  battery_selections:
+    required_columns: [ResponseId, activity_type, battery, item, source_column]
+    not_blank: [ResponseId, activity_type, battery, item, source_column]
+    boolean_columns: []
+  aspirations:
+    required_columns: [ResponseId, item, response, response_code, score, is_dont_know, source_column]
+    not_blank: [ResponseId, item, source_column]
+    boolean_columns: [is_dont_know]
+  subject_career:
+    required_columns: [ResponseId, question_group, question, item, multi_select, source_column]
+    not_blank: [ResponseId, question_group, question, item, source_column]
+    boolean_columns: [multi_select]
+  open_text:
+    required_columns: [ResponseId, question, source_column, response]
+    not_blank: [ResponseId, question, source_column, response]
+    boolean_columns: []
