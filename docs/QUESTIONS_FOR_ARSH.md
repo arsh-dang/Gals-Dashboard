@@ -108,12 +108,14 @@ same statement?**
 - Need: whether the survey can be corrected. If it is, `build/build.js` and
   `data/reshape_v3.py` must change with it, or charts empty.
 
-**17. The "How I see myself" button may not match the question.**
+**17. Identity wording (fixed, please confirm).**
 - Seen: the identity question asks "The activity helped me to feel that other
-  people saw me as...". The dashboard button says "How I see myself" and the card
-  says "How students describe themselves". That was a plain-language rewrite made
-  during the wording review. It may say something different from what was asked.
-- Need: the right wording, for example "How students felt others saw them".
+  people saw me as...". An earlier plain-language rewrite called it "How I see
+  myself", which said something different.
+- Done: the button now reads "How others saw them", the section heading is
+  "Skills, and how students felt others saw them", and the card title is "How did
+  students feel others saw them after taking part, by activity?".
+- Need: confirmation that this wording is right.
 
 **21. What happens to people who choose "Other (please specify)" as an activity?**
 - Seen: Q9 option 8 has no outcomes table in the reshaper. There are no such

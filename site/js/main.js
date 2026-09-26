@@ -313,7 +313,7 @@
     note.style.display = '';
     title.textContent = state.battery === 'skills'
       ? 'What skills do students say they built, by activity?'
-      : 'How do students describe themselves after taking part, by activity?';
+      : 'How did students feel others saw them after taking part, by activity?';
     window.SIT.charts.skills.render(container, {
       selections: filteredSelections(),
       ratings: excludeGeneral(filteredRatings()),

@@ -21,7 +21,7 @@ There are three pages.
 2. What students reported, by activity: how positive the answers were for 12
    statements, in three chart types. There is also a separate card for a general
    question that is not about one activity.
-3. Skills, and how students see themselves.
+3. Skills, and how students felt others saw them.
 4. A comparison of the six regions.
 5. Future plans and subject choice: GALS participants against everyone else,
    what influences subject and job choices (split by gender group), and a list

@@ -117,7 +117,7 @@
     const title = document.getElementById('skills-title');
     title.textContent = state.battery === 'skills'
       ? 'What skills do your students say they built, by activity?'
-      : 'How do your students describe themselves after taking part, by activity?';
+      : 'How did your students feel others saw them after taking part, by activity?';
     window.SIT.charts.skills.render(document.getElementById('chart-teacher-skills'), {
       selections: schoolSelections,
       ratings: schoolRatings,
