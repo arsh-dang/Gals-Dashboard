@@ -249,7 +249,7 @@ These are real. None of them are hidden by the dashboard's design.
 - **The mock data patterns are invented.** The generator builds each person from
   a made-up "persona". It decides who takes part in GALS and gives GALS
   participants the female gender. A gap between GALS and other students, and the
-  pattern in the "programme influence" chart, are built in. **Never present any
+  pattern in the "STEM activities and programs" influence chart, are built in. **Never present any
   mock result as a finding.** The pages say "made-up data" for this reason.
 - **GALS participants are all girls.** In the mock data all 65 GALS participants
   answered Female, and this will be true of the real program. So any difference

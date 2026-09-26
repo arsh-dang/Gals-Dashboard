@@ -193,8 +193,8 @@ the following statements?". Scoring is the same as in `activity_ratings.csv`.
 | Q90 | Do you think you will study STEM in the future? | Career aspirations | no |
 | Q96 | How much do you know about local STEM jobs? | Career aspirations | no |
 
-The dashboard uses Q20, Q21, Q26 and Q108 (four gender charts and the programme
-influence chart). The others are in the file but not charted.
+The dashboard uses Q20, Q21, Q26 and Q108 (four gender charts and the "STEM
+activities and programs" influence chart). The others are in the file but not charted.
 
 ### 2.6 `open_text.csv`: one row per free-text answer
 
