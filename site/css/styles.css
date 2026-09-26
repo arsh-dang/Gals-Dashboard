@@ -11,7 +11,7 @@
   margin-bottom: var(--gap-dashboard);
 }
 
-.banner-mock strong { color: var(--status-warn); }
+.banner-mock strong { color: var(--series-8); } /* 5:1 on the banner fill; the orange was 2.8:1 */
 
 /* --- Summary layer: the plain-language answer, above the charts that back
    it up. Brand-accent border (not the mock-data warning's orange, and not
@@ -1090,7 +1090,7 @@ svg text { font-family: var(--font-body); }
 .data-notes { margin-top: var(--space-7); }
 .page-footer { margin-top: var(--space-4); }
 .page-footer__bar { align-items: center; margin-bottom: 0; }
-.page-footer__reminder { color: var(--status-caution); font-weight: 600; }
+.page-footer__reminder { color: var(--text-primary); font-weight: 700; }
 
 /* --- Motion: a short fade on filter changes only -------------------------- */
 @keyframes sit-refresh { from { opacity: 0.35; } to { opacity: 1; } }
