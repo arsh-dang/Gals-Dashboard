@@ -6,3 +6,20 @@ node_modules/
 # data/*.csv) - not part of the deployable project, kept out of the repo
 # to avoid confusion with the live dataset.
 old_data/
+
+# --- Backend: database files and anything that could hold real data -------
+# The repo is public and deployed to GitHub Pages. Nothing under these paths
+# may ever be committed: a database file could hold a loaded survey wave, and
+# data_real/ is where export.py writes non-mock waves when --allow-real is used.
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+backend/*.db
+data_real/
+# The real Qualtrics survey definition (survey_v3.qsf) lives here locally. It
+# stays out of the repo until the supervisor confirms it can be public.
+backend/private/
+__pycache__/
+*.pyc
+.pytest_cache/
