@@ -468,6 +468,10 @@ svg text { font-family: var(--font-body); }
   flex: none;
 }
 
+.legend__marker {
+  flex: none;
+}
+
 .legend__swatch--hatched {
   background-image: repeating-linear-gradient(
     45deg,

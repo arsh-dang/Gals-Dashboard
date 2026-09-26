@@ -22,7 +22,12 @@
   const didGalsColors = { gals: U.cssVar('--series-7'), nonGals: U.cssVar('--series-6') };
   // --series-3, not --series-7, so "Male" doesn't collide with the GALS
   // colour directly above it in this same section.
-  const genderColors = { female: U.cssVar('--series-2'), male: U.cssVar('--series-3') };
+  const genderColors = {
+    Female: U.cssVar('--series-2'),
+    Male: U.cssVar('--series-3'),
+    'Non-binary / third gender': U.cssVar('--series-4'),
+    'Prefer not to say': U.cssVar('--series-8'),
+  };
 
   const { aspirations, subjectCareer, openText } = window.SIT_DATA;
 
@@ -44,10 +49,10 @@
   (function renderKpiRow() {
     const activityCount = meta.activityTypes.filter((a) => !meta.excludedActivityTypes.includes(a.key)).length;
     const tiles = [
-      { value: meta.totalRespondents, label: 'Respondents' },
+      { value: meta.totalRespondents, label: 'People who answered' },
       { value: meta.regions.length, label: 'Regions' },
-      { value: activityCount, label: 'Activity types' },
-      { value: meta.schools.length, label: 'Schools represented' },
+      { value: activityCount, label: 'Activities' },
+      { value: meta.schools.length, label: 'Schools' },
     ];
     const row = document.getElementById('kpi-row');
     tiles.forEach((t) => {
@@ -152,9 +157,9 @@
     const n = U.countDistinctIds(filteredRespondents());
     const status = document.getElementById('filter-status');
     if (!state.region && !state.schoolLevel) {
-      status.textContent = `Showing all ${respondents.length} respondents`;
+      status.textContent = `Showing all ${respondents.length} people who answered`;
     } else {
-      status.textContent = `Showing ${n} of ${respondents.length} respondents`;
+      status.textContent = `Showing ${n} of ${respondents.length} people who answered`;
     }
   }
 
@@ -185,7 +190,7 @@
     U.renderDataTable(tableContainer, {
       columns: [
         { label: 'Activity', value: (d) => d.key },
-        { label: 'Respondents', value: (d) => d.n, align: 'right' },
+        { label: 'People who answered', value: (d) => d.n, align: 'right' },
       ],
       rows: counts,
     });
@@ -195,12 +200,15 @@
   }
 
   // --- View 2: Outcomes ---------------------------------------------------
+  const markerFor = U.buildMarkerScale(window.SIT.charts.outcomes.activityKeysOrdered(meta));
+  const regionMarkerFor = U.buildMarkerScale(meta.regions.map((r) => r.key));
+
   function buildActivityLegend(container, activities) {
     container.innerHTML = '';
     activities.forEach((key) => {
       const item = document.createElement('span');
       item.className = 'legend__item';
-      item.innerHTML = `<span class="legend__swatch" style="background:${activityColorScale(key)}"></span>${key}`;
+      item.innerHTML = `${U.legendMarker(markerFor(key), activityColorScale(key))}${key}`;
       container.appendChild(item);
     });
   }
@@ -208,10 +216,10 @@
   // These replace the card subtitle in index.html on every render, so they
   // follow the same one-sentence, point-first caption style.
   const OUTCOMES_SUBTITLES = {
-    average: 'Average score per activity on the survey\'s 1–4 scale (4 = Yes a lot is best; "I do not know" excluded).',
-    smallMultiples: 'Average score per outcome, one panel per activity, with outcomes in the same order in every panel.',
-    single: 'Average score for the selected activity, on the survey\'s 1–4 scale, sorted best to worst.',
-    distribution: 'Share of respondents giving each answer, per activity; "I do not know" is shown separately, outside the 100%.',
+    average: 'Average score for each activity, from 1 (No) to 4 (Yes a lot). Higher is more positive. "I do not know" answers are left out.',
+    smallMultiples: 'Average score for each statement, with one panel per activity. Statements are in the same order in every panel.',
+    single: 'Average score for the chosen activity, from 1 (No) to 4 (Yes a lot), highest to lowest.',
+    distribution: 'Share of people giving each answer, for each activity. "I do not know" is shown separately and is not part of the 100%.',
   };
 
   // Mobile fallback: one activity at a time, sorted best to worst, same
@@ -258,20 +266,20 @@
     const rows = meta.outcomeItems.flatMap((item) => window.SIT.charts.outcomes.cellsForItem(rr, item, activities));
     U.renderDataTable(tableContainer, {
       columns: [
-        { label: 'Outcome statement', value: (d) => d.item },
+        { label: 'Statement', value: (d) => d.item },
         { label: 'Activity', value: (d) => d.activityType },
-        { label: 'n', value: (d) => d.n, align: 'right' },
-        { label: 'Average (4=best, 1=worst)', value: (d) => (d.suppressed ? 'suppressed' : U.formatScore(d.mean)), align: 'right' },
+        { label: 'People', value: (d) => d.n, align: 'right' },
+        { label: 'Average score (1 = No, 4 = Yes a lot)', value: (d) => (d.suppressed ? 'hidden for privacy' : U.formatScore(d.mean)), align: 'right' },
         {
-          label: '95% CI',
+          label: 'Likely range (95% confidence interval)',
           value: (d) => {
             if (d.suppressed) return '–';
             const ci = U.ciDisplayBounds(d);
-            return ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'n too small';
+            return ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'Too few people to estimate';
           },
           align: 'right',
         },
-        { label: '"I do not know"', value: (d) => (d.suppressed ? '–' : d.unknownN), align: 'right' },
+        { label: 'People who answered "I do not know"', value: (d) => (d.suppressed ? '–' : d.unknownN), align: 'right' },
       ],
       rows,
     });
@@ -282,7 +290,7 @@
     const rr = filteredRatings().filter((r) => r.activityType === meta.generalActivityType);
     window.SIT.charts.outcomes.renderGeneral(document.getElementById('chart-general-outcomes'), rr, meta);
     const n = U.countDistinctIds(rr);
-    document.getElementById('general-outcomes-n').textContent = `n=${n} in the current filter.`;
+    document.getElementById('general-outcomes-n').textContent = `${n} people answered with the current filters.`;
   }
 
   // --- View 3: Skills and identity -----------------------------------------
@@ -292,11 +300,11 @@
     const note = document.getElementById('skills-note');
 
     if (!meta.batterySelectionsAvailable) {
-      title.textContent = 'Skills and identity data is not available in this data drop';
+      title.textContent = 'This information is not available yet';
       container.innerHTML = '';
       const msg = document.createElement('p');
       msg.className = 'card__note';
-      msg.textContent = 'battery_selections.csv is missing from the current data drop (the script that produces it needs a survey definition file that isn\'t present either). This view will populate automatically once it\'s added and the site is rebuilt.';
+      msg.textContent = 'It will appear here once it has been added to the data.';
       container.appendChild(msg);
       note.style.display = 'none';
       return;
@@ -304,8 +312,8 @@
 
     note.style.display = '';
     title.textContent = state.battery === 'skills'
-      ? 'What skills do participants say they built, by activity?'
-      : 'How do participants describe themselves after taking part, by activity?';
+      ? 'What skills do students say they built, by activity?'
+      : 'How do students describe themselves after taking part, by activity?';
     window.SIT.charts.skills.render(container, {
       selections: filteredSelections(),
       ratings: excludeGeneral(filteredRatings()),
@@ -325,7 +333,7 @@
     meta.regions.forEach((r) => {
       const item = document.createElement('span');
       item.className = 'legend__item';
-      item.innerHTML = `<span class="legend__swatch" style="background:${regionColorScale(r.key)}"></span>${r.key}`;
+      item.innerHTML = `${U.legendMarker(regionMarkerFor(r.key), regionColorScale(r.key))}${r.key}`;
       legend.appendChild(item);
     });
 
@@ -349,16 +357,16 @@
     });
     U.renderDataTable(tableContainer, {
       columns: [
-        { label: 'Outcome statement', value: (d) => d.item },
+        { label: 'Statement', value: (d) => d.item },
         { label: 'Region', value: (d) => d.region },
-        { label: 'n', value: (d) => d.n, align: 'right' },
-        { label: 'Average (4=best, 1=worst)', value: (d) => (d.suppressed ? 'suppressed' : U.formatScore(d.mean)), align: 'right' },
+        { label: 'People', value: (d) => d.n, align: 'right' },
+        { label: 'Average score (1 = No, 4 = Yes a lot)', value: (d) => (d.suppressed ? 'hidden for privacy' : U.formatScore(d.mean)), align: 'right' },
         {
-          label: '95% CI',
+          label: 'Likely range (95% confidence interval)',
           value: (d) => {
             if (d.suppressed) return '–';
             const ci = U.ciDisplayBounds(d);
-            return ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'n too small';
+            return ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'Too few people to estimate';
           },
           align: 'right',
         },
@@ -374,15 +382,15 @@
 
     const legend = document.getElementById('aspirations-legend');
     legend.innerHTML = `
-      <span class="legend__item"><span class="legend__swatch" style="background:${didGalsColors.gals}"></span>Took part in GALS (n=${meta.didGalsCounts.gals})</span>
-      <span class="legend__item"><span class="legend__swatch" style="background:${didGalsColors.nonGals}"></span>Did not take part in GALS (n=${meta.didGalsCounts.nonGals})</span>
+      <span class="legend__item"><span class="legend__swatch" style="background:${didGalsColors.gals}"></span>Took part in GALS (${meta.didGalsCounts.gals} people)</span>
+      <span class="legend__item"><span class="legend__swatch" style="background:${didGalsColors.nonGals}"></span>Did not take part in GALS (${meta.didGalsCounts.nonGals} people)</span>
     `;
 
     const tableContainer = document.getElementById('table-aspirations');
     tableContainer.innerHTML = '';
     const tableRows = [];
     meta.aspirationItems.forEach((item) => {
-      [['gals', 'GALS'], ['nonGals', 'Not GALS']].forEach(([key, label]) => {
+      [['gals', 'Took part in GALS'], ['nonGals', 'Did not take part in GALS']].forEach(([key, label]) => {
         const cellRows = rows.filter((r) => r.item === item && (key === 'gals' ? r.didGals : !r.didGals));
         const summary = U.summarizeScores(cellRows);
         tableRows.push({
@@ -392,10 +400,10 @@
     });
     U.renderDataTable(tableContainer, {
       columns: [
-        { label: 'Aspiration statement', value: (d) => d.item },
+        { label: 'Statement', value: (d) => d.item },
         { label: 'Group', value: (d) => d.group },
-        { label: 'n', value: (d) => d.n, align: 'right' },
-        { label: 'Average (4=best, 1=worst)', value: (d) => (d.suppressed ? 'suppressed' : U.formatScore(d.mean)), align: 'right' },
+        { label: 'People', value: (d) => d.n, align: 'right' },
+        { label: 'Average score (1 = No, 4 = Yes a lot)', value: (d) => (d.suppressed ? 'hidden for privacy' : U.formatScore(d.mean)), align: 'right' },
       ],
       rows: tableRows,
     });
@@ -458,9 +466,9 @@
 
     U.renderDataTable(container, {
       columns: [
-        { label: 'Response', value: (d) => d.response },
-        { label: 'Region', value: (d) => d.region || 'N/A' },
-        { label: 'School year', value: (d) => d.schoolLevel || 'N/A' },
+        { label: 'Answer', value: (d) => d.response },
+        { label: 'Region', value: (d) => d.region || 'Not recorded' },
+        { label: 'Year level', value: (d) => d.schoolLevel || 'Not recorded' },
       ],
       rows: visibleRows,
     });

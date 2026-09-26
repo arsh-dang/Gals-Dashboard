@@ -57,7 +57,7 @@
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('role', 'img')
-      .attr('aria-label', 'Dot plot comparing GALS participants to everyone else on future-in-STEM aspiration items');
+      .attr('aria-label', 'Dot plot comparing people who took part in GALS with people who did not, on statements about their future in STEM');
 
     const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
 
@@ -118,7 +118,7 @@
           .style('font-size', '0.7rem')
           .text('×')
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${label}</strong>${truncate(item, 60)}<br>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${itemRows.length})`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`<strong>${label}</strong>${truncate(item, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
         return { summary: null, suppressed: true };
@@ -137,11 +137,11 @@
         .attr('fill', color)
         .attr('tabindex', 0)
         .attr('role', 'img')
-        .attr('aria-label', `${label}, ${item}: average ${summary.mean.toFixed(2)} of 4, 4 is best, n=${summary.n}`)
+        .attr('aria-label', `${label}, ${item}: average ${summary.mean.toFixed(2)} of 4, higher is more positive, ${summary.n} people`)
         .on('mouseenter focus', (evt) => tip.show(`<strong>${label}</strong>${truncate(item, 60)}<br>
           Average (1=No … 4=Yes a lot): ${U.formatScore(summary.mean)}<br>
-          95% CI: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'not enough responses to estimate'}<br>
-          n=${summary.n}`, evt))
+          Likely range: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'too few people to estimate a range'}<br>
+          ${summary.n} people`, evt))
         .on('mousemove', (evt) => tip.move(evt))
         .on('mouseleave blur', () => tip.hide());
       return { summary, suppressed: false };
@@ -164,7 +164,7 @@
       } else {
         const diff = gals.summary.mean - nonGals.summary.mean;
         diffLabel.text(`${diff >= 0 ? '+' : ''}${diff.toFixed(2)}`)
-          .append('title').text('Difference: GALS average minus everyone-else average, on the raw 1-4 scale. Read this alongside the confidence intervals, not instead of them.');
+          .append('title').text('Difference: GALS average minus the average for people who did not take part, on the 1 to 4 scale. Check it against the likely ranges before reading anything into it.');
       }
     });
 
@@ -173,7 +173,7 @@
       .attr('x', diffX)
       .attr('y', 12)
       .style('font-size', '0.65rem')
-      .text('Diff');
+      .text('Difference');
 
     if (!compact) container.querySelector('svg').style.minWidth = `${WIDE_MIN_WIDTH}px`;
   }

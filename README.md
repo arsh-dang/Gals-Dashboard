@@ -107,6 +107,17 @@ detail below is for whoever maintains this, so it's here instead:
   removes any of these, the affected view shows an explicit empty state
   rather than stale or invented data.
 
+### Moved here during the wording review
+
+These were visible developer notes on the public pages and were removed from them:
+
+- **Teacher page footer:** some respondents' raw `school` and `school_level` values in the source CSV contradict the data contract (populated on a Post-school row, which should be blank; the `school` value often looks like a leaked open-text answer). This recurred in the latest data drop (7 rows, up from 1). Worth flagging to whoever maintains the reshape script. Both fields are treated as blank rather than shown.
+- **Teacher and open-text page footers:** colours follow the Deakin Dashboard Style Guide (Nov 2025); see `site/css/tokens.css` for sourcing notes.
+- **Open-text page, "not available" state:** it appears when `open_text.csv` is missing from `./data/`. Columns are `ResponseId,question,source_column,response`; re-run `node build/build.js` after adding it. Theme coding slots in the same way with `open_text_themes.csv` (`ResponseId,question,theme`).
+- **Skills and identity, "not available" state:** appears when `battery_selections.csv` is missing.
+
+Wording conventions used on the pages: "program" (Australian spelling), "people who answered" instead of "respondents", "year level", and small results are "hidden for privacy (fewer than 5 people)". See `wording_review.md` for the full list of changes.
+
 ## Caption reasoning (trimmed from the page)
 
 The on-page captions were cut to one or two sentences each for the Friday

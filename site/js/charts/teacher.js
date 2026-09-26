@@ -46,7 +46,7 @@
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('role', 'img')
-      .attr('aria-label', 'Dot plot comparing this school\'s average outcome score to the overall sample, one row per outcome statement');
+      .attr('aria-label', 'Dot plot comparing this school\'s average scores with all students who answered, for each statement');
 
     const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
 
@@ -111,10 +111,10 @@
           .attr('transform', `translate(${x(U.toDisplayScore(benchSummary.mean))},${cy})`)
           .attr('fill', benchmarkColor)
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>All respondents</strong>${truncate(item.item, 60)}<br>
+          .on('mouseenter focus', (evt) => tip.show(`<strong>All people who answered</strong>${truncate(item.item, 60)}<br>
             Average: ${U.formatScore(benchSummary.mean)}<br>
-            95% CI: ${benchCi ? `${U.formatScore(benchCi.low)}–${U.formatScore(benchCi.high)}` : 'not enough responses to estimate'}<br>
-            n=${benchSummary.n}`, evt))
+            Likely range: ${benchCi ? `${U.formatScore(benchCi.low)}–${U.formatScore(benchCi.high)}` : 'too few people to estimate a range'}<br>
+            ${benchSummary.n} people`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
       }
@@ -129,7 +129,7 @@
           .style('font-size', '0.7rem')
           .text('×')
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>This school</strong>${truncate(item.item, 60)}<br>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} students answered (n=${schoolRows.length})`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`<strong>This school</strong>${truncate(item.item, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} students answered`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
         return;
@@ -153,12 +153,12 @@
         .attr('fill', schoolColor)
         .attr('tabindex', 0)
         .attr('role', 'img')
-        .attr('aria-label', `This school, ${item.item}: average ${summary.mean.toFixed(2)} of 4, 4 is best, n=${summary.n}${ci ? `, 95% CI ${U.formatScore(ci.low)} to ${U.formatScore(ci.high)}` : ''}`)
+        .attr('aria-label', `This school, ${item.item}: average ${summary.mean.toFixed(2)} of 4, higher is more positive, ${summary.n} people${ci ? `, likely range ${U.formatScore(ci.low)} to ${U.formatScore(ci.high)}` : ''}`)
         .on('mouseenter focus', (evt) => {
           tip.show(`<strong>This school</strong>${truncate(item.item, 60)}<br>
             Average (1=No … 4=Yes a lot): ${U.formatScore(summary.mean)}<br>
-            95% CI: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'not enough responses to estimate'}<br>
-            n=${summary.n}${summary.unknownN ? `<br><span class="tt-muted">${summary.unknownN} more answered "I do not know" (excluded)</span>` : ''}`, evt);
+            Likely range: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'too few people to estimate a range'}<br>
+            ${summary.n} people${summary.unknownN ? `<br><span class="tt-muted">${summary.unknownN} more answered "I do not know" (left out of the average)</span>` : ''}`, evt);
         })
         .on('mousemove', (evt) => tip.move(evt))
         .on('mouseleave blur', () => tip.hide());

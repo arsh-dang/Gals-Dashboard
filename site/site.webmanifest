@@ -1,7 +1,7 @@
 {
   "name": "STEM Impact Tracker (prototype)",
   "short_name": "STEM Impact Tracker",
-  "description": "Prototype dashboard built on synthetic data for Deakin University's School of Education.",
+  "description": "A prototype from Deakin University's School of Education. All numbers are made-up test data.",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#FFFFFF",

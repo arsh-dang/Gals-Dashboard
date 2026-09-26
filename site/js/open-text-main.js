@@ -77,21 +77,21 @@
 
     const status = document.getElementById('filter-status');
     if (rows.length === 0) {
-      status.textContent = `Showing 0 of ${openText.length} responses`;
+      status.textContent = `Showing 0 of ${openText.length.toLocaleString('en-AU')} answers`;
     } else {
-      status.textContent = `Showing ${start + 1} to ${Math.min(start + PAGE_SIZE, rows.length)} of ${rows.length} responses (filtered from ${openText.length} total)`;
+      status.textContent = `Showing ${start + 1} to ${Math.min(start + PAGE_SIZE, rows.length)} of ${rows.length.toLocaleString('en-AU')} answers${rows.length === openText.length ? '' : ` (filtered from ${openText.length.toLocaleString('en-AU')})`}`;
     }
 
     const container = document.getElementById('open-text-list');
     container.innerHTML = '';
     U.renderDataTable(container, {
       columns: [
-        { label: 'Response', value: (d) => d.response },
+        { label: 'Answer', value: (d) => d.response },
         { label: 'Question', value: (d) => d.question },
         { label: 'Region', value: (d) => d.region || 'N/A' },
-        { label: 'School year', value: (d) => d.schoolLevel || 'N/A' },
-        { label: 'Activities (context)', value: (d) => (d.activityTypes.length ? d.activityTypes.join(', ') : 'N/A') },
-        { label: 'Theme', value: (d) => d.theme || 'Not yet coded' },
+        { label: 'Year level', value: (d) => d.schoolLevel || 'Not recorded' },
+        { label: 'Activities', value: (d) => (d.activityTypes.length ? d.activityTypes.map(U.displayLabel).join(', ') : 'Not recorded') },
+        { label: 'Theme', value: (d) => d.theme || 'Not grouped yet' },
       ],
       rows: pageRows,
     });

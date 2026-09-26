@@ -42,6 +42,22 @@
     return (key) => map.get(key) || cssVar('--text-muted');
   }
 
+  // Marker shapes, so a dot plot never relies on colour alone to tell its
+  // series apart: each series gets its own shape as well as its own colour,
+  // in the order the caller passes the keys (the same order the legend uses).
+  const MARKER_TYPES = () => [d3.symbolCircle, d3.symbolSquare, d3.symbolDiamond, d3.symbolTriangle, d3.symbolCross, d3.symbolStar, d3.symbolWye];
+  function buildMarkerScale(orderedKeys) {
+    const types = MARKER_TYPES();
+    const map = new Map(orderedKeys.map((k, i) => [k, types[i % types.length]]));
+    return (key) => map.get(key) || d3.symbolCircle;
+  }
+  function markerPath(type, r) {
+    return d3.symbol().type(type).size(Math.PI * r * r * 1.4)();
+  }
+  function legendMarker(type, color) {
+    return `<svg class="legend__marker" viewBox="-7 -7 14 14" width="14" height="14" aria-hidden="true"><path d="${markerPath(type, 5)}" fill="${color}"/></svg>`;
+  }
+
   // Deliberate display-only overrides of raw survey wording, requested by
   // the team for clarity (e.g. forum attendees misreading an option as
   // being about the subjects themselves rather than knowing which are
@@ -51,6 +67,8 @@
   // Each override belongs in the Data notes list in index.html too.
   const LABEL_OVERRIDES = {
     'Subjects I need for a future job': 'Knowing which subjects I need for a future job',
+    // Dashboard-owned name for the non-activity question block (not survey wording).
+    'General STEM outcomes (not activity-specific)': 'General STEM results (not about one activity)',
   };
 
   function displayLabel(text) {
@@ -405,7 +423,7 @@
   function renderDataTable(container, { columns, rows }) {
     const details = document.createElement('details');
     const summary = document.createElement('summary');
-    summary.textContent = 'Show data table';
+    summary.textContent = 'Show these numbers as a table';
     details.appendChild(summary);
 
     const table = document.createElement('table');
@@ -446,7 +464,7 @@
   function renderFooterDate(elementId) {
     const el = document.getElementById(elementId);
     if (!el || !window.SIT_DATA.meta.generatedAt) return;
-    el.textContent = `Data snapshot: ${window.SIT_DATA.meta.generatedAt.slice(0, 10)}`;
+    el.textContent = `Data last updated: ${new Date(window.SIT_DATA.meta.generatedAt).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}`;
   }
 
   window.SIT = window.SIT || {};
@@ -454,6 +472,9 @@
     cssVar,
     buildActivityColorScale,
     displayLabel,
+    buildMarkerScale,
+    markerPath,
+    legendMarker,
     isSuppressed,
     summarizeScores,
     toDisplayScore,

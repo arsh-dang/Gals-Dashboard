@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>STEM Impact Tracker: Teacher view</title>
-<meta name="description" content="Prototype dashboard built on synthetic data for Deakin University's School of Education. Not a live reporting tool.">
+<meta name="description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 
 <!-- Favicon: see site/favicon.svg for the mark and why it's shaped that way -->
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -18,23 +18,23 @@
      mock-data warning on its own, not just the banner on the page. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="STEM Impact Tracker">
-<meta property="og:title" content="STEM Impact Tracker - prototype dashboard (mock data)">
-<meta property="og:description" content="Prototype dashboard built on synthetic data for Deakin University's School of Education. Not a live reporting tool.">
+<meta property="og:title" content="STEM Impact Tracker: prototype with made-up data">
+<meta property="og:description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 <meta property="og:image" content="https://galsdashboard.netlify.app/og-image.png">
 <meta property="og:url" content="https://galsdashboard.netlify.app/teacher.html">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="STEM Impact Tracker - prototype dashboard (mock data)">
-<meta name="twitter:description" content="Prototype dashboard built on synthetic data for Deakin University's School of Education. Not a live reporting tool.">
+<meta name="twitter:title" content="STEM Impact Tracker: prototype with made-up data">
+<meta name="twitter:description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 <meta name="twitter:image" content="https://galsdashboard.netlify.app/og-image.png">
 
-<link rel="stylesheet" href="css/styles.css?v=a8cf6b79ec">
+<link rel="stylesheet" href="css/styles.css?v=722af9b7e3">
 </head>
 <body>
 <div class="page">
 
   <div class="banner-mock" role="note">
-    <strong>Mock data.</strong> Every number on this page is synthetic test data generated to build this dashboard.
-    Real survey collection is pending Deakin ethics approval. Nothing here describes an actual student or school.
+    <strong>Mock data.</strong> Every number on this page is made-up test data used to build the dashboard.
+    The real survey has not started: it is waiting for Deakin ethics approval. Nothing here describes a real student or school.
   </div>
 
   <header class="deakin-banner">
@@ -43,11 +43,11 @@
       <span class="deakin-banner__logo" aria-hidden="true">SIT</span>
       <div>
         <p class="deakin-banner__title">STEM Impact Tracker</p>
-        <p class="deakin-banner__subtitle">Teacher view: your own school's cohort, in more detail</p>
+        <p class="deakin-banner__subtitle">Teacher view: your school's students, in more detail</p>
       </div>
     </div>
     <div class="deakin-banner__actions">
-      <a href="index.html" class="deakin-banner__icon" title="Provider view (home)" aria-label="Provider view (home)">
+      <a href="index.html" class="deakin-banner__icon" title="Program overview (home)" aria-label="Program overview (home)">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
       </a>
       <a href="#data-notes" class="deakin-banner__icon" title="About this dashboard" aria-label="About this dashboard">
@@ -57,17 +57,17 @@
   </header>
 
   <nav class="site-nav" aria-label="Dashboard view">
-    <a href="index.html">Provider view</a>
+    <a href="index.html">Program overview</a>
     <a href="teacher.html" aria-current="page">Teacher view</a>
-    <a href="open-text.html">Open-text responses</a>
+    <a href="open-text.html">Written answers</a>
   </nav>
 
   <section class="teacher-gate" id="teacher-gate" aria-labelledby="gate-title">
-    <span class="teacher-gate__badge">Teacher access</span>
-    <h2 class="teacher-gate__title" id="gate-title">Sign in to your cohort</h2>
+    <span class="teacher-gate__badge">Teacher view</span>
+    <h2 class="teacher-gate__title" id="gate-title">Choose your school</h2>
     <p class="teacher-gate__subtitle" id="gate-subtitle">
-      Select your region and school to view your students' results. This identifies your cohort; it isn't a
-      secured login, since there's no real account behind this mock dataset.
+      Choose your region and school to see your students' results. This is not a login. Anyone can choose any
+      school in this made-up data.
     </p>
     <form class="teacher-gate__form" id="filter-bar">
       <div class="filter-field">
@@ -83,9 +83,9 @@
         </select>
       </div>
       <div class="filter-field">
-        <label for="filter-school-level">School year</label>
+        <label for="filter-school-level">Year level</label>
         <select id="filter-school-level" disabled>
-          <option value="">All years at this school</option>
+          <option value="">All year levels at this school</option>
         </select>
       </div>
       <button type="button" class="filter-reset" id="filter-reset">Switch school</button>
@@ -97,9 +97,8 @@
     <div class="card__body">
       <span class="badge-suppressed" id="suppressed-badge"></span>
       <p style="margin-top: var(--space-3);">
-        Fewer than <span id="threshold-label-suppressed"></span> respondents are recorded at this school in the current
-        data. To avoid identifying individual students, no breakdown is shown below that threshold. This matches the
-        suppression rule used throughout the provider dashboard.
+        Fewer than <span id="threshold-label-suppressed"></span> students at this school answered, so no results are
+        shown. This protects students from being identified. The same rule applies on every page.
       </p>
     </div>
   </div>
@@ -120,15 +119,14 @@
 
     <section class="view-section" aria-labelledby="heading-detail">
       <div class="view-section__heading">
-        <h2 id="heading-detail"><span class="view-number">1</span>Response detail</h2>
+        <h2 id="heading-detail"><span class="view-number">1</span>Your students' answers in detail</h2>
       </div>
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title">What did your students actually say, per activity and outcome?</h3>
+          <h3 class="card__title">What did your students say about each activity?</h3>
           <p class="card__subtitle">
-            Full response distribution, not just the average: one panel per outcome statement, one bar per activity
-            your students took part in. This is the primary view here: your own cohort's actual answers, not a
-            programme-level summary.
+            Every answer, not just the average: one panel for each statement, with one bar for each activity your
+            students took part in. These are your own students' answers, not a summary of the whole program.
           </p>
         </div>
         <div class="card__body">
@@ -139,18 +137,18 @@
 
     <section class="view-section" aria-labelledby="heading-snapshot">
       <div class="view-section__heading">
-        <h2 id="heading-snapshot"><span class="view-number">2</span>Your cohort</h2>
+        <h2 id="heading-snapshot"><span class="view-number">2</span>Your students</h2>
       </div>
       <div class="card">
         <div class="card__header">
           <h3 class="card__title" id="snapshot-title">How many of your students took part in each activity?</h3>
-          <p class="card__subtitle">Respondent counts by activity type, this school only.</p>
+          <p class="card__subtitle">Number of students who answered about each activity, at this school only.</p>
         </div>
         <div class="card__body">
           <div class="chart-scroll"><div class="chart" id="chart-teacher-participation"></div></div>
           <p class="card__note">
-            Counts under <span id="threshold-label-1"></span> are suppressed and marked the same way as the provider
-            dashboard: a small school cohort in a single activity is still identifiable.
+            Counts under <span id="threshold-label-1"></span> are hidden for privacy and marked. At a small school,
+            even a few students in one activity could be identified.
           </p>
         </div>
       </div>
@@ -158,17 +156,17 @@
 
     <section class="view-section" aria-labelledby="heading-skills">
       <div class="view-section__heading">
-        <h2 id="heading-skills"><span class="view-number">3</span>Skills and identity</h2>
-        <div class="view-toggle" role="group" aria-label="Skills or identity battery">
+        <h2 id="heading-skills"><span class="view-number">3</span>Skills and how students see themselves</h2>
+        <div class="view-toggle" role="group" aria-label="Choose skills or how students see themselves">
           <button type="button" data-battery="skills" aria-pressed="true">Skills</button>
-          <button type="button" data-battery="identity" aria-pressed="false">Identity</button>
+          <button type="button" data-battery="identity" aria-pressed="false">How I see myself</button>
         </div>
       </div>
       <div class="card">
         <div class="card__header">
           <h3 class="card__title" id="skills-title">What skills do your students say they built, by activity?</h3>
           <p class="card__subtitle">
-            Multi-select: students could tick more than one, so these are frequencies, not averages.
+            Students could pick more than one option, so these show how many students picked each one, not averages.
           </p>
         </div>
         <div class="card__body">
@@ -179,24 +177,23 @@
 
     <section class="view-section" aria-labelledby="heading-benchmark">
       <div class="view-section__heading">
-        <h2 id="heading-benchmark"><span class="view-number">4</span>For context</h2>
+        <h2 id="heading-benchmark"><span class="view-number">4</span>For comparison</h2>
       </div>
       <details class="card" id="benchmark-details">
-        <summary class="card__header" style="cursor:pointer;">How does your cohort compare to the overall programme? (optional)</summary>
+        <summary class="card__header" style="cursor:pointer;">How do your students compare with all students? (optional)</summary>
         <div class="card__body">
-          <h3 class="card__title">Is your cohort's average response typical of the overall sample?</h3>
+          <h3 class="card__title">Are your students' average answers typical?</h3>
           <p class="card__subtitle">
-            Average score per outcome statement, your school (●) against all respondents (◆), on the survey's 1–4
-            scale. 4 = Yes a lot is the best answer; "I do not know" is excluded. This collapses across activity type;
-            use the detail above for an activity-by-activity view. Closed by default: your own cohort's detail is the
-            point of this page, not how it stacks up against the programme.
+            Average score for each statement: your school (● circle) and all students who answered (◆ diamond).
+            Scores run from 1 (No) to 4 (Yes a lot). "I do not know" answers are left out. This mixes all activities
+            together. For each activity, see the detail above.
           </p>
           <div class="chart-scroll" id="chart-teacher-benchmark"></div>
           <p class="card__note">
-            "×" marks an outcome statement with fewer than <span id="threshold-label-2"></span> of your students
-            answering: suppressed, not plotted. The diamond (all respondents) is shown even where your school's dot is
-            suppressed, since it draws on the full sample. The faint line through each mark is a 95% confidence
-            interval. With cohort sizes this small, treat any gap from the diamond as indicative, not conclusive.
+            "×" means fewer than <span id="threshold-label-2"></span> of your students answered that statement, so it is
+            hidden for privacy. The diamond is still shown, because it uses everyone's answers. The faint line through
+            each mark is the likely range (95% confidence interval). With this few students, treat any gap as a rough
+            guide only.
           </p>
         </div>
       </details>
@@ -210,12 +207,11 @@
       <span id="data-refreshed"></span>
     </div>
     <div class="data-notes card" id="data-notes">
-      <div class="card__header"><h3 class="card__title">Data notes</h3></div>
+      <div class="card__header"><h3 class="card__title">About this dashboard</h3></div>
       <div class="card__body">
         <ul>
-          <li>School cohorts in this mock dataset are small, and most are well under the suppression threshold. Real collection may look different; this view is a first pass pending actual teacher feedback on what's useful.</li>
-          <li>Some respondents' raw <code>school</code> and <code>school_level</code> values in the source CSV contradict the data contract (populated on a Post-school row, which should be blank; the <code>school</code> value often looks like a leaked open-text answer). This recurred in the latest data drop (7 rows, up from 1 previously) - worth flagging to whoever maintains the reshape script. Both fields are treated as blank here rather than shown, per the contract's own rule, regardless of how many rows it affects.</li>
-          <li>Colours follow the real Deakin Dashboard Style Guide (Nov 2025); see <code>site/css/tokens.css</code> for sourcing notes.</li>
+          <li>GALS is the Girls as Leaders in STEM program, which is for girls. Results labelled "GALS" are about people who took part in that program.</li>
+          <li>Most schools in this made-up data have only a few students, so many results are hidden. Real results may look different. This page is a first draft, and we want teachers' feedback on what is useful.</li>
         </ul>
       </div>
     </div>
@@ -227,13 +223,13 @@
 <script src="data/respondents.js?v=79fc768391"></script>
 <script src="data/ratings.js?v=5efbb7a686"></script>
 <script src="data/selections.js?v=b122ea01e0"></script>
-<script src="data/meta.js?v=35dd67221e"></script>
-<script src="js/utils.js?v=b6c6104b2c"></script>
-<script src="js/summary.js?v=9a8c934308"></script>
-<script src="js/charts/participation.js?v=970893c98d"></script>
-<script src="js/charts/outcomes.js?v=600b9ee513"></script>
-<script src="js/charts/skills.js?v=bd367667fc"></script>
-<script src="js/charts/teacher.js?v=8cd1324b09"></script>
-<script src="js/teacher-main.js?v=fdd655e226"></script>
+<script src="data/meta.js?v=5b714fe846"></script>
+<script src="js/utils.js?v=e4f1243f78"></script>
+<script src="js/summary.js?v=4e6d3527bd"></script>
+<script src="js/charts/participation.js?v=9009252601"></script>
+<script src="js/charts/outcomes.js?v=fdebce0795"></script>
+<script src="js/charts/skills.js?v=aa12332499"></script>
+<script src="js/charts/teacher.js?v=fc5e8d2042"></script>
+<script src="js/teacher-main.js?v=f010bcebaf"></script>
 </body>
 </html>

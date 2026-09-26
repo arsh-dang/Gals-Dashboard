@@ -48,10 +48,6 @@
     return diff >= 0 ? 'higher' : 'lower';
   }
 
-  function fmtDiff(diff) {
-    return `${diff >= 0 ? '+' : ''}${diff.toFixed(2)}`;
-  }
-
   // --- Teacher view: one school's cohort vs a baseline --------------------
   // Baseline picks the most specific group that still clears the
   // suppression threshold: same region and same year level first, widening
@@ -65,10 +61,10 @@
     const sameLevel = (r) => !schoolLevel || r.schoolLevel === schoolLevel;
 
     const tiers = [
-      { rows: allRows.filter((r) => notThisSchool(r) && sameRegion(r) && sameLevel(r)), label: 'regional average' },
-      { rows: allRows.filter((r) => notThisSchool(r) && sameRegion(r)), label: 'regional average' },
-      { rows: allRows.filter((r) => notThisSchool(r) && sameLevel(r)), label: 'overall average' },
-      { rows: allRows.filter(notThisSchool), label: 'overall average' },
+      { rows: allRows.filter((r) => notThisSchool(r) && sameRegion(r) && sameLevel(r)), label: 'average for your region' },
+      { rows: allRows.filter((r) => notThisSchool(r) && sameRegion(r)), label: 'average for your region' },
+      { rows: allRows.filter((r) => notThisSchool(r) && sameLevel(r)), label: 'average for all schools' },
+      { rows: allRows.filter(notThisSchool), label: 'average for all schools' },
     ];
     return tiers.find((t) => !U.isSuppressed(U.countDistinctIds(t.rows))) || tiers[tiers.length - 1];
   }
@@ -86,7 +82,7 @@
       return {
         suppressed: true,
         n,
-        sentences: [`Fewer than ${U.SMALL_CELL_THRESHOLD} of your students answered this year, so no summary is shown here - the same rule that suppresses small cells throughout this dashboard.`],
+        sentences: [`Fewer than ${U.SMALL_CELL_THRESHOLD} of your students in this year level answered, so no summary is shown. The same privacy rule applies to every result on this dashboard.`],
       };
     }
 
@@ -98,16 +94,17 @@
     const sentences = [];
 
     if (!distinguishable.length) {
-      sentences.push(`${label}' STEM outcomes are similar to the ${baseline.label} - no outcome differs by more than this sample size can support.`);
+      sentences.push(`${label.endsWith('s') ? `${label}'` : `${label}'s`} answers are similar to the ${baseline.label}. Any differences are too small to tell apart from chance with this many students.`);
     } else {
       const higher = distinguishable.filter((c) => c.diff > 0).length;
       const lower = distinguishable.length - higher;
-      const overall = higher === lower ? 'a mixed picture compared with' : `${directionWord(higher > lower ? 1 : -1)} STEM outcomes overall than`;
-      sentences.push(`${label} report ${overall} the ${baseline.label}.`);
+      sentences.push(higher === lower
+        ? `${label} scored higher on some statements and lower on others, compared with the ${baseline.label}.`
+        : `${label} gave ${directionWord(higher > lower ? 1 : -1)} scores overall than the ${baseline.label}.`);
       const top = biggestGap(comparisons);
-      sentences.push(`The largest gap is on "${top.item}" (${fmtDiff(top.diff)} vs the ${baseline.label}).`);
+      sentences.push(`The biggest difference is on "${top.item}": ${Math.abs(top.diff).toFixed(2)} points ${directionWord(top.diff)} (out of 4) than the ${baseline.label}.`);
     }
-    sentences.push(`${n} of your student${n === 1 ? '' : 's'} answered these questions.`);
+    sentences.push(`${n} of your students answered these questions.`);
 
     return { suppressed: false, n, baselineLabel: baseline.label, sentences };
   }
@@ -135,8 +132,8 @@
     });
 
     const sentence = best
-      ? `Across ${n} respondents, ${best.activity} scores ${directionWord(best.diff)} than the rest of the programme on "${best.item}" (${fmtDiff(best.diff)}).`
-      : `Across ${n} respondents, no activity's outcomes are distinguishable from the rest of the programme - differences seen are within what this sample size can support.`;
+      ? `Across ${n} people who answered, ${best.activity} scored ${directionWord(best.diff)} than the other activities on "${best.item}" (${Math.abs(best.diff).toFixed(2)} points ${directionWord(best.diff)}, out of 4).`
+      : `Across ${n} people who answered, no activity stood out from the others. Any differences are too small to tell apart from chance with this many people.`;
 
     return { n, sentences: [sentence] };
   }

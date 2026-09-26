@@ -47,7 +47,7 @@
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('role', 'img')
-      .attr('aria-label', 'Sorted horizontal bar chart of respondent count by activity type');
+      .attr('aria-label', counts.length ? `Bar chart of how many people answered about each activity. ${counts[0].key} has the most (${counts[0].n}) and ${counts[counts.length - 1].key} has the fewest (${counts[counts.length - 1].n})` : 'Bar chart of how many people answered about each activity');
 
     // Scaled to this call's own data, not a fixed floor shared with the
     // provider page - a 12-student school cohort on the same 0-120 axis as
@@ -100,9 +100,9 @@
       .attr('fill', (d) => colorScale(d.key))
       .attr('tabindex', 0)
       .attr('role', 'img')
-      .attr('aria-label', (d) => `${d.key}: ${d.n} respondents`)
+      .attr('aria-label', (d) => `${d.key}: ${d.n} people`)
       .on('mouseenter focus', (evt, d) => {
-        tip.show(`<strong>${d.key}</strong>${d.n} respondents`, evt);
+        tip.show(`<strong>${d.key}</strong>${d.n} people`, evt);
       })
       .on('mousemove', (evt) => tip.move(evt))
       .on('mouseleave blur', () => tip.hide());
@@ -140,18 +140,19 @@
     // the number of year columns comes from here.
     grid.style.setProperty('--level-count', String(levels.length));
     grid.setAttribute('role', 'table');
-    grid.setAttribute('aria-label', 'Respondent count by region and school year, school students only');
+    grid.setAttribute('aria-label', 'Table of how many school students answered, by region and year level. Counts under 5 are hidden for privacy');
 
     const corner = document.createElement('div');
     corner.className = 'suppression-grid__cell suppression-grid__cell--header';
-    corner.textContent = 'Region \\ Year';
+    corner.textContent = 'Region / Year level';
     grid.appendChild(corner);
     levels.forEach((lvl) => {
       const h = document.createElement('div');
       h.className = 'suppression-grid__cell suppression-grid__cell--header';
       // The "Yr" prefix is hidden on a phone, where eight columns only leave
       // room for the number; the corner cell already says these are years.
-      h.innerHTML = `<span class="suppression-grid__year-prefix">Yr </span>${lvl.replace('Year ', '')}`;
+      h.innerHTML = `<span class="suppression-grid__year-prefix" aria-hidden="true">Yr </span>${lvl.replace('Year ', '')}`;
+      h.setAttribute('aria-label', lvl);
       grid.appendChild(h);
     });
 
@@ -183,9 +184,9 @@
         if (suppressed) {
           const badge = document.createElement('span');
           badge.className = 'badge-suppressed';
-          badge.textContent = n === 0 ? 'n=0' : `n<${U.SMALL_CELL_THRESHOLD}`;
+          badge.textContent = n === 0 ? '0' : `<${U.SMALL_CELL_THRESHOLD}`;
           cell.appendChild(badge);
-          cell.setAttribute('aria-label', `${region}, ${lvl}: suppressed, fewer than ${U.SMALL_CELL_THRESHOLD} respondents`);
+          cell.setAttribute('aria-label', `${region}, ${lvl}: hidden for privacy, fewer than ${U.SMALL_CELL_THRESHOLD} people`);
         } else {
           const bg = shade(n);
           cell.style.background = bg;
@@ -194,19 +195,19 @@
           span.style.color = textColorFor(bg);
           span.textContent = n;
           cell.appendChild(span);
-          cell.setAttribute('aria-label', `${region}, ${lvl}: ${n} respondents`);
+          cell.setAttribute('aria-label', `${region}, ${lvl}: ${n} people`);
         }
         cell.addEventListener('mouseenter', (evt) => {
           tip.show(suppressed
-            ? `<strong>${region} · ${lvl}</strong>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents`
-            : `<strong>${region} · ${lvl}</strong>${n} respondents`, evt);
+            ? `<strong>${region} · ${lvl}</strong>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`
+            : `<strong>${region} · ${lvl}</strong>${n} people`, evt);
         });
         cell.addEventListener('mousemove', (evt) => tip.move(evt));
         cell.addEventListener('mouseleave', () => tip.hide());
         cell.addEventListener('focus', (evt) => {
           tip.show(suppressed
-            ? `<strong>${region} · ${lvl}</strong>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents`
-            : `<strong>${region} · ${lvl}</strong>${n} respondents`, evt);
+            ? `<strong>${region} · ${lvl}</strong>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`
+            : `<strong>${region} · ${lvl}</strong>${n} people`, evt);
         });
         cell.addEventListener('blur', () => tip.hide());
         grid.appendChild(cell);
@@ -228,7 +229,7 @@
     const list = document.createElement('div');
     list.className = 'suppression-list';
     list.setAttribute('role', 'list');
-    list.setAttribute('aria-label', 'Respondent count by region and school year, school students only');
+    list.setAttribute('aria-label', 'Table of how many school students answered, by region and year level. Counts under 5 are hidden for privacy');
 
     regions.forEach((region) => {
       const regionRows = schoolRows.filter((r) => r.region === region);
@@ -248,7 +249,7 @@
       if (!levelsHere.length) {
         const empty = document.createElement('p');
         empty.className = 'suppression-list__empty';
-        empty.textContent = 'No school-year respondents recorded for this region in the current filter.';
+        empty.textContent = 'No school students from this region match the current filters.';
         rows.appendChild(empty);
       }
       levelsHere.forEach((lvl) => {
@@ -257,7 +258,7 @@
         const row = document.createElement('div');
         row.className = 'suppression-list__row';
         const value = suppressed
-          ? `<span class="badge-suppressed">n<${U.SMALL_CELL_THRESHOLD}</span>`
+          ? `<span class="badge-suppressed" title="Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people">&lt;${U.SMALL_CELL_THRESHOLD}</span>`
           : `<span class="suppression-list__count">${n}</span>`;
         row.innerHTML = `<span>${lvl}</span>${value}`;
         rows.appendChild(row);

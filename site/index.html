@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>STEM Impact Tracker: Provider view</title>
-<meta name="description" content="Prototype dashboard built on synthetic data for Deakin University's School of Education. Not a live reporting tool.">
+<title>STEM Impact Tracker: Program overview</title>
+<meta name="description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 
 <!-- Favicon: see site/favicon.svg for the mark and why it's shaped that way -->
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -18,23 +18,23 @@
      mock-data warning on its own, not just the banner on the page. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="STEM Impact Tracker">
-<meta property="og:title" content="STEM Impact Tracker - prototype dashboard (mock data)">
-<meta property="og:description" content="Prototype dashboard built on synthetic data for Deakin University's School of Education. Not a live reporting tool.">
+<meta property="og:title" content="STEM Impact Tracker: prototype with made-up data">
+<meta property="og:description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 <meta property="og:image" content="https://galsdashboard.netlify.app/og-image.png">
 <meta property="og:url" content="https://galsdashboard.netlify.app/index.html">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="STEM Impact Tracker - prototype dashboard (mock data)">
-<meta name="twitter:description" content="Prototype dashboard built on synthetic data for Deakin University's School of Education. Not a live reporting tool.">
+<meta name="twitter:title" content="STEM Impact Tracker: prototype with made-up data">
+<meta name="twitter:description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 <meta name="twitter:image" content="https://galsdashboard.netlify.app/og-image.png">
 
-<link rel="stylesheet" href="css/styles.css?v=a8cf6b79ec">
+<link rel="stylesheet" href="css/styles.css?v=722af9b7e3">
 </head>
 <body>
 <div class="page">
 
   <div class="banner-mock" role="note">
-    <strong>Mock data.</strong> Every number on this page is synthetic test data generated to build this dashboard.
-    Real survey collection is pending Deakin ethics approval. Nothing here describes an actual programme or participant.
+    <strong>Mock data.</strong> Every number on this page is made-up test data used to build the dashboard.
+    The real survey has not started: it is waiting for Deakin ethics approval. Nothing here describes a real program, student or school.
   </div>
 
   <header class="deakin-banner">
@@ -43,7 +43,7 @@
       <span class="deakin-banner__logo" aria-hidden="true">SIT</span>
       <div>
         <p class="deakin-banner__title">STEM Impact Tracker</p>
-        <p class="deakin-banner__subtitle">Provider view: participation and outcomes across STEM activities</p>
+        <p class="deakin-banner__subtitle">Program overview: who took part in STEM activities and what students reported</p>
       </div>
     </div>
     <div class="deakin-banner__actions">
@@ -57,12 +57,12 @@
   </header>
 
   <nav class="site-nav" aria-label="Dashboard view">
-    <a href="index.html" aria-current="page">Provider view</a>
+    <a href="index.html" aria-current="page">Program overview</a>
     <a href="teacher.html">Teacher view</a>
-    <a href="open-text.html">Open-text responses</a>
+    <a href="open-text.html">Written answers</a>
   </nav>
 
-  <div class="kpi-row" id="kpi-row" aria-label="Sample snapshot"></div>
+  <div class="kpi-row" id="kpi-row" aria-label="Survey at a glance"></div>
 
   <form class="filter-bar" id="filter-bar">
     <div class="filter-field">
@@ -72,9 +72,9 @@
       </select>
     </div>
     <div class="filter-field">
-      <label for="filter-school-level">School year</label>
+      <label for="filter-school-level">Year level</label>
       <select id="filter-school-level">
-        <option value="">All years (incl. post-school)</option>
+        <option value="">All year levels (including people who have left school)</option>
       </select>
     </div>
     <button type="button" class="filter-reset" id="filter-reset">Reset filters</button>
@@ -96,28 +96,28 @@
     <!-- View 1: Participation overview -->
     <section class="view-section" id="section-participation" aria-labelledby="heading-participation">
       <div class="view-section__heading">
-        <h2 id="heading-participation"><span class="view-number">1</span>Participation overview</h2>
+        <h2 id="heading-participation"><span class="view-number">1</span>Who took part</h2>
       </div>
       <div class="cards-row">
         <div class="card">
           <div class="card__header">
-            <h3 class="card__title">How many respondents took part in each activity?</h3>
-            <p class="card__subtitle">Respondent counts by activity type, sorted highest to lowest.</p>
+            <h3 class="card__title">How many people answered about each activity?</h3>
+            <p class="card__subtitle">Number of people who answered about each activity, from most to fewest. Many people took part in more than one activity, so the bars overlap.</p>
           </div>
           <div class="card__body">
             <div class="chart-scroll"><div class="chart" id="chart-participation-bars"></div></div>
             <!-- Full reasoning (why GALS isn't a headline finding here): see README.md, "Caption reasoning". -->
             <p class="card__note">
-              Participation is broadly comparable across all seven activities; GALS is narrowly the largest. A
-              general, non-activity-specific question appears separately in the Outcomes section below.
+              Similar numbers of people answered about each of the seven activities. GALS (Girls as Leaders in STEM)
+              has slightly the most. A general question that is not about one activity is shown separately below.
             </p>
             <div id="table-participation-bars"></div>
           </div>
         </div>
         <div class="card">
           <div class="card__header">
-            <h3 class="card__title">Where do school-student respondents come from?</h3>
-            <p class="card__subtitle">Respondent count by region and school year, school students only.</p>
+            <h3 class="card__title">Which regions and year levels are the students from?</h3>
+            <p class="card__subtitle">Number of school students who answered, by region and year level.</p>
           </div>
           <div class="card__body">
             <!-- Eight year columns don't fit a phone by shrinking further, so
@@ -126,8 +126,9 @@
             <div class="chart-scroll desktop-only" id="chart-suppression-grid"></div>
             <div class="mobile-only" id="chart-suppression-list"></div>
             <p class="card__note">
-              Cells under <span id="threshold-label-1"></span> respondents are suppressed and marked, not dropped.
-              Only Geelong has usable numbers across most year levels; read other regions as indicative.
+              Results for fewer than <span id="threshold-label-1"></span> people are hidden for privacy and marked.
+              Geelong has the most responses, so its results are the most complete. Other regions have fewer, so more of
+              their results are hidden. Read those as a rough guide.
             </p>
           </div>
         </div>
@@ -137,11 +138,11 @@
     <!-- View 2: Outcomes by activity -->
     <section class="view-section" id="section-outcomes" aria-labelledby="heading-outcomes">
       <div class="view-section__heading">
-        <h2 id="heading-outcomes"><span class="view-number">2</span>Outcomes by activity</h2>
-        <div class="view-toggle" role="group" aria-label="Outcomes chart type">
-          <button type="button" data-outcomes-mode="average" aria-pressed="true">Dot plot</button>
-          <button type="button" data-outcomes-mode="smallMultiples" aria-pressed="false">Small multiples</button>
-          <button type="button" data-outcomes-mode="distribution" aria-pressed="false">Distribution</button>
+        <h2 id="heading-outcomes"><span class="view-number">2</span>What students reported, by activity</h2>
+        <div class="view-toggle" role="group" aria-label="Choose the chart type">
+          <button type="button" data-outcomes-mode="average" aria-pressed="true" title="Dot plot">Compare activities</button>
+          <button type="button" data-outcomes-mode="smallMultiples" aria-pressed="false" title="Small multiples">One panel per activity</button>
+          <button type="button" data-outcomes-mode="distribution" aria-pressed="false" title="Distribution">Spread of answers</button>
           <!-- Phones only: one activity at a time as a sorted list, for when
                seven overlapping dots per row is more than the reader wants. -->
           <button type="button" class="mobile-only" data-outcomes-mode="single" aria-pressed="false">One activity</button>
@@ -149,9 +150,9 @@
       </div>
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title">Which outcomes do participants report most positively, by activity?</h3>
+          <h3 class="card__title">Which results are most positive for each activity?</h3>
           <p class="card__subtitle" id="outcomes-subtitle">
-            Average score per activity on the survey's 1–4 scale (4 = Yes a lot is best; "I do not know" excluded).
+            Average score for each activity, from 1 (No) to 4 (Yes a lot). Higher is more positive. "I do not know" answers are left out.
           </p>
         </div>
         <div class="card__body">
@@ -160,9 +161,10 @@
             <div class="legend" id="outcomes-activity-legend"></div>
             <!-- Full reasoning for the "≈" wording-variant tag and the sample-size point: README.md, "Caption reasoning". -->
             <p class="card__note" id="outcomes-note">
-              Faint lines are 95% confidence intervals: activities sit close together, so read a gap alongside its
-              interval, not instead of it. "≈" flags an item that appears twice with near-identical wording; "×"
-              marks a cell suppressed for fewer than <span id="threshold-label-2"></span> respondents.
+              The faint line on each dot shows the likely range for that average (a 95% confidence interval).
+              Activities score close together, so when two lines overlap the difference may not be real. "≈" marks a
+              statement asked in two similar wordings. "×" marks a result hidden for privacy (fewer than
+              <span id="threshold-label-2"></span> people).
             </p>
             <div id="table-outcomes"></div>
           </div>
@@ -178,16 +180,15 @@
 
       <div class="card" id="card-general-outcomes">
         <div class="card__header">
-          <h3 class="card__title">General STEM outcomes (not activity-specific)</h3>
+          <h3 class="card__title">General STEM results (not about one activity)</h3>
           <p class="card__subtitle">
-            A separate question asked of everyone, not tied to any one activity - shown on its own rather than as an
-            8th activity above.
+            A separate question asked of everyone. It is shown here on its own, not as an eighth activity.
           </p>
         </div>
         <div class="card__body">
           <div class="chart-scroll" id="chart-general-outcomes"></div>
           <p class="card__note">
-            Same scale and confidence intervals as above.
+            Same scoring and likely ranges as above.
             <span id="general-outcomes-n"></span>
           </p>
         </div>
@@ -197,24 +198,24 @@
     <!-- View 3: Skills and identity -->
     <section class="view-section" id="section-skills" aria-labelledby="heading-skills">
       <div class="view-section__heading">
-        <h2 id="heading-skills"><span class="view-number">3</span>Skills and identity</h2>
-        <div class="view-toggle" role="group" aria-label="Skills or identity battery">
+        <h2 id="heading-skills"><span class="view-number">3</span>Skills and how students see themselves</h2>
+        <div class="view-toggle" role="group" aria-label="Choose skills or how students see themselves">
           <button type="button" data-battery="skills" aria-pressed="true">Skills</button>
-          <button type="button" data-battery="identity" aria-pressed="false">Identity</button>
+          <button type="button" data-battery="identity" aria-pressed="false">How I see myself</button>
         </div>
       </div>
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title" id="skills-title">What skills do participants say they built, by activity?</h3>
+          <h3 class="card__title" id="skills-title">What skills do students say they built, by activity?</h3>
           <p class="card__subtitle">
-            Percentage of each activity's participants selecting each option (multi-select, so not an average).
+            Share of the students in each activity who picked each option. Students could pick more than one, so the shares can add up to more than 100%.
           </p>
         </div>
         <div class="card__body">
           <div id="chart-skills"></div>
           <p class="card__note" id="skills-note">
-            Excursions, Online STEM activities and the general-outcomes block didn't ask these questions (a survey
-            branch, not missing data), so they're not shown here.
+            Students in Excursions and Online STEM activities were not asked these questions, and neither were they
+            asked in the general question. They are left out here on purpose. Nothing is missing.
           </p>
         </div>
       </div>
@@ -223,13 +224,13 @@
     <!-- View 4: Regional comparison -->
     <section class="view-section" id="section-regional" aria-labelledby="heading-regional">
       <div class="view-section__heading">
-        <h2 id="heading-regional"><span class="view-number">4</span>Regional comparison</h2>
+        <h2 id="heading-regional"><span class="view-number">4</span>Comparing regions</h2>
       </div>
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title">How do outcomes compare across the six regions?</h3>
+          <h3 class="card__title">How do results compare across the six regions?</h3>
           <p class="card__subtitle">
-            Average score per region, same scale as Outcomes above.
+            Average score for each region, scored the same way as above.
           </p>
         </div>
         <div class="card__body">
@@ -237,8 +238,9 @@
           <div class="legend" id="regional-legend"></div>
           <!-- Regions outside Geelong showing several suppressed cells is the honest state of this sample, not a rendering gap: README.md, "Caption reasoning". -->
           <p class="card__note">
-            Same confidence-interval reasoning as Outcomes above. "×" marks a cell suppressed for fewer than
-            <span id="threshold-label-3"></span> respondents; most regions outside Geelong will show several.
+            The faint lines show likely ranges, as above. "×" marks a result hidden for privacy (fewer than
+            <span id="threshold-label-3"></span> people). Regions other than Geelong have fewer responses, so more of their
+            results are hidden.
           </p>
           <div id="table-regional"></div>
         </div>
@@ -248,13 +250,14 @@
     <!-- View 5: Aspirations and subject choice -->
     <section class="view-section" id="section-aspirations" aria-labelledby="heading-aspirations">
       <div class="view-section__heading">
-        <h2 id="heading-aspirations"><span class="view-number">5</span>Aspirations and subject choice</h2>
+        <h2 id="heading-aspirations"><span class="view-number">5</span>Future plans and subject choice</h2>
       </div>
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title">Does taking part in GALS shift how girls see their future in STEM?</h3>
+          <h3 class="card__title">Do people who took part in GALS see their future in STEM differently?</h3>
           <p class="card__subtitle">
-            Compares GALS participants to everyone else, item by item, on the same scale as Outcomes above.
+            Compares people who took part in Girls as Leaders in STEM (GALS) with people who did not, one statement at
+            a time. Both groups are scored the same way as above.
           </p>
         </div>
         <div class="card__body">
@@ -262,9 +265,9 @@
           <div class="legend" id="aspirations-legend"></div>
           <!-- Why the small, mixed-direction Diff is expected rather than a rendering issue, and why the CI overlap matters: README.md, "Caption reasoning". -->
           <p class="card__note">
-            "Diff" is the GALS average minus the everyone-else average; in this mock data it's small and mixed in
-            direction, which is expected. "×" marks a group/item suppressed for fewer than
-            <span id="threshold-label-4"></span> respondents.
+            "Difference" is the GALS average minus the average for people who did not take part. In this made-up data
+            the differences are small and go both ways. "×" marks a result hidden for privacy (fewer than
+            <span id="threshold-label-4"></span> people).
           </p>
           <div id="table-aspirations"></div>
         </div>
@@ -274,17 +277,17 @@
         <div class="card__header">
           <h3 class="card__title">What helps students decide which subjects to choose?</h3>
           <p class="card__subtitle">
-            Compares which influences matter more to female versus male students. Each bar splits into a female and
-            male segment, sized to that gender's own percentage (multi-select, so these don't sum to 100%).
+            Compares what influences students in each gender group. Each bar has one segment for each group, sized to
+            that group's own percentage. Students could pick more than one option, so percentages do not add to 100%.
           </p>
         </div>
         <div class="card__body">
           <div class="chart-scroll" id="chart-subject-choice-influence"></div>
           <!-- Full confound reasoning (why this doesn't go away with real data either): README.md, "Caption reasoning". -->
           <p class="card__note">
-            Mock data only, not a result - and since every GALS participant is female, part of any gender gap here is
-            a GALS-participation gap. A segment under <span id="threshold-label-5"></span> respondents shows
-            "suppressed".
+            Made-up data only, not a result. Every GALS participant answered Female, so part of any gap between groups
+            may come from taking part in GALS. "×" marks a result hidden for privacy (fewer than
+            <span id="threshold-label-5"></span> people).
           </p>
         </div>
       </div>
@@ -293,34 +296,33 @@
         <div class="card__header">
           <h3 class="card__title">What helps students decide what they might do in the future?</h3>
           <p class="card__subtitle">
-            Compares which influences on future plans matter more to female versus male students. A separate
-            question from subject choice above; segment length is each gender's own percentage (multi-select).
+            Compares what influences future plans for students in each gender group. This is a separate question
+            from subject choice above. Each segment is that group's own percentage.
           </p>
         </div>
         <div class="card__body">
           <div class="chart-scroll" id="chart-career-choice-influence"></div>
           <p class="card__note">
-            Mock data only, not a result - female includes all GALS participants, so part of the gap reflects
-            programme participation. A segment under <span id="threshold-label-7"></span> respondents shows
-            "suppressed".
+            Made-up data only, not a result. Everyone who took part in GALS answered Female, so part of any gap may
+            come from GALS. "×" marks a result hidden for privacy (fewer than <span id="threshold-label-7"></span> people).
           </p>
         </div>
       </div>
 
       <div class="card">
         <div class="card__header">
-          <h3 class="card__title">Do the STEM activities and programmes themselves shape these decisions?</h3>
+          <h3 class="card__title">How often do students name STEM activities and programs as an influence?</h3>
           <!-- Why this gets its own panel instead of sitting as one row among ten: README.md, "Caption reasoning". -->
           <p class="card__subtitle">
-            How often "STEM activities and programmes" itself was picked as an influence, GALS participants versus
-            everyone else.
+            How often students picked "STEM activities and programs" as an influence, comparing people who took part
+            in GALS with people who did not.
           </p>
         </div>
         <div class="card__body">
           <div class="chart-scroll" id="chart-programme-influence"></div>
           <p class="card__note">
-            Mock data only, not a result - real data may show a smaller gap, no gap, or one in the other direction.
-            A group under <span id="threshold-label-6"></span> respondents shows "suppressed".
+            Made-up data only, not a result. Real data may show a smaller gap, no gap, or a gap the other way.
+            Groups with fewer than <span id="threshold-label-6"></span> people are hidden for privacy.
           </p>
         </div>
       </div>
@@ -330,33 +332,32 @@
           <div class="card__header">
             <h3 class="card__title">Which subjects are students interested in for Year 11 or 12?</h3>
             <p class="card__subtitle">
-              Compares subject interest between female and male students; segment length is each gender's own
-              percentage (multi-select).
+              Compares subject interest between students in each gender group. Each segment is that group's own
+              percentage.
             </p>
           </div>
           <div class="card__body">
             <div id="chart-subject-interest"></div>
             <p class="card__note">
-              Mock data only; female includes all GALS participants, so part of the gap reflects programme
-              participation.
+              Made-up data only. Everyone who took part in GALS answered Female, so part of any gap may come from GALS.
             </p>
           </div>
         </div>
 
         <div class="card card--self-perception">
           <div class="card__header">
-            <h3 class="card__title">Why choose STEM subjects? (belonging and confidence)</h3>
+            <h3 class="card__title">Why do students want to choose STEM subjects? Belonging and confidence</h3>
             <!-- Why a different tint rather than a lighter version of the influence charts: README.md, "Caption reasoning". -->
             <p class="card__subtitle">
-              Compares how female and male students see their own belonging and ability in STEM subjects (not what
-              influences a choice - hence the different tint). Segment length is each gender's own percentage.
+              Compares how students in each gender group see their own belonging and ability in STEM subjects. This is
+              about how they see themselves, not what influences a choice. It uses a different colour so you can tell the
+              two apart at a glance. Each segment is that group's own percentage.
             </p>
           </div>
           <div class="card__body">
             <div id="chart-self-perception"></div>
             <p class="card__note">
-              Mock data only; female includes all GALS participants, so part of the gap reflects programme
-              participation.
+              Made-up data only. Everyone who took part in GALS answered Female, so part of any gap may come from GALS.
             </p>
           </div>
         </div>
@@ -366,13 +367,12 @@
         <div class="card__header">
           <h3 class="card__title">What kind of jobs do students imagine doing in the future?</h3>
           <p class="card__subtitle">
-            Free-text responses, browsable below - not charted. <span id="jobs-imagined-status"></span>
+            Written answers, listed below. Not charted. <span id="jobs-imagined-status"></span>
           </p>
         </div>
         <div class="card__body">
           <p class="card__note" style="margin-top:0; padding-top:0; border-top:none;">
-            <strong>Needs theme coding before it can be summarised.</strong> Whether and how to code these into
-            themes is still open with the team; showing the raw responses rather than pre-judging that decision.
+            <strong>These answers have not been grouped into themes yet,</strong> so they are shown as students wrote them.
           </p>
           <div class="chart-scroll" id="jobs-imagined-list"></div>
           <div class="jobs-imagined-more" id="jobs-imagined-more" style="display:none;">
@@ -390,7 +390,7 @@
       <span id="data-refreshed"></span>
     </div>
     <div class="data-notes card" id="data-notes">
-      <div class="card__header"><h3 class="card__title">Data notes</h3></div>
+      <div class="card__header"><h3 class="card__title">About this dashboard</h3></div>
       <div class="card__body">
         <!--
           Trimmed to what a reader outside the project needs. The rest
@@ -401,9 +401,11 @@
           just not to a principal reading this page cold.
         -->
         <ul id="data-notes-list">
-          <li>All figures on this page are synthetic test data, generated to build the dashboard. Real survey collection is pending Deakin ethics approval.</li>
-          <li>Groups of fewer than 5 respondents are suppressed and marked, never silently dropped.</li>
-          <li>The scale runs 1 = No to 4 = Yes a lot; higher is better.</li>
+          <li>All numbers here are made-up test data. The real survey is waiting for Deakin ethics approval.</li>
+          <li>To protect privacy, results based on fewer than 5 people are hidden and marked. They are never quietly left out.</li>
+          <li>Answers are scored from 1 (No) to 4 (Yes a lot). A higher score means a more positive answer.</li>
+          <li>GALS is the Girls as Leaders in STEM program, which is for girls. Results labelled "GALS" are about people who took part in that program. Other results include students of every gender.</li>
+          <li>Gender groups use the labels students chose. A group, or a single result within a group, is shown only when at least 5 people are behind it. Smaller ones are hidden for privacy and marked ×; those answers still count everywhere else.</li>
         </ul>
       </div>
     </div>
@@ -418,15 +420,15 @@
 <script src="data/aspirations.js?v=81adeaaef0"></script>
 <script src="data/subjectCareer.js?v=9180cef5e8"></script>
 <script src="data/openText.js?v=d7edf9cd3f"></script>
-<script src="data/meta.js?v=35dd67221e"></script>
-<script src="js/utils.js?v=b6c6104b2c"></script>
-<script src="js/summary.js?v=9a8c934308"></script>
-<script src="js/charts/participation.js?v=970893c98d"></script>
-<script src="js/charts/outcomes.js?v=600b9ee513"></script>
-<script src="js/charts/skills.js?v=bd367667fc"></script>
-<script src="js/charts/regional.js?v=7bb5ff2105"></script>
-<script src="js/charts/aspirations.js?v=63edca3646"></script>
-<script src="js/charts/influences.js?v=ba49482b12"></script>
-<script src="js/main.js?v=e62c399d49"></script>
+<script src="data/meta.js?v=5b714fe846"></script>
+<script src="js/utils.js?v=e4f1243f78"></script>
+<script src="js/summary.js?v=4e6d3527bd"></script>
+<script src="js/charts/participation.js?v=9009252601"></script>
+<script src="js/charts/outcomes.js?v=fdebce0795"></script>
+<script src="js/charts/skills.js?v=aa12332499"></script>
+<script src="js/charts/regional.js?v=12e48f1aa7"></script>
+<script src="js/charts/aspirations.js?v=346ce04a90"></script>
+<script src="js/charts/influences.js?v=7be2bdb31a"></script>
+<script src="js/main.js?v=10bd023e7e"></script>
 </body>
 </html>

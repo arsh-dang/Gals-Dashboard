@@ -153,8 +153,8 @@
 
     if (!state.school) {
       gate.classList.remove('teacher-gate--active');
-      gateTitle.textContent = 'Sign in to your cohort';
-      gateSubtitle.textContent = 'Select your region and school to view your students\' results. This identifies your cohort; it isn\'t a secured login, since there\'s no real account behind this mock dataset.';
+      gateTitle.textContent = 'Choose your school';
+      gateSubtitle.textContent = 'Choose your region and school to see your students\' results. This is not a login. Anyone can choose any school in this made-up data.';
       suppressedMsg.style.display = 'none';
       content.style.display = 'none';
       status.textContent = '';
@@ -162,8 +162,8 @@
     }
 
     gate.classList.add('teacher-gate--active');
-    gateTitle.textContent = `Signed in: ${state.school}`;
-    gateSubtitle.textContent = `${state.region || meta.schools.find((s) => s.key === state.school).region}. Narrow by year below, or switch school.`;
+    gateTitle.textContent = `Showing: ${state.school}`;
+    gateSubtitle.textContent = `${state.region || meta.schools.find((s) => s.key === state.school).region}. Choose a year level below, or switch school.`;
 
     const cohortFilters = { school: state.school, schoolLevel: state.schoolLevel };
     schoolRatings = U.applyFilters(ratings, cohortFilters);
@@ -175,7 +175,7 @@
     if (U.isSuppressed(n)) {
       suppressedMsg.style.display = '';
       content.style.display = 'none';
-      document.getElementById('suppressed-badge').textContent = `${state.school}${levelSuffix}: n=${n}, suppressed`;
+      document.getElementById('suppressed-badge').textContent = `${state.school}${levelSuffix}: ${n} student${n === 1 ? '' : 's'}, hidden for privacy`;
       return;
     }
 

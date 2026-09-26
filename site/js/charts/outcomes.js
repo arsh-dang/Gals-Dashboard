@@ -80,18 +80,19 @@
       wideRowHeight: 34,
       widePadding: 0.15,
       plotHeight: activities.length * 6 + 6,
-      noteFor: (key) => (items.find((i) => i.item === key).pairId !== null ? '≈ wording variant of another row' : null),
+      noteFor: (key) => (items.find((i) => i.item === key).pairId !== null ? '≈ Also asked in a similar wording (see the matching row)' : null),
     });
     const { height, band } = geo;
     const bw = items.length ? band(items[0].item).height : 0;
     const inset = compact ? 4 : 8;
     const sub = d3.scalePoint().domain(activities).range([-bw / 2 + inset, bw / 2 - inset]);
     const dotR = compact ? 4 : 5;
+    const markerFor = U.buildMarkerScale(activities);
 
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('role', 'img')
-      .attr('aria-label', 'Dot plot of average outcome score by activity type, one row per outcome statement');
+      .attr('aria-label', 'Dot plot of average scores for each statement, by activity. Activities score close together');
 
     const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
 
@@ -131,7 +132,7 @@
             .attr('x', margin.left - 16)
             .attr('dy', '1.3em')
             .attr('text-anchor', 'end')
-            .text('≈ wording variant of another row');
+            .text('≈ Also asked in a similar wording (see the matching row)');
         }
       });
 
@@ -161,7 +162,7 @@
           .style('font-size', '0.7rem')
           .text('×')
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`<strong>${cell.activityType}</strong>${truncate(cell.item, 60)}<br>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${cell.n})`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`<strong>${cell.activityType}</strong>${truncate(cell.item, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
         return;
@@ -169,8 +170,8 @@
       const ci = U.ciDisplayBounds(cell);
       const tooltipHtml = `<strong>${cell.activityType}</strong>${truncate(cell.item, 60)}<br>
             Average (1=No … 4=Yes a lot): ${U.formatScore(cell.mean)}<br>
-            95% CI: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'not enough responses to estimate'}<br>
-            n=${cell.n}${cell.unknownN ? `<br><span class="tt-muted">${cell.unknownN} more answered "I do not know" (excluded)</span>` : ''}`;
+            Likely range: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'too few people to estimate a range'}<br>
+            ${cell.n} people${cell.unknownN ? `<br><span class="tt-muted">${cell.unknownN} more answered "I do not know" (left out of the average)</span>` : ''}`;
 
       if (ci) {
         dotG.append('line')
@@ -182,14 +183,13 @@
           .attr('opacity', 0.45);
       }
 
-      dotG.append('circle')
-        .attr('cx', x(cell.display))
-        .attr('cy', cy)
-        .attr('r', dotR)
+      dotG.append('path')
+        .attr('transform', `translate(${x(cell.display)},${cy})`)
+        .attr('d', U.markerPath(markerFor(cell.activityType), dotR))
         .attr('fill', colorScale(cell.activityType))
         .attr('tabindex', 0)
         .attr('role', 'img')
-        .attr('aria-label', `${cell.activityType}, ${cell.item}: average ${cell.mean.toFixed(2)} of 4, 4 is best, n=${cell.n}${ci ? `, 95% CI ${U.formatScore(ci.low)} to ${U.formatScore(ci.high)}` : ''}`)
+        .attr('aria-label', `${cell.activityType}, ${cell.item}: average ${cell.mean.toFixed(2)} of 4, higher is more positive, ${cell.n} people${ci ? `, likely range ${U.formatScore(ci.low)} to ${U.formatScore(ci.high)}` : ''}`)
         .on('mouseenter focus', (evt) => tip.show(tooltipHtml, evt))
         .on('mousemove', (evt) => tip.move(evt))
         .on('mouseleave blur', () => tip.hide());
@@ -227,7 +227,7 @@
       const denom = U.countDistinctIds(ratings.filter((r) => r.activityType === activityType));
       const title = document.createElement('div');
       title.className = 'facet-grid__title';
-      title.innerHTML = `<span>${activityType}</span><span class="facet-grid__n">n=${denom}</span>`;
+      title.innerHTML = `<span>${activityType}</span><span class="facet-grid__n">${denom} people</span>`;
       cell.appendChild(title);
       grid.appendChild(cell);
       return { activityType, cell };
@@ -258,7 +258,7 @@
       const svg = d3.select(cell).append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
         .attr('role', 'img')
-        .attr('aria-label', `Average outcome scores for ${activityType}`);
+        .attr('aria-label', `Average scores for each statement, for ${activityType}`);
 
       svg.selectAll('line.gridline')
         .data(SCALE_TICKS)
@@ -299,7 +299,7 @@
             .style('font-size', '0.65rem')
             .text('×')
             .attr('tabindex', 0)
-            .on('mouseenter focus', (evt) => tip.show(`<strong>${activityType}</strong>${truncate(item.item, 60)}<br>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${rows.length})`, evt))
+            .on('mouseenter focus', (evt) => tip.show(`<strong>${activityType}</strong>${truncate(item.item, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
             .on('mousemove', (evt) => tip.move(evt))
             .on('mouseleave blur', () => tip.hide());
           return;
@@ -320,11 +320,11 @@
           .attr('fill', colorScale(activityType))
           .attr('tabindex', 0)
           .attr('role', 'img')
-          .attr('aria-label', `${item.item}: average ${summary.mean.toFixed(2)} of 4, 4 is best, n=${summary.n}`)
+          .attr('aria-label', `${item.item}: average ${summary.mean.toFixed(2)} of 4, higher is more positive, ${summary.n} people`)
           .on('mouseenter focus', (evt) => tip.show(`<strong>${activityType}</strong>${truncate(item.item, 60)}<br>
             Average (1=No … 4=Yes a lot): ${U.formatScore(summary.mean)}<br>
-            95% CI: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'not enough responses to estimate'}<br>
-            n=${summary.n}`, evt))
+            Likely range: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'too few people to estimate a range'}<br>
+            ${summary.n} people`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
       });
@@ -402,7 +402,7 @@
       const svg = d3.select(cell).append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
         .attr('role', 'img')
-        .attr('aria-label', `Response distribution for "${item.item}" by activity type, diverging around Maybe / Yes a little`);
+        .attr('aria-label', `Answers to "${item.item}" for each activity, from No to Yes a lot`);
 
       svg.append('line')
         .attr('class', 'gridline')
@@ -433,7 +433,7 @@
             .attr('dy', '0.32em')
             .style('font-size', '0.62rem')
             .attr('fill', U.cssVar('--text-muted'))
-            .text(`suppressed (n<${U.SMALL_CELL_THRESHOLD})`);
+            .text(`hidden for privacy`);
           return;
         }
 
@@ -467,7 +467,7 @@
             .attr('tabindex', 0);
           rect.on('mouseenter focus', (evt) => {
             const pct = p(seg.key);
-            tip.show(`<strong>${d.activityType}</strong>${meta.scale.labels[seg.key]}: ${U.formatPct(pct)} (n=${d.counts[seg.key]} of ${known})`, evt);
+            tip.show(`<strong>${d.activityType}</strong>${meta.scale.labels[seg.key]}: ${U.formatPct(pct)} (${d.counts[seg.key]} of ${known} people)`, evt);
           }).on('mousemove', (evt) => tip.move(evt)).on('mouseleave blur', () => tip.hide());
         });
 
@@ -481,7 +481,7 @@
             .attr('stroke', U.cssVar('--likert-unknown'))
             .attr('stroke-width', 2)
             .attr('tabindex', 0)
-            .on('mouseenter focus', (evt) => tip.show(`<strong>${d.activityType}</strong>"I do not know": ${U.formatPct(rate)} of respondents (n=${d.counts.dontKnow})`, evt))
+            .on('mouseenter focus', (evt) => tip.show(`<strong>${d.activityType}</strong>"I do not know": ${U.formatPct(rate)} of people (${d.counts.dontKnow})`, evt))
             .on('mousemove', (evt) => tip.move(evt))
             .on('mouseleave blur', () => tip.hide());
         }
@@ -491,7 +491,7 @@
       note.style.fontSize = 'var(--text-caption)';
       note.style.color = 'var(--text-muted)';
       note.style.marginTop = '2px';
-      note.textContent = 'Centred on the Maybe / Yes a little midpoint; excludes "I do not know" from the 100%';
+      note.textContent = 'Bars line up at the point between "Maybe" and "Yes a little", so you can see how many answered more or less positively. "I do not know" is not counted in the percentages.';
       cell.appendChild(note);
     });
   }
@@ -535,7 +535,7 @@
     const svg = d3.select(container).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('role', 'img')
-      .attr('aria-label', 'Lollipop chart of average score for the general STEM outcomes question, sorted best to worst');
+      .attr('aria-label', 'Chart of average scores for the general STEM question, from highest to lowest');
 
     const x = d3.scaleLinear().domain([1, 4]).range([margin.left, width - margin.right]);
     const color = U.cssVar('--brand-accent');
@@ -580,7 +580,7 @@
           .style('font-size', '0.7rem')
           .text('×')
           .attr('tabindex', 0)
-          .on('mouseenter focus', (evt) => tip.show(`${truncate(r.item, 60)}<br>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${r.n})`, evt))
+          .on('mouseenter focus', (evt) => tip.show(`${truncate(r.item, 60)}<br>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
           .on('mousemove', (evt) => tip.move(evt))
           .on('mouseleave blur', () => tip.hide());
         return;
@@ -605,11 +605,11 @@
         .attr('fill', color)
         .attr('tabindex', 0)
         .attr('role', 'img')
-        .attr('aria-label', `${r.item}: average ${r.mean.toFixed(2)} of 4, 4 is best, n=${r.n}`)
+        .attr('aria-label', `${r.item}: average ${r.mean.toFixed(2)} of 4, higher is more positive, ${r.n} people`)
         .on('mouseenter focus', (evt) => tip.show(`${truncate(r.item, 60)}<br>
           Average (1=No … 4=Yes a lot): ${U.formatScore(r.mean)}<br>
-          95% CI: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'not enough responses to estimate'}<br>
-          n=${r.n}`, evt))
+          Likely range: ${ci ? `${U.formatScore(ci.low)}–${U.formatScore(ci.high)}` : 'too few people to estimate a range'}<br>
+          ${r.n} people`, evt))
         .on('mousemove', (evt) => tip.move(evt))
         .on('mouseleave blur', () => tip.hide());
     });

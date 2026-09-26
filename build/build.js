@@ -41,7 +41,7 @@ const ITEM_WORDING_PAIRS = [
 // changes the wording again, rather than silently rendering an empty bar.
 const SUBJECT_CHOICE_QUESTION = 'What helps decide which subjects to choose';
 const CAREER_CHOICE_QUESTION = 'What helps decide future plans (school students)';
-const PROGRAMME_INFLUENCE_LABEL = 'STEM activities and programmes';
+const PROGRAMME_INFLUENCE_LABEL = 'STEM activities and programs';
 
 const SHARED_INFLUENCES = [
   { canonical: 'Enjoyment or interest in the subject', subject: 'Subjects I enjoy', career: 'My own interest in STEM' },

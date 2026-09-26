@@ -48,7 +48,7 @@
 
       const title = document.createElement('div');
       title.className = 'facet-grid__title';
-      title.innerHTML = `<span>${activityType}</span><span class="facet-grid__n">n=${denom}</span>`;
+      title.innerHTML = `<span>${activityType}</span><span class="facet-grid__n">${denom} people</span>`;
       cell.appendChild(title);
       return { activityType, denom, cell };
     });
@@ -66,7 +66,7 @@
       if (U.isSuppressed(denom)) {
         const badge = document.createElement('span');
         badge.className = 'badge-suppressed';
-        badge.textContent = denom === 0 ? 'No respondents in current filter' : `Suppressed: n<${U.SMALL_CELL_THRESHOLD}`;
+        badge.textContent = denom === 0 ? 'No one matches the current filters' : `Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`;
         cell.appendChild(badge);
         return;
       }
@@ -93,7 +93,7 @@
       const svg = d3.select(cell).append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
         .attr('role', 'img')
-        .attr('aria-label', `${battery === 'skills' ? 'Skills' : 'Identity'} selected by ${activityType} participants`);
+        .attr('aria-label', `Bar chart of how often each ${battery === 'skills' ? 'skill' : 'description'} was picked by people in ${activityType}, highest to lowest.${bars.length && !bars[0].suppressed ? ` Picked most often: ${bars[0].item} (${U.formatPct(bars[0].pct)}).` : ''}`);
 
       const y = d3.scaleBand().domain(bars.map((d) => d.item)).range([margin.top, height - margin.bottom]).padding(0.25);
 
@@ -121,7 +121,7 @@
         .attr('width', (d) => x(d.pct) - margin.left)
         .attr('fill', colorScale(activityType))
         .attr('tabindex', 0)
-        .on('mouseenter focus', (evt, d) => tip.show(`<strong>${d.item}</strong>${U.formatPct(d.pct)} of ${activityType} participants (n=${d.n} of ${denom})`, evt))
+        .on('mouseenter focus', (evt, d) => tip.show(`<strong>${d.item}</strong>${U.formatPct(d.pct)} of people in ${activityType} (${d.n} of ${denom})`, evt))
         .on('mousemove', (evt) => tip.move(evt))
         .on('mouseleave blur', () => tip.hide());
 
@@ -142,9 +142,9 @@
         .attr('dy', '0.32em')
         .style('font-size', '0.62rem')
         .attr('fill', U.cssVar('--text-muted'))
-        .text(`suppressed (n<${U.SMALL_CELL_THRESHOLD})`)
+        .text(`hidden for privacy`)
         .attr('tabindex', 0)
-        .on('mouseenter focus', (evt, d) => tip.show(`<strong>${d.item}</strong>Suppressed: fewer than ${U.SMALL_CELL_THRESHOLD} respondents (n=${d.n})`, evt))
+        .on('mouseenter focus', (evt, d) => tip.show(`<strong>${d.item}</strong>Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people`, evt))
         .on('mousemove', (evt) => tip.move(evt))
         .on('mouseleave blur', () => tip.hide());
     });

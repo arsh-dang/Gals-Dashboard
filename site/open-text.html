@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>STEM Impact Tracker: Open-text responses</title>
-<meta name="description" content="Prototype dashboard built on synthetic data for Deakin University's School of Education. Not a live reporting tool.">
+<title>STEM Impact Tracker: Written answers</title>
+<meta name="description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 
 <!-- Favicon: see site/favicon.svg for the mark and why it's shaped that way -->
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -18,23 +18,23 @@
      mock-data warning on its own, not just the banner on the page. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="STEM Impact Tracker">
-<meta property="og:title" content="STEM Impact Tracker - prototype dashboard (mock data)">
-<meta property="og:description" content="Prototype dashboard built on synthetic data for Deakin University's School of Education. Not a live reporting tool.">
+<meta property="og:title" content="STEM Impact Tracker: prototype with made-up data">
+<meta property="og:description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 <meta property="og:image" content="https://galsdashboard.netlify.app/og-image.png">
 <meta property="og:url" content="https://galsdashboard.netlify.app/open-text.html">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="STEM Impact Tracker - prototype dashboard (mock data)">
-<meta name="twitter:description" content="Prototype dashboard built on synthetic data for Deakin University's School of Education. Not a live reporting tool.">
+<meta name="twitter:title" content="STEM Impact Tracker: prototype with made-up data">
+<meta name="twitter:description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 <meta name="twitter:image" content="https://galsdashboard.netlify.app/og-image.png">
 
-<link rel="stylesheet" href="css/styles.css?v=a8cf6b79ec">
+<link rel="stylesheet" href="css/styles.css?v=722af9b7e3">
 </head>
 <body>
 <div class="page">
 
   <div class="banner-mock" role="note">
-    <strong>Mock data.</strong> Every number on this page is synthetic test data generated to build this dashboard.
-    Real survey collection is pending Deakin ethics approval. Nothing here describes an actual respondent.
+    <strong>Mock data.</strong> Every number on this page is made-up test data used to build the dashboard.
+    The real survey has not started: it is waiting for Deakin ethics approval. Nothing here describes a real person who answered.
   </div>
 
   <header class="deakin-banner">
@@ -43,11 +43,11 @@
       <span class="deakin-banner__logo" aria-hidden="true">SIT</span>
       <div>
         <p class="deakin-banner__title">STEM Impact Tracker</p>
-        <p class="deakin-banner__subtitle">Open-text responses: filterable list, not charted</p>
+        <p class="deakin-banner__subtitle">Written answers: a list you can filter, not a chart</p>
       </div>
     </div>
     <div class="deakin-banner__actions">
-      <a href="index.html" class="deakin-banner__icon" title="Provider view (home)" aria-label="Provider view (home)">
+      <a href="index.html" class="deakin-banner__icon" title="Program overview (home)" aria-label="Program overview (home)">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
       </a>
       <a href="#data-notes" class="deakin-banner__icon" title="About this dashboard" aria-label="About this dashboard">
@@ -57,35 +57,20 @@
   </header>
 
   <nav class="site-nav" aria-label="Dashboard view">
-    <a href="index.html">Provider view</a>
+    <a href="index.html">Program overview</a>
     <a href="teacher.html">Teacher view</a>
-    <a href="open-text.html" aria-current="page">Open-text responses</a>
+    <a href="open-text.html" aria-current="page">Written answers</a>
   </nav>
 
   <p class="page-lede">
-    Free-text survey answers, shown as a filterable list rather than charted, since they aren't structured data. Region
-    and activity are shown as context, not as a claimed link to a specific programme.
+    Written answers from the survey, shown as a list you can filter, not as a chart. Region and activity are shown
+    for context. They do not mean the answer was about that activity.
   </p>
 
   <div id="unavailable-message" class="card" style="display:none;">
     <div class="card__body">
-      <h3 class="card__title">No open-text responses in this data drop</h3>
-      <p>
-        <code>open_text.csv</code> is not present in <code>./data/</code>, and the script that would produce it from
-        the raw Qualtrics export (<code>reshape_v3.py</code>, referenced in the data contract) isn't in this drop
-        either, so nothing has been invented to fill the gap.
-      </p>
-      <p>
-        This page is otherwise complete: once <code>open_text.csv</code> is added (columns
-        <code>ResponseId,question,source_column,response</code>, per the data contract) and the build is re-run
-        (<code>node build/build.js</code>), it will render here automatically, filterable by question, region and
-        activity, with a theme column ready for coding.
-      </p>
-      <p>
-        Theme coding slots in the same way: add <code>open_text_themes.csv</code> with columns
-        <code>ResponseId,question,theme</code>, keyed the same way as the responses themselves, and every row's theme
-        column populates on the next build. Until that file exists, the column is present and shows "not yet coded".
-      </p>
+      <h3 class="card__title">Written answers are not available yet</h3>
+      <p>They will appear here once they are added to the data.</p>
     </div>
   </div>
 
@@ -105,7 +90,7 @@
         </select>
       </div>
       <div class="filter-field">
-        <label for="filter-activity">Activity (context)</label>
+        <label for="filter-activity">Activity (for context)</label>
         <select id="filter-activity">
           <option value="">All activities</option>
         </select>
@@ -116,10 +101,10 @@
 
     <div class="card">
       <div class="card__header">
-        <h3 class="card__title">Responses</h3>
+        <h3 class="card__title">Answers</h3>
         <p class="card__subtitle">
-          "Activities" lists every activity this respondent has outcome ratings for. The survey doesn't record which
-          activity a free-text answer was specifically about.
+          "Activities" lists every activity this person answered about. The survey does not record which activity a
+          written answer was about.
         </p>
       </div>
       <div class="card__body">
@@ -136,10 +121,10 @@
       <span id="data-refreshed"></span>
     </div>
     <div class="data-notes card" id="data-notes">
-      <div class="card__header"><h3 class="card__title">Data notes</h3></div>
+      <div class="card__header"><h3 class="card__title">About this dashboard</h3></div>
       <div class="card__body">
         <ul>
-          <li>Colours follow the real Deakin Dashboard Style Guide (Nov 2025); see <code>site/css/tokens.css</code> for sourcing notes.</li>
+          <li>All numbers here are made-up test data. The real survey is waiting for Deakin ethics approval.</li>
         </ul>
       </div>
     </div>
@@ -149,8 +134,8 @@
 
 <script src="data/respondents.js?v=79fc768391"></script>
 <script src="data/openText.js?v=d7edf9cd3f"></script>
-<script src="data/meta.js?v=35dd67221e"></script>
-<script src="js/utils.js?v=b6c6104b2c"></script>
-<script src="js/open-text-main.js?v=c5b7087d8a"></script>
+<script src="data/meta.js?v=5b714fe846"></script>
+<script src="js/utils.js?v=e4f1243f78"></script>
+<script src="js/open-text-main.js?v=561544ee62"></script>
 </body>
 </html>
