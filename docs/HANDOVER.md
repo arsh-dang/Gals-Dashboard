@@ -236,7 +236,7 @@ GitHub Actions) must be on. Whether it is on is not visible from the code.
 | **"I do not know" is left out of every average** | Its `score` is blank. It counts as a non-answer, not as a low score. Tooltips show how many people said it. | `data/reshape_v3.py`, `site/js/utils.js` |
 | **Q107 is reported as "General STEM outcomes"** | The survey has one outcomes question, Q107, that is not tied to an activity. It is shown on its own card and left out of every comparison between activities. It is not treated as an eighth activity. **Open question 3:** the survey file says Q107 is only shown to people who typed something in the "Other (please specify)" activity box. The code assumes it is shown to everyone. | `data/reshape_v3.py` (`BLOCKS`), `build/build.js` (`GENERAL_ACTIVITY_TYPE`) |
 | **GitHub Pages instead of Netlify** | Netlify was not picking up new builds, so the team was looking at an old version. Pages builds from `main` on every push and shows what is in the repository. This reason is from Arsh, not from the code. | `.github/workflows/deploy-pages.yml`; `netlify.toml` is still there |
-| **No analytics** | No analytics or tracking scripts are on the site, on purpose. One outside request remains: the fonts load from Google Fonts. Open question 12. | `netlify.toml` (comment), `site/css/tokens.css` |
+| **No analytics** | No analytics or tracking scripts are on the site, on purpose. Fonts are self-hosted (on the `frontend-makeover` branch), so the site makes no outside request. Open question 12. | `netlify.toml` (comment), `site/css/tokens.css` |
 | **One comparison at a time was tried, then reversed** | Commit `03f869d` redesigned every chart to show one activity at a time, to suit phones. The team found the charts too simple, and the commit was reversed (`3896c9c`). The current dashboard shows all activities together, with layouts made for phones. The phone view also has a "One activity" button. Open question 11 asks whether "one activity per chart" is still meant to be a rule. | `site/js/charts/outcomes.js`, `site/index.html` |
 | **Wording** | Australian spelling, plain language, "people who answered", "hidden for privacy". Survey wording is shown as asked. | `wording_review.md` |
 
@@ -326,8 +326,8 @@ is in `docs/backend_design.md`, "Before real data".
    personal detail. They need review or redaction before anyone sees them. The
    current data includes the school-name question and two questions about adults'
    jobs as free text.
-6. **Remove the outside font request** if the privacy review says so, and move the
-   preview links off the old Netlify address.
+6. **Move the preview links** off the old Netlify address. (The outside font
+   request is removed on the `frontend-makeover` branch.)
 7. **Rules for small groups.** Combinations of region, school, year level and
    gender can identify a student even when each one passes the rule of 5. Agree
    the rules with the ethics office. The rules in `backend/export_rules.yaml` are a

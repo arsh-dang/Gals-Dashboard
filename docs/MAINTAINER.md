@@ -88,7 +88,19 @@ at the top for when the survey changes. The rules export applies are in
 There is no framework. Each page loads plain scripts in order.
 
 - `site/js/utils.js`: shared helpers. Colours, score maths, filtering, tooltips,
-  the small-group rule, and `LABEL_OVERRIDES`.
+  the small-group rule, and `LABEL_OVERRIDES`. Also the chart building blocks
+  used everywhere:
+  - `labelGutter` and `drawWideLabel`: row labels measured in the real font,
+    wrapped to two lines instead of cut off, full text in a tooltip, and the
+    small "≈" badge for statements asked in two wordings;
+  - `drawHiddenChip`: the grey "hidden" tag for results hidden for privacy,
+    always in a fixed column at the right edge of a row, never in the plot;
+  - `buildMarkerScale` and `markOutline`: simple solid shapes (circle, square,
+    diamond, triangles, hexagon, pentagon), and a thin dark outline on light
+    fills;
+  - `setEmphasis`: fades every mark with class `series-mark` except one
+    `data-key` (used by the "Highlight activity / region" selectors and by
+    hovering or focusing a legend item).
 - `site/js/main.js`: the Program overview page. Reads the built data, applies the
   filters, calls the charts.
 - `site/js/teacher-main.js`: the Teacher view.
@@ -97,7 +109,22 @@ There is no framework. Each page loads plain scripts in order.
   averages and only reports a gap when their 95% confidence intervals do not
   overlap. Nothing is written by an AI model.
 - `site/js/charts/`: one file per chart family (participation, outcomes, skills,
-  regional, aspirations, influences, teacher).
+  regional, aspirations, influences, teacher). The four gender charts
+  (`influences.js`, `renderByGender`) are dot plots on a shared 0 to 100% axis.
+- `site/js/section-nav.js`: highlights the current section in the sticky section
+  nav on the overview. The links work without it.
+- Page layout: slim header with the page tabs (`.site-header`, `.site-tabs`),
+  the sticky section nav (`.section-nav`, overview only), KPIs and filters in one
+  band (`.overview-bar`), white cards, then "About this dashboard" above a
+  one-line footer. The makeover rules are at the end of `styles.css`, including
+  the print stylesheet (`@media print`, and an `@page` margin box that prints
+  the mock-data warning at the top of every page).
+- Fonts: Open Sans is self-hosted in `site/vendor/fonts/` (Latin subset, SIL OFL,
+  licence in `OFL.txt`). The site makes no request to any outside server.
+- Colours: every colour comes from `tokens.css`. Yellow (`--series-5`) is not used
+  for chart series, because it fails contrast for thin marks on white. Gender
+  groups have fixed neutral colours and shapes, set once in `main.js`
+  (`genderColors`).
 - `site/css/tokens.css`: colours and fonts. `site/css/styles.css`: layout,
   including the phone layouts (below 640px).
 
@@ -131,7 +158,9 @@ SIT_TEST_POSTGRES="postgresql://user@/dbname?host=/path/to/socket&port=5432" pyt
 Use an empty scratch database. Each test makes and drops its own schema.
 
 There are no tests for the site code (the charts). Check them by looking at the
-pages at desktop width and at about 375px.
+pages at 1400px, 768px and about 390px: no sideways scrolling, no cut-off
+labels, no console errors. Tab through the page tabs, section nav, filters,
+legends and "Show these numbers as a table" and check each shows a focus ring.
 
 ## 6. Deploy
 
@@ -170,13 +199,24 @@ Read this before changing anything. The first three cause silent problems.
 9. **Every build changes `site/data/meta.js`** (a timestamp) and, when a file
    changed, the `?v=` stamps in the HTML. So `git status` is rarely clean after a
    build. The deploy rebuilds anyway.
-10. **Google Fonts.** `site/css/tokens.css` imports Open Sans from
-    `fonts.googleapis.com`. This is the one outside request. The preview tags in
-    the HTML head point at `galsdashboard.netlify.app`.
+10. **Preview links.** The preview tags in the HTML head point at
+    `galsdashboard.netlify.app`. (The fonts are self-hosted now, so there is no
+    outside request from the page itself.)
 11. **Multi-wave export.** Two waves exported together get prefixed response ids.
     The dashboard has no wave filter.
 12. **PostgreSQL was tested once, on a local server.** Deakin's may differ.
 13. **The teacher "sign in" is a drop-down**, not security.
+14. **Labels are measured in the browser.** `U.measureText` uses a hidden SVG
+    text element in the page font. The charts redraw once the font has loaded
+    (`document.fonts.ready`). If the font files go missing, labels are measured
+    in the fallback font and may wrap differently, but nothing is cut off.
+15. **"Never asked" is not "hidden".** A cell with 0 people (for example the
+    School club wording of a statement for every other activity) shows nothing,
+    or "not asked" in the "Spread of answers" view. Only 1 to 4 people get the
+    grey "hidden" tag. Keep that distinction if you change the charts.
+16. **The print warning uses a page margin box** (`@page { @top-center }`).
+    Chrome and Edge support it; other browsers may print without it, but the
+    full banner still prints on page 1.
 
 ## 8. Other files
 
@@ -290,7 +330,8 @@ shortened, the fuller version is kept here rather than lost:
   as one row among ten and be easy to miss. The gap shown is built into the
   mock data so the panel has something to show; real data may show a smaller
   gap, no gap, or a gap in the other direction.
-- **Self-perception card tint**: shown on a pink-tinted card, not the same
+- **Self-perception card tint** (superseded: the card is now white with a small
+  "A different kind of question" label): shown on a pink-tinted card, not the same
   white as the influence charts above it, because it's a different kind of
   question (self-image, not what influences a decision) - the tint is a
   glance-level signal of that, not a lighter version of the same chart.
