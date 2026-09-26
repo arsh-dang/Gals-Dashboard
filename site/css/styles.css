@@ -53,133 +53,6 @@
   margin: 0 0 var(--gap-dashboard);
 }
 
-/* --- Deakin banner --------------------------------------------------------
-   Per the style guide: "banner should contain the Deakin logo and the
-   dashboard title on the left, and the home and information icons on the
-   right." A solid brand-colour bar, not a card. */
-.deakin-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  background: var(--brand-primary);
-  color: var(--text-inverse);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4) var(--space-5);
-  margin-bottom: var(--space-4);
-}
-
-.deakin-banner__brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  min-width: 0;
-}
-
-.deakin-banner__logo {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 999px;
-  background: var(--text-inverse);
-  color: var(--brand-primary);
-  font-size: var(--text-caption);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.deakin-banner__title {
-  margin: 0;
-  font-size: var(--text-h1);
-  font-weight: 700;
-  line-height: var(--leading-tight);
-}
-
-.deakin-banner__subtitle {
-  margin: 2px 0 0;
-  font-size: var(--text-small);
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.deakin-banner__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  flex: none;
-}
-
-.deakin-banner__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 999px;
-  color: var(--text-inverse);
-  background: rgba(255, 255, 255, 0.15);
-  transition: background-color 0.15s ease;
-}
-
-.deakin-banner__icon:hover { background: rgba(255, 255, 255, 0.28); }
-
-.deakin-banner__icon:focus-visible {
-  outline: 2px solid var(--text-inverse);
-  outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .deakin-banner__icon { transition: none; }
-}
-
-@media (max-width: 560px) {
-  .deakin-banner { flex-wrap: wrap; }
-  .deakin-banner__subtitle { display: none; }
-}
-
-/* --- Site nav (provider / teacher / open-text switch) ----------------------- */
-.site-nav {
-  display: flex;
-  gap: var(--space-1);
-  margin-bottom: var(--gap-dashboard);
-  padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.site-nav a {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--text-small);
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-decoration: none;
-  border-radius: 999px;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.site-nav a:hover {
-  color: var(--brand-primary);
-  background: var(--surface-sunken);
-}
-
-.site-nav a[aria-current='page'] {
-  color: var(--text-inverse);
-  background: var(--brand-primary);
-}
-
-.site-nav a[aria-current='page']:hover {
-  background: var(--brand-primary-light);
-  color: var(--text-inverse);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .site-nav a { transition: none; }
-}
-
 /* --- KPI snapshot row --------------------------------------------------
    Guide: KPI values should be the largest, boldest element, kept simple
    and consistent across tiles - one accent colour, not one per tile. */
@@ -700,12 +573,19 @@ svg text { font-family: var(--font-body); }
    since these items are about belonging/confidence, not what shapes a
    decision - a different accent colour and a tinted card make that a
    glance-level distinction, not just a line of caption text. */
-.card--self-perception {
-  background: var(--tint-pink-1);
-}
-
-.card--self-perception .card__header {
-  background: var(--tint-pink-2);
+/* Marked with a label (.card__kind), not a tinted card: a pink tint read as
+   decoration and sat oddly next to the inclusive colour choices elsewhere. */
+.card__kind {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-2);
+  padding: 2px var(--space-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 /* --- Teacher sign-in gate ---------------------------------------------------
@@ -908,7 +788,7 @@ svg text { font-family: var(--font-body); }
   .filter-bar,
   .teacher-gate--active {
     position: sticky;
-    top: 0;
+    top: var(--sticky-offset, 0px);
     z-index: 20;
     padding: var(--space-3);
     gap: var(--space-3);
@@ -921,11 +801,6 @@ svg text { font-family: var(--font-body); }
     min-height: 44px;
     padding: var(--space-2) var(--space-4);
   }
-  .site-nav a {
-    min-height: 44px;
-    padding: var(--space-2) var(--space-3);
-  }
-  .deakin-banner__icon { width: 44px; height: 44px; }
   summary {
     min-height: 44px;
     display: flex;
@@ -971,4 +846,293 @@ svg text { font-family: var(--font-body); }
   }
   .data-table td:first-child::before { content: none; }
   .data-table [data-align='right'] { text-align: left; }
+}
+
+/* ==========================================================================
+   Front-end makeover (frontend-makeover branch)
+   Calmer, report-like layout. Rules here come last on purpose, so they win
+   over the older ones above without having to edit each of them.
+   ========================================================================== */
+
+/* --- Slim header: title, subtitle, page tabs, about button ---------------- */
+.site-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-5);
+  padding: var(--space-3) 0 0;
+  border-top: 4px solid var(--brand-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: var(--space-4);
+}
+
+.site-header__brand { min-width: 0; padding-bottom: var(--space-3); }
+
+.site-header__title {
+  margin: 0;
+  font-size: var(--text-h2);
+  font-weight: 700;
+  color: var(--brand-primary);
+  line-height: var(--leading-tight);
+}
+
+.site-header__subtitle {
+  margin: 2px 0 0;
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+}
+
+.site-tabs {
+  display: flex;
+  gap: var(--space-1);
+  align-self: end;
+}
+
+.site-tabs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.site-tabs a:hover { color: var(--brand-primary); }
+.site-tabs a[aria-current='page'] { color: var(--brand-primary); border-bottom-color: var(--brand-primary); }
+
+.site-header__info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  color: var(--brand-primary);
+  border: 1px solid var(--border-strong);
+  margin-bottom: var(--space-3);
+}
+
+.site-header__info:hover { background: var(--surface-sunken); }
+
+@media (max-width: 760px) {
+  /* Title and about button on one row, tabs on their own scrolling row. */
+  .site-header { grid-template-columns: minmax(0, 1fr) auto; }
+  .site-tabs { grid-column: 1 / -1; grid-row: 2; overflow-x: auto; scrollbar-width: none; }
+  .site-header__info { width: 44px; height: 44px; }
+}
+
+/* --- Section nav: sticky jump links, current section highlighted ---------- */
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  margin-bottom: var(--space-4);
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.section-nav::-webkit-scrollbar,
+.site-tabs::-webkit-scrollbar { display: none; }
+
+.section-nav a {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.section-nav a:hover { color: var(--brand-primary); border-color: var(--brand-primary); }
+.section-nav a[aria-current='true'] {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: var(--text-inverse);
+}
+
+/* Anchored sections land below the sticky nav, not under it. */
+.view-section { scroll-margin-top: 64px; }
+
+@media (max-width: 640px) {
+  .section-nav a { min-height: 44px; }
+  /* On the overview the filter bar sticks just below the section nav. */
+  .section-nav ~ .overview-bar .filter-bar { top: 61px; }
+}
+
+/* --- KPIs and filters in one band ----------------------------------------- */
+.overview-bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: stretch;
+  margin-bottom: var(--gap-dashboard);
+}
+
+.overview-bar .kpi-row,
+.overview-bar .filter-bar { margin-bottom: 0; }
+.overview-bar .filter-field { flex: 1 1 14rem; }
+.overview-bar .filter-status { flex-basis: 100%; margin-left: 0; }
+
+.kpi-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* Lighter tiles: a large number and a small label, no fill, thin dividers. */
+.kpi-tile {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: var(--space-2) var(--space-5);
+}
+
+.kpi-tile + .kpi-tile { border-left: 1px solid var(--border-subtle); }
+.kpi-tile:first-child { padding-left: 0; }
+.kpi__value { font-size: 2rem; }
+.kpi__label { margin-top: var(--space-1); font-size: var(--text-small); }
+
+.filter-bar { border-color: var(--border-subtle); }
+
+.filter-status__count {
+  display: inline-block;
+  margin-right: var(--space-2);
+  padding: 1px var(--space-2);
+  border-radius: 999px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-strong);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+@media (max-width: 1100px) {
+  .overview-bar { grid-template-columns: 1fr; }
+  .kpi-row { flex-wrap: wrap; }
+}
+
+@media (max-width: 640px) {
+  .kpi-row { display: grid; grid-template-columns: repeat(2, 1fr); }
+  .kpi-tile { padding: var(--space-2) 0; }
+  .kpi-tile + .kpi-tile { border-left: 0; }
+  .kpi__value { font-size: 1.5rem; }
+}
+
+/* --- Sections -------------------------------------------------------------- */
+.view-grid { gap: var(--space-7); }
+.view-section { gap: var(--space-4); }
+.view-section__heading {
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.view-section__heading h2 { font-size: 1.375rem; color: var(--text-primary); }
+.view-number {
+  background: none;
+  color: var(--brand-primary);
+  border: 2px solid var(--brand-primary);
+}
+.card__body { padding: var(--space-4) var(--space-5) var(--space-5); }
+.card__note { color: var(--text-secondary); }
+
+/* --- Highlight selector and interactive legends --------------------------- */
+.highlight-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  font-size: var(--text-small);
+}
+
+.highlight-field label { font-weight: 600; color: var(--text-secondary); }
+.highlight-field select {
+  font: inherit;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-card);
+  max-width: 100%;
+}
+
+.legend__item--button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 2px var(--space-2);
+  cursor: pointer;
+}
+
+.legend__item--button:hover,
+.legend__item--button[aria-pressed='true'] { border-color: var(--border-strong); background: var(--surface-card); }
+
+/* Emphasis: one series stays at full strength, the rest fade. */
+.series-mark { transition: opacity 0.15s ease; }
+.is-emphasising .series-mark:not(.is-emphasised) { opacity: 0.12; }
+
+/* --- Footer: About card above a one-line bar ------------------------------- */
+.data-notes { margin-top: var(--space-7); }
+.page-footer { margin-top: var(--space-4); }
+.page-footer__bar { align-items: center; margin-bottom: 0; }
+.page-footer__reminder { color: var(--status-caution); font-weight: 600; }
+
+/* --- Motion: a short fade on filter changes only -------------------------- */
+@keyframes sit-refresh { from { opacity: 0.35; } to { opacity: 1; } }
+.view-grid.is-refreshing svg { animation: sit-refresh 0.3s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .view-grid.is-refreshing svg,
+  .series-mark,
+  .section-nav a { animation: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+/* --- Print: the overview as a clean PDF ------------------------------------ */
+@page { size: A4; margin: 30mm 12mm 14mm; }
+
+@media print {
+  html, body { background: #fff; }
+  .page { max-width: none; padding: 0; }
+  .site-tabs, .site-header__info, .section-nav, .filter-bar, .view-toggle,
+  .highlight-field, .data-table-toggle, details, .jobs-imagined-more,
+  .viz-tooltip, #outcomes-single { display: none !important; }
+  .overview-bar { grid-template-columns: 1fr; }
+  /* The mock-data banner repeats at the top of every printed page. */
+  .banner-mock {
+    position: fixed;
+    top: -24mm;
+    left: 0;
+    right: 0;
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .card { box-shadow: none; break-inside: avoid; page-break-inside: avoid; }
+  .view-section__heading { break-after: avoid; page-break-after: avoid; }
+  .view-section { break-before: auto; }
+  .card--summary, .kpi-row, .data-notes { break-inside: avoid; }
+  .chart-scroll { overflow: visible; }
+  svg { max-width: 100%; height: auto; }
+  a { color: inherit; text-decoration: none; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }

@@ -27,7 +27,7 @@
 <meta name="twitter:description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 <meta name="twitter:image" content="https://galsdashboard.netlify.app/og-image.png">
 
-<link rel="stylesheet" href="css/styles.css?v=85877e66b6">
+<link rel="stylesheet" href="css/styles.css?v=2d2664db17">
 </head>
 <body>
 <div class="page">
@@ -37,30 +37,22 @@
     The real survey has not started: it is waiting for Deakin ethics approval. Nothing here describes a real person who answered.
   </div>
 
-  <header class="deakin-banner">
-    <div class="deakin-banner__brand">
-      <!-- placeholder logo mark; swap for the official Deakin University logo asset -->
-      <span class="deakin-banner__logo" aria-hidden="true">SIT</span>
-      <div>
-        <p class="deakin-banner__title">STEM Impact Tracker</p>
-        <p class="deakin-banner__subtitle">Written answers: a list you can filter, not a chart</p>
-      </div>
+  <!-- Slim header: title, one-line subtitle, the page tabs and the "about"
+       button. The old home icon duplicated the first tab, so it is gone. -->
+  <header class="site-header">
+    <div class="site-header__brand">
+      <p class="site-header__title">STEM Impact Tracker</p>
+      <p class="site-header__subtitle">Written answers: a list you can filter, not a chart</p>
     </div>
-    <div class="deakin-banner__actions">
-      <a href="index.html" class="deakin-banner__icon" title="Program overview (home)" aria-label="Program overview (home)">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-      </a>
-      <a href="#data-notes" class="deakin-banner__icon" title="About this dashboard" aria-label="About this dashboard">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none"/></svg>
-      </a>
-    </div>
+    <nav class="site-tabs" aria-label="Dashboard view">
+      <a href="index.html">Program overview</a>
+      <a href="teacher.html">Teacher view</a>
+      <a href="open-text.html" aria-current="page">Written answers</a>
+    </nav>
+    <a href="#data-notes" class="site-header__info" title="About this dashboard" aria-label="About this dashboard">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none"/></svg>
+    </a>
   </header>
-
-  <nav class="site-nav" aria-label="Dashboard view">
-    <a href="index.html">Program overview</a>
-    <a href="teacher.html">Teacher view</a>
-    <a href="open-text.html" aria-current="page">Written answers</a>
-  </nav>
 
   <p class="page-lede">
     Written answers from the survey, shown as a list you can filter, not as a chart. Region and activity are shown
@@ -115,18 +107,20 @@
 
   </main>
 
+  <div class="data-notes card" id="data-notes">
+    <div class="card__header"><h3 class="card__title">About this dashboard</h3></div>
+    <div class="card__body">
+      <ul>
+        <li>All numbers here are made-up test data. The real survey is waiting for Deakin ethics approval.</li>
+      </ul>
+    </div>
+  </div>
+
   <footer class="page-footer">
     <div class="page-footer__bar">
       <span>Contact: <a href="mailto:stem-impact-tracker@deakin.edu.au">stem-impact-tracker@deakin.edu.au</a> (placeholder)</span>
       <span id="data-refreshed"></span>
-    </div>
-    <div class="data-notes card" id="data-notes">
-      <div class="card__header"><h3 class="card__title">About this dashboard</h3></div>
-      <div class="card__body">
-        <ul>
-          <li>All numbers here are made-up test data. The real survey is waiting for Deakin ethics approval.</li>
-        </ul>
-      </div>
+      <span class="page-footer__reminder">All numbers are made-up test data.</span>
     </div>
   </footer>
 
@@ -134,8 +128,8 @@
 
 <script src="data/respondents.js?v=84350cfc62"></script>
 <script src="data/openText.js?v=55dae8171a"></script>
-<script src="data/meta.js?v=4ccd8096ae"></script>
-<script src="js/utils.js?v=cf9ddbabdd"></script>
+<script src="data/meta.js?v=4e3753230b"></script>
+<script src="js/utils.js?v=73c3069e01"></script>
 <script src="js/open-text-main.js?v=561544ee62"></script>
 </body>
 </html>

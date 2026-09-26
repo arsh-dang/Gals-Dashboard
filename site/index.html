@@ -27,7 +27,7 @@
 <meta name="twitter:description" content="A prototype from Deakin University's School of Education showing how survey results about students in STEM activities could be reported. All numbers are made-up test data.">
 <meta name="twitter:image" content="https://galsdashboard.netlify.app/og-image.png">
 
-<link rel="stylesheet" href="css/styles.css?v=85877e66b6">
+<link rel="stylesheet" href="css/styles.css?v=2d2664db17">
 </head>
 <body>
 <div class="page">
@@ -37,31 +37,34 @@
     The real survey has not started: it is waiting for Deakin ethics approval. Nothing here describes a real program, student or school.
   </div>
 
-  <header class="deakin-banner">
-    <div class="deakin-banner__brand">
-      <!-- placeholder logo mark; swap for the official Deakin University logo asset -->
-      <span class="deakin-banner__logo" aria-hidden="true">SIT</span>
-      <div>
-        <p class="deakin-banner__title">STEM Impact Tracker</p>
-        <p class="deakin-banner__subtitle">Program overview: who took part in STEM activities and what students reported</p>
-      </div>
+  <!-- Slim header: title, one-line subtitle, the page tabs and the "about"
+       button. The old home icon duplicated the first tab, so it is gone. -->
+  <header class="site-header">
+    <div class="site-header__brand">
+      <p class="site-header__title">STEM Impact Tracker</p>
+      <p class="site-header__subtitle">Program overview: who took part in STEM activities and what students reported</p>
     </div>
-    <div class="deakin-banner__actions">
-      <a href="index.html" class="deakin-banner__icon" title="Home" aria-label="Home">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-      </a>
-      <a href="#data-notes" class="deakin-banner__icon" title="About this dashboard" aria-label="About this dashboard">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none"/></svg>
-      </a>
-    </div>
+    <nav class="site-tabs" aria-label="Dashboard view">
+      <a href="index.html" aria-current="page">Program overview</a>
+      <a href="teacher.html">Teacher view</a>
+      <a href="open-text.html">Written answers</a>
+    </nav>
+    <a href="#data-notes" class="site-header__info" title="About this dashboard" aria-label="About this dashboard">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none"/></svg>
+    </a>
   </header>
 
-  <nav class="site-nav" aria-label="Dashboard view">
-    <a href="index.html" aria-current="page">Program overview</a>
-    <a href="teacher.html">Teacher view</a>
-    <a href="open-text.html">Written answers</a>
+  <!-- Section jump links. Sticky, and the current section is highlighted
+       (js/section-nav.js). On phones it is a sideways-scrolling chip row. -->
+  <nav class="section-nav" id="section-nav" aria-label="Sections on this page">
+    <a href="#section-participation">Who took part</a>
+    <a href="#section-outcomes">Outcomes</a>
+    <a href="#section-skills">Skills</a>
+    <a href="#section-regional">Regions</a>
+    <a href="#section-aspirations">Future plans</a>
   </nav>
 
+  <div class="overview-bar">
   <div class="kpi-row" id="kpi-row" aria-label="Survey at a glance"></div>
 
   <form class="filter-bar" id="filter-bar">
@@ -74,12 +77,13 @@
     <div class="filter-field">
       <label for="filter-school-level">Year level</label>
       <select id="filter-school-level">
-        <option value="">All year levels (including people who have left school)</option>
+        <option value="">All year levels (incl. post-school)</option>
       </select>
     </div>
     <button type="button" class="filter-reset" id="filter-reset">Reset filters</button>
     <span class="filter-status" id="filter-status" role="status"></span>
   </form>
+  </div>
 
   <!-- What the data means, before the charts that show it: a plain-language
        reading of the same numbers below, not a separate finding. Derived
@@ -157,6 +161,10 @@
         </div>
         <div class="card__body">
           <div id="outcomes-multi">
+            <div class="highlight-field" id="outcomes-highlight-field">
+              <label for="outcomes-highlight">Highlight activity</label>
+              <select id="outcomes-highlight"><option value="">None: compare all</option></select>
+            </div>
             <div class="chart-scroll" id="chart-outcomes"></div>
             <div class="legend" id="outcomes-activity-legend"></div>
             <!-- Full reasoning for the "≈" wording-variant tag and the sample-size point: README.md, "Caption reasoning". -->
@@ -234,6 +242,10 @@
           </p>
         </div>
         <div class="card__body">
+          <div class="highlight-field">
+            <label for="regional-highlight">Highlight region</label>
+            <select id="regional-highlight"><option value="">None: compare all</option></select>
+          </div>
           <div class="chart-scroll" id="chart-regional"></div>
           <div class="legend" id="regional-legend"></div>
           <!-- Regions outside Geelong showing several suppressed cells is the honest state of this sample, not a rendering gap: README.md, "Caption reasoning". -->
@@ -345,12 +357,13 @@
 
         <div class="card card--self-perception">
           <div class="card__header">
+            <p class="card__kind"><span aria-hidden="true">◐</span> A different kind of question: how students see themselves</p>
             <h3 class="card__title">Why do students want to choose STEM subjects? Belonging and confidence</h3>
             <!-- Why a different tint rather than a lighter version of the influence charts: README.md, "Caption reasoning". -->
             <p class="card__subtitle">
               Compares how students in each gender group see their own belonging and ability in STEM subjects. This is
-              about how they see themselves, not what influences a choice. It uses a different colour so you can tell the
-              two apart at a glance. Each dot is that group's own percentage.
+              about how they see themselves, not what influences a choice. It is labelled so you can tell the two apart at
+              a glance. Each dot is that group's own percentage.
             </p>
           </div>
           <div class="card__body">
@@ -383,30 +396,32 @@
 
   </main>
 
+  <div class="data-notes card" id="data-notes">
+    <div class="card__header"><h3 class="card__title">About this dashboard</h3></div>
+    <div class="card__body">
+      <!--
+        Trimmed to what a reader outside the project needs. The rest
+        (source file list, the did_gals fallback, the general-outcomes
+        exclusion, the label override mapping, colour sourcing) moved to
+        README.md ("Notes moved off the dashboard footer") rather than
+        being deleted - still useful to us and to whoever maintains this,
+        just not to a principal reading this page cold.
+      -->
+      <ul id="data-notes-list">
+        <li>All numbers here are made-up test data. The real survey is waiting for Deakin ethics approval.</li>
+        <li>To protect privacy, results based on fewer than 5 people are hidden and marked. They are never quietly left out.</li>
+        <li>Answers are scored from 1 (No) to 4 (Yes a lot). A higher score means a more positive answer.</li>
+        <li>GALS is the Girls as Leaders in STEM program, which is for girls. Results labelled "GALS" are about people who took part in that program. Other results include students of every gender.</li>
+        <li>Gender groups use the labels students chose. A group, or a single result within a group, is shown only when at least 5 people are behind it. Smaller ones are hidden for privacy and marked with a grey "hidden" tag; those answers still count everywhere else.</li>
+      </ul>
+    </div>
+  </div>
+
   <footer class="page-footer">
     <div class="page-footer__bar">
       <span>Contact: <a href="mailto:stem-impact-tracker@deakin.edu.au">stem-impact-tracker@deakin.edu.au</a> (placeholder)</span>
       <span id="data-refreshed"></span>
-    </div>
-    <div class="data-notes card" id="data-notes">
-      <div class="card__header"><h3 class="card__title">About this dashboard</h3></div>
-      <div class="card__body">
-        <!--
-          Trimmed to what a reader outside the project needs. The rest
-          (source file list, the did_gals fallback, the general-outcomes
-          exclusion, the label override mapping, colour sourcing) moved to
-          README.md ("Notes moved off the dashboard footer") rather than
-          being deleted - still useful to us and to whoever maintains this,
-          just not to a principal reading this page cold.
-        -->
-        <ul id="data-notes-list">
-          <li>All numbers here are made-up test data. The real survey is waiting for Deakin ethics approval.</li>
-          <li>To protect privacy, results based on fewer than 5 people are hidden and marked. They are never quietly left out.</li>
-          <li>Answers are scored from 1 (No) to 4 (Yes a lot). A higher score means a more positive answer.</li>
-          <li>GALS is the Girls as Leaders in STEM program, which is for girls. Results labelled "GALS" are about people who took part in that program. Other results include students of every gender.</li>
-          <li>Gender groups use the labels students chose. A group, or a single result within a group, is shown only when at least 5 people are behind it. Smaller ones are hidden for privacy and marked ×; those answers still count everywhere else.</li>
-        </ul>
-      </div>
+      <span class="page-footer__reminder">All numbers are made-up test data.</span>
     </div>
   </footer>
 
@@ -419,15 +434,16 @@
 <script src="data/aspirations.js?v=85aad3d786"></script>
 <script src="data/subjectCareer.js?v=839bf90227"></script>
 <script src="data/openText.js?v=55dae8171a"></script>
-<script src="data/meta.js?v=4ccd8096ae"></script>
-<script src="js/utils.js?v=cf9ddbabdd"></script>
+<script src="data/meta.js?v=4e3753230b"></script>
+<script src="js/utils.js?v=73c3069e01"></script>
 <script src="js/summary.js?v=4e6d3527bd"></script>
 <script src="js/charts/participation.js?v=d718b7a696"></script>
-<script src="js/charts/outcomes.js?v=9bf557dc3a"></script>
+<script src="js/charts/outcomes.js?v=eedc76773a"></script>
 <script src="js/charts/skills.js?v=b6066b5106"></script>
-<script src="js/charts/regional.js?v=0787d99330"></script>
+<script src="js/charts/regional.js?v=1ec45ba884"></script>
 <script src="js/charts/aspirations.js?v=e0350f5016"></script>
-<script src="js/charts/influences.js?v=6237a53f14"></script>
-<script src="js/main.js?v=b504f25014"></script>
+<script src="js/charts/influences.js?v=ee0da46526"></script>
+<script src="js/main.js?v=2755b021a1"></script>
+<script src="js/section-nav.js?v=5d3aa5bbc8"></script>
 </body>
 </html>
