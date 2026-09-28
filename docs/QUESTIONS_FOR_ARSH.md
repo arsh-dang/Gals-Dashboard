@@ -129,9 +129,8 @@ same statement?**
 - Seen: `site/css/tokens.css` imports Open Sans from `fonts.googleapis.com`. Every
   visitor's browser contacts Google. The project says "no analytics", which is
   true, but this is still an outside request.
-- Done on the `frontend-makeover` branch: Open Sans is self-hosted in
-  `site/vendor/fonts/` and the Google Fonts import is gone. Once that branch is
-  merged, this question is closed.
+- **Resolved.** Open Sans is self-hosted in `site/vendor/fonts/` and the Google
+  Fonts import is gone (merged to `main`). The site makes no outside request.
 
 **14. Why do post-school respondents have a school name in the mock data?**
 - Seen: 45 of 49 do, and 38 also have a year level. The "school" is a sentence

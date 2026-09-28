@@ -61,13 +61,41 @@
         group, rows: groupRows, ids, size: ids.size, shown: ids.size > 0 && !U.isSuppressed(ids.size), color: colors[group], marker: markerFor(group),
       };
     });
-    const shownGroups = groups.filter((g) => g.shown);
-    const hiddenGroups = groups.filter((g) => g.size > 0 && !g.shown);
+    const candidateGroups = groups.filter((g) => g.shown);
+    const sizeHiddenGroups = groups.filter((g) => g.size > 0 && !g.shown);
+
+    if (!candidateGroups.length) {
+      const msg = document.createElement('span');
+      msg.className = 'badge-suppressed';
+      msg.textContent = `Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people in each group`;
+      container.appendChild(msg);
+      return;
+    }
+
+    const items = [...new Set(rows.map((r) => r.item))];
+
+    // A group of exactly SMALL_CELL_THRESHOLD people, with zero of them
+    // picking an option, would otherwise draw a dot at 0% - that discloses
+    // what all of a small group answered just as much as a suppressed count
+    // would, so 0 is treated the same as 1-4 below (hidden, not a real dot).
+    // A group whose own answers would be hidden more often than shown is more
+    // informative left off the chart entirely (named in the note, like a
+    // too-small group) than shown as a column of "hidden" tags.
+    const perGroup = candidateGroups.map((g) => {
+      const values = items.map((item) => ({ item, ...pctOf(g.rows, item, g.ids) }));
+      const hiddenCount = values.filter((v) => U.isSuppressed(v.n)).length;
+      return {
+        group: g, values, drop: hiddenCount > values.length - hiddenCount,
+      };
+    });
+    const droppedGroups = perGroup.filter((r) => r.drop).map((r) => r.group);
+    const shownGroups = candidateGroups.filter((g) => !droppedGroups.includes(g));
+    const hiddenGroups = [...sizeHiddenGroups, ...droppedGroups];
 
     if (!shownGroups.length) {
       const msg = document.createElement('span');
       msg.className = 'badge-suppressed';
-      msg.textContent = `Hidden for privacy: fewer than ${U.SMALL_CELL_THRESHOLD} people in each group`;
+      msg.textContent = 'Hidden for privacy: too few answers to show any group on its own';
       container.appendChild(msg);
       return;
     }
@@ -80,18 +108,24 @@
     container.appendChild(legend);
 
     if (hiddenGroups.length) {
+      const parts = [];
+      if (sizeHiddenGroups.length) {
+        parts.push(`${sizeHiddenGroups.map((g) => g.group).join(', ')}: fewer than ${U.SMALL_CELL_THRESHOLD} people, so not shown on their own`);
+      }
+      if (droppedGroups.length) {
+        parts.push(`${droppedGroups.map((g) => g.group).join(', ')}: most answers for this group are hidden for privacy, so the group is not shown here`);
+      }
       const note = document.createElement('p');
       note.className = 'card__note';
       note.style.marginTop = 'var(--space-2)';
-      note.innerHTML = `<span class="badge-suppressed">Hidden for privacy</span> ${hiddenGroups.map((g) => g.group).join(', ')}: fewer than ${U.SMALL_CELL_THRESHOLD} people, so not shown on their own. Their answers still count in the rest of the survey.`;
+      note.innerHTML = `<span class="badge-suppressed">Hidden for privacy</span> ${parts.join('; ')}. Their answers still count in the rest of the survey.`;
       container.appendChild(note);
     }
 
-    const items = [...new Set(rows.map((r) => r.item))];
     const bars = items.map((item) => {
       const points = shownGroups.map((g) => {
         const v = pctOf(g.rows, item, g.ids);
-        return { group: g, ...v, hidden: v.n > 0 && U.isSuppressed(v.n) };
+        return { group: g, ...v, hidden: U.isSuppressed(v.n) };
       });
       const visible = points.filter((p) => !p.hidden);
       return { item, points, sortKey: visible.length ? d3.mean(visible, (p) => p.pct) : -1 };
