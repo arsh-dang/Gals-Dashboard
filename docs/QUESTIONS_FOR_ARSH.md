@@ -176,3 +176,10 @@ same statement?**
   the page.
 - Need: what real access should look like, for the real-data plan. This depends on
   Deakin IT and ethics (questions 6 and 7).
+
+**23. Card subtitles are two to three sentences; cut to one line in a future
+wording pass.**
+- Seen: the front-end makeover (branch `frontend-makeover`) restyled cards but
+  left caption text alone, since shortening a caption is a wording change, not a
+  layout one.
+- Need: this in a future wording pass, not now.

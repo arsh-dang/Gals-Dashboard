@@ -352,3 +352,6 @@ is in `docs/backend_design.md`, "Before real data".
    may be read.
 7. **Add the tests to the deploy step**, so a broken label stops a bad build going
    live. Right now the deploy only builds.
+8. **Card subtitles are two to three sentences; cut to one line in a future
+   wording pass.** Left alone in the front-end makeover on purpose: shortening a
+   caption is a wording change, not a layout one.
